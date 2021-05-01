@@ -8,13 +8,13 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="card">
-          <div class="card-header"><h4>Menu roles</h4></div>
+          <div class="card-header">Menu roles</div>
             <div class="card-body">
-                <div class="row">
-                    <a class="btn btn-lg btn-primary" href="{{ route('roles.create') }}">Add new role</a>
+                <div class="row ml-0">
+                    <a class="btn btn-primary" href="{{ route('roles.create') }}">Add new role</a>
                 </div>
                 <br>
-                <table class="table table-striped table-bordered datatable">
+                <table class="table table-responsive-sm table-striped">
                     <thead>
                         <tr>
                             <th>Name</th>

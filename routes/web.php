@@ -24,54 +24,55 @@ use App\Http\Controllers\MediaController;
 */
 
 Route::group(['middleware' => ['get.menu']], function () {
-    Route::get('/', function () {           return view('dashboard.homepage'); });
+    Route::view('/',    'dashboard.homepage');
 
     Route::group(['middleware' => ['role:user']], function () {
-        Route::get('/colors', function () {     return view('dashboard.colors'); });
-        Route::get('/typography', function () { return view('dashboard.typography'); });
-        Route::get('/charts', function () {     return view('dashboard.charts'); });
-        Route::get('/widgets', function () {    return view('dashboard.widgets'); });
-        Route::get('/404', function () {        return view('dashboard.404'); });
-        Route::get('/500', function () {        return view('dashboard.500'); });
+        Route::view('/colors',          'dashboard.colors');
+        Route::view('/typography',      'dashboard.typography');
+        Route::view('/charts',          'dashboard.charts');
+        Route::view('/widgets',         'dashboard.widgets');
+        Route::view('/404',             'dashboard.404');
+        Route::view('/500',             'dashboard.500');
         Route::prefix('base')->group(function () {  
-            Route::get('/breadcrumb', function(){   return view('dashboard.base.breadcrumb'); });
-            Route::get('/cards', function(){        return view('dashboard.base.cards'); });
-            Route::get('/carousel', function(){     return view('dashboard.base.carousel'); });
-            Route::get('/collapse', function(){     return view('dashboard.base.collapse'); });
+            Route::view('/breadcrumb',      'dashboard.base.breadcrumb');
+            Route::view('/cards',           'dashboard.base.cards');
+            Route::view('/carousel',        'dashboard.base.carousel');
+            Route::view('/collapse',        'dashboard.base.collapse');
 
-            Route::get('/forms', function(){        return view('dashboard.base.forms'); });
-            Route::get('/jumbotron', function(){    return view('dashboard.base.jumbotron'); });
-            Route::get('/list-group', function(){   return view('dashboard.base.list-group'); });
-            Route::get('/navs', function(){         return view('dashboard.base.navs'); });
+            Route::view('/forms',           'dashboard.base.forms');
+            Route::view('/jumbotron',       'dashboard.base.jumbotron');
+            Route::view('/list-group',      'dashboard.base.list-group');
+            Route::view('/navs',            'dashboard.base.navs');
 
-            Route::get('/pagination', function(){   return view('dashboard.base.pagination'); });
-            Route::get('/popovers', function(){     return view('dashboard.base.popovers'); });
-            Route::get('/progress', function(){     return view('dashboard.base.progress'); });
-            Route::get('/scrollspy', function(){    return view('dashboard.base.scrollspy'); });
+            Route::view('/pagination',      'dashboard.base.pagination');
+            Route::view('/popovers',        'dashboard.base.popovers');
+            Route::view('/progress',        'dashboard.base.progress');
+            Route::view('/scrollspy',       'dashboard.base.scrollspy');
 
-            Route::get('/switches', function(){     return view('dashboard.base.switches'); });
-            Route::get('/tables', function () {     return view('dashboard.base.tables'); });
-            Route::get('/tabs', function () {       return view('dashboard.base.tabs'); });
-            Route::get('/tooltips', function () {   return view('dashboard.base.tooltips'); });
+            Route::view('/switches',        'dashboard.base.switches');
+            Route::view('/tables',          'dashboard.base.tables');
+            Route::view('/tabs',            'dashboard.base.tabs');
+            Route::view('/tooltips',        'dashboard.base.tooltips');
         });
         Route::prefix('buttons')->group(function () {  
-            Route::get('/buttons', function(){          return view('dashboard.buttons.buttons'); });
-            Route::get('/button-group', function(){     return view('dashboard.buttons.button-group'); });
-            Route::get('/dropdowns', function(){        return view('dashboard.buttons.dropdowns'); });
-            Route::get('/brand-buttons', function(){    return view('dashboard.buttons.brand-buttons'); });
+            Route::view('/buttons',         'dashboard.buttons.buttons');
+            Route::view('/button-group',    'dashboard.buttons.button-group');
+            Route::view('/dropdowns',       'dashboard.buttons.dropdowns');
+            Route::view('/brand-buttons',   'dashboard.buttons.brand-buttons');
         });
         Route::prefix('icon')->group(function () {  // word: "icons" - not working as part of adress
-            Route::get('/coreui-icons', function(){         return view('dashboard.icons.coreui-icons'); });
-            Route::get('/flags', function(){                return view('dashboard.icons.flags'); });
-            Route::get('/brands', function(){               return view('dashboard.icons.brands'); });
+            Route::view('/coreui-icons',    'dashboard.icons.coreui-icons');
+            Route::view('/flags',           'dashboard.icons.flags');
+            Route::view('/brands',          'dashboard.icons.brands');
         });
         Route::prefix('notifications')->group(function () {  
-            Route::get('/alerts', function(){   return view('dashboard.notifications.alerts'); });
-            Route::get('/badge', function(){    return view('dashboard.notifications.badge'); });
-            Route::get('/modals', function(){   return view('dashboard.notifications.modals'); });
+            Route::view('/alerts',          'dashboard.notifications.alerts');
+            Route::view('/badge',           'dashboard.notifications.badge');
+            Route::view('/modals',          'dashboard.notifications.modals');
         });
         Route::resource('notes', NotesController::class);
     });
+    
     Auth::routes();
 
     Route::resource('resource/{table}/resource', ResourceController::class)->names([
@@ -85,33 +86,33 @@ Route::group(['middleware' => ['get.menu']], function () {
     ]);
 
     Route::group(['middleware' => ['role:admin']], function () {
-        Route::resource('bread',  BreadController::class);   //create BREAD (resource)
-        Route::resource('users',        UsersController::class)->except( ['create', 'store'] );
-        Route::resource('roles',        RolesController::class);
-        Route::resource('mail',        MailController::class);
-        Route::get('prepareSend/{id}',        [MailController::class, 'prepareSend'])->name('prepareSend');
+        Route::resource('bread',            [BreadController::class]);   //create BREAD (resource)
+        Route::resource('users',            [UsersController::class])->except( ['create', 'store'] );
+        Route::resource('roles',            [RolesController::class]);
+        Route::resource('mail',             [MailController::class]);
+        Route::get('prepareSend/{id}',      [MailController::class, 'prepareSend'])->name('prepareSend');
         Route::post('mailSend/{id}',        [MailController::class, 'send'])->name('mailSend');
-        Route::get('/roles/move/move-up',      [RolesController::class, 'moveUp'])->name('roles.up');
-        Route::get('/roles/move/move-down',    [RolesController::class, 'available'])->name('roles.down');
+        Route::get('/roles/move/move-up',   [RolesController::class, 'moveUp'])->name('roles.up');
+        Route::get('/roles/move/move-down', [RolesController::class, 'available'])->name('roles.down');
         Route::prefix('menu/element')->group(function () { 
-            Route::get('/',             [MenuElementController::class, 'index'])->name('menu.index');
-            Route::get('/move-up',      [MenuElementController::class, 'moveUp'])->name('menu.up');
-            Route::get('/move-down',    [MenuElementController::class, 'moveDown'])->name('menu.down');
-            Route::get('/create',       [MenuElementController::class, 'create'])->name('menu.create');
-            Route::post('/store',       [MenuElementController::class, 'store'])->name('menu.store');
-            Route::get('/get-parents',  [MenuElementController::class, 'getParents']);
-            Route::get('/edit',         [MenuElementController::class, 'edit'])->name('menu.edit');
-            Route::post('/update',      [MenuElementController::class, 'update'])->name('menu.update');
-            Route::get('/show',         [MenuElementController::class, 'show'])->name('menu.show');
-            Route::get('/delete',       [MenuElementController::class, 'delete'])->name('menu.delete');
+            Route::get('/',                 [MenuElementController::class, 'index'])->name('menu.index');
+            Route::get('/move-up',          [MenuElementController::class, 'moveUp'])->name('menu.up');
+            Route::get('/move-down',        [MenuElementController::class, 'moveDown'])->name('menu.down');
+            Route::get('/create',           [MenuElementController::class, 'create'])->name('menu.create');
+            Route::post('/store',           [MenuElementController::class, 'store'])->name('menu.store');
+            Route::get('/get-parents',      [MenuElementController::class, 'getParents']);
+            Route::get('/edit',             [MenuElementController::class, 'edit'])->name('menu.edit');
+            Route::post('/update',          [MenuElementController::class, 'update'])->name('menu.update');
+            Route::get('/show',             [MenuElementController::class, 'show'])->name('menu.show');
+            Route::get('/delete',           [MenuElementController::class, 'delete'])->name('menu.delete');
         });
         Route::prefix('menu/menu')->group(function () { 
-            Route::get('/',         [MenuController::class, 'index'])->name('menu.menu.index');
-            Route::get('/create',   [MenuController::class, 'create'])->name('menu.menu.create');
-            Route::post('/store',   [MenuController::class, 'store'])->name('menu.menu.store');
-            Route::get('/edit',     [MenuController::class, 'edit'])->name('menu.menu.edit');
-            Route::post('/update',  [MenuController::class, 'update'])->name('menu.menu.update');
-            Route::get('/delete',   [MenuController::class, 'delete'])->name('menu.menu.delete');
+            Route::get('/',                 [MenuController::class, 'index'])->name('menu.menu.index');
+            Route::get('/create',           [MenuController::class, 'create'])->name('menu.menu.create');
+            Route::post('/store',           [MenuController::class, 'store'])->name('menu.menu.store');
+            Route::get('/edit',             [MenuController::class, 'edit'])->name('menu.menu.edit');
+            Route::post('/update',          [MenuController::class, 'update'])->name('menu.menu.update');
+            Route::get('/delete',           [MenuController::class, 'delete'])->name('menu.menu.delete');
         });
         Route::prefix('media')->group(function () {
             Route::get('/',                 [MediaController::class, 'index'])->name('media.folder.index');

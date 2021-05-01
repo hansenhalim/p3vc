@@ -8,10 +8,10 @@
     <div class="row">
       <div class="col-sm-12">
         <div class="card">
-          <div class="card-header"><h4>Menu Elements</h4></div>
+          <div class="card-header">Menu Elements</div>
             <div class="card-body">
-                <div class="row mb-3 ml-3">
-                    <a class="btn btn-lg btn-primary" href="{{ route('menu.create') }}">Add new menu element</a>
+                <div class="row mb-3 ml-0">
+                    <a class="btn btn-primary" href="{{ route('menu.create') }}">Add new menu element</a>
                 </div>
                 <div class="row mb-3">
                     <div class="col-sm-4">
@@ -37,7 +37,7 @@
             echo '<tr>';
             echo '<td>';
             if($data['hasIcon'] === true && $data['iconType'] === 'coreui'){
-                echo '<svg class="c-nav-icon edit-menu-icon"><use xlink:href="/assets/icons/coreui/free-symbol-defs.svg#' . $data['icon'] . '"></use></svg>';    
+                // echo '<svg class="c-nav-icon edit-menu-icon"><use xlink:href="/assets/icons/coreui/free-symbol-defs.svg#' . $data['icon'] . '"></use></svg>';    
                 echo '<i class="' . $data['icon'] . '"></i>';
             }
             echo '</td>';
@@ -99,7 +99,7 @@
               ?>
 
 
-                <table class="table table-striped table-bordered datatable">
+                <table class="table table-responsive-sm table-striped">
                     <thead>
                         <tr>
                             <th></th>
@@ -122,9 +122,9 @@
                             <td>
                                 @if($menuel['hasIcon'] === true)
                                     @if($menuel['iconType'] === 'coreui')
-                                    <svg class="c-nav-icon edit-menu-icon">
-                                        <use xlink:href="/assets/icons/coreui/free-symbol-defs.svg#{{ $menuel['icon'] }}"></use>
-                                    </svg> 
+                                    {{-- <svg class="c-nav-icon edit-menu-icon"> --}}
+                                        {{-- <use xlink:href="/assets/icons/coreui/free-symbol-defs.svg#{{ $menuel['icon'] }}"></use> --}}
+                                    {{-- </svg>  --}}
                                     <i class="{{ $menuel['icon'] }}"></i> 
                                     @endif
                                 @endif 
