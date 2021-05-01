@@ -1,5 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\NotesController;
+use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\BreadController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\MailController;
+use App\Http\Controllers\MenuElementController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\MediaController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -58,11 +70,11 @@ Route::group(['middleware' => ['get.menu']], function () {
             Route::get('/badge', function(){    return view('dashboard.notifications.badge'); });
             Route::get('/modals', function(){   return view('dashboard.notifications.modals'); });
         });
-        Route::resource('notes', 'NotesController');
+        Route::resource('notes', NotesController::class);
     });
     Auth::routes();
 
-    Route::resource('resource/{table}/resource', 'ResourceController')->names([
+    Route::resource('resource/{table}/resource', ResourceController::class)->names([
         'index'     => 'resource.index',
         'create'    => 'resource.create',
         'store'     => 'resource.store',
@@ -73,49 +85,49 @@ Route::group(['middleware' => ['get.menu']], function () {
     ]);
 
     Route::group(['middleware' => ['role:admin']], function () {
-        Route::resource('bread',  'BreadController');   //create BREAD (resource)
-        Route::resource('users',        'UsersController')->except( ['create', 'store'] );
-        Route::resource('roles',        'RolesController');
-        Route::resource('mail',        'MailController');
-        Route::get('prepareSend/{id}',        'MailController@prepareSend')->name('prepareSend');
-        Route::post('mailSend/{id}',        'MailController@send')->name('mailSend');
-        Route::get('/roles/move/move-up',      'RolesController@moveUp')->name('roles.up');
-        Route::get('/roles/move/move-down',    'RolesController@moveDown')->name('roles.down');
+        Route::resource('bread',  BreadController::class);   //create BREAD (resource)
+        Route::resource('users',        UsersController::class)->except( ['create', 'store'] );
+        Route::resource('roles',        RolesController::class);
+        Route::resource('mail',        MailController::class);
+        Route::get('prepareSend/{id}',        [MailController::class, 'prepareSend'])->name('prepareSend');
+        Route::post('mailSend/{id}',        [MailController::class, 'send'])->name('mailSend');
+        Route::get('/roles/move/move-up',      [RolesController::class, 'moveUp'])->name('roles.up');
+        Route::get('/roles/move/move-down',    [RolesController::class, 'available'])->name('roles.down');
         Route::prefix('menu/element')->group(function () { 
-            Route::get('/',             'MenuElementController@index')->name('menu.index');
-            Route::get('/move-up',      'MenuElementController@moveUp')->name('menu.up');
-            Route::get('/move-down',    'MenuElementController@moveDown')->name('menu.down');
-            Route::get('/create',       'MenuElementController@create')->name('menu.create');
-            Route::post('/store',       'MenuElementController@store')->name('menu.store');
-            Route::get('/get-parents',  'MenuElementController@getParents');
-            Route::get('/edit',         'MenuElementController@edit')->name('menu.edit');
-            Route::post('/update',      'MenuElementController@update')->name('menu.update');
-            Route::get('/show',         'MenuElementController@show')->name('menu.show');
-            Route::get('/delete',       'MenuElementController@delete')->name('menu.delete');
+            Route::get('/',             [MenuElementController::class, 'index'])->name('menu.index');
+            Route::get('/move-up',      [MenuElementController::class, 'moveUp'])->name('menu.up');
+            Route::get('/move-down',    [MenuElementController::class, 'moveDown'])->name('menu.down');
+            Route::get('/create',       [MenuElementController::class, 'create'])->name('menu.create');
+            Route::post('/store',       [MenuElementController::class, 'store'])->name('menu.store');
+            Route::get('/get-parents',  [MenuElementController::class, 'getParents']);
+            Route::get('/edit',         [MenuElementController::class, 'edit'])->name('menu.edit');
+            Route::post('/update',      [MenuElementController::class, 'update'])->name('menu.update');
+            Route::get('/show',         [MenuElementController::class, 'show'])->name('menu.show');
+            Route::get('/delete',       [MenuElementController::class, 'delete'])->name('menu.delete');
         });
         Route::prefix('menu/menu')->group(function () { 
-            Route::get('/',         'MenuController@index')->name('menu.menu.index');
-            Route::get('/create',   'MenuController@create')->name('menu.menu.create');
-            Route::post('/store',   'MenuController@store')->name('menu.menu.store');
-            Route::get('/edit',     'MenuController@edit')->name('menu.menu.edit');
-            Route::post('/update',  'MenuController@update')->name('menu.menu.update');
-            Route::get('/delete',   'MenuController@delete')->name('menu.menu.delete');
+            Route::get('/',         [MenuController::class, 'index'])->name('menu.menu.index');
+            Route::get('/create',   [MenuController::class, 'create'])->name('menu.menu.create');
+            Route::post('/store',   [MenuController::class, 'store'])->name('menu.menu.store');
+            Route::get('/edit',     [MenuController::class, 'edit'])->name('menu.menu.edit');
+            Route::post('/update',  [MenuController::class, 'update'])->name('menu.menu.update');
+            Route::get('/delete',   [MenuController::class, 'delete'])->name('menu.menu.delete');
         });
         Route::prefix('media')->group(function () {
-            Route::get('/',                 'MediaController@index')->name('media.folder.index');
-            Route::get('/folder/store',     'MediaController@folderAdd')->name('media.folder.add');
-            Route::post('/folder/update',   'MediaController@folderUpdate')->name('media.folder.update');
-            Route::get('/folder',           'MediaController@folder')->name('media.folder');
-            Route::post('/folder/move',     'MediaController@folderMove')->name('media.folder.move');
-            Route::post('/folder/delete',   'MediaController@folderDelete')->name('media.folder.delete');;
+            Route::get('/',                 [MediaController::class, 'index'])->name('media.folder.index');
+            Route::get('/folder/store',     [MediaController::class, 'folderAdd'])->name('media.folder.add');
+            Route::post('/folder/update',   [MediaController::class, 'folderUpdate'])->name('media.folder.update');
+            Route::get('/folder',           [MediaController::class, 'folder'])->name('media.folder');
+            Route::post('/folder/move',     [MediaController::class, 'folderMove'])->name('media.folder.move');
+            Route::post('/folder/delete',   [MediaController::class, 'folderDelete'])->name('media.folder.delete');;
 
-            Route::post('/file/store',      'MediaController@fileAdd')->name('media.file.add');
-            Route::get('/file',             'MediaController@file');
-            Route::post('/file/delete',     'MediaController@fileDelete')->name('media.file.delete');
-            Route::post('/file/update',     'MediaController@fileUpdate')->name('media.file.update');
-            Route::post('/file/move',       'MediaController@fileMove')->name('media.file.move');
-            Route::post('/file/cropp',      'MediaController@cropp');
-            Route::get('/file/copy',        'MediaController@fileCopy')->name('media.file.copy');
+            Route::post('/file/store',      [MediaController::class, 'fileAdd'])->name('media.file.add');
+            Route::get('/file',             [MediaController::class, 'file']);
+            Route::post('/file/delete',     [MediaController::class, 'fileDelete'])->name('media.file.delete');
+            Route::post('/file/update',     [MediaController::class, 'fileUpdate'])->name('media.file.update');
+            Route::post('/file/move',       [MediaController::class, 'fileMove'])->name('media.file.move');
+            Route::post('/file/cropp',      [MediaController::class, 'cropp']);
+            Route::get('/file/copy',        [MediaController::class, 'fileCopy'])->name('media.file.copy');
         });
     });
 });
