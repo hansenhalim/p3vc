@@ -8,6 +8,7 @@ use App\Http\Controllers\MailController;
 use App\Http\Controllers\MenuElementController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\NotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['get.menu']], function () {
             Route::view('/badge',         'dashboard.notifications.badge');
             Route::view('/modals',        'dashboard.notifications.modals');
         });
+        Route::resource('notes',            NotesController::class);
     });
 
     Route::group(['middleware' => ['role:admin']], function () {
