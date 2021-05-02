@@ -2,9 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\NotesController;
-use App\Http\Controllers\ResourceController;
-use App\Http\Controllers\BreadController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\MailController;
@@ -23,78 +20,68 @@ use App\Http\Controllers\MediaController;
 |
 */
 
+Auth::routes();
+
 Route::group(['middleware' => ['get.menu']], function () {
-    Route::view('/',    'dashboard.homepage');
+    Route::group(['middleware' => ['auth']], function () {
+        Route::view('/',                  'dashboard.homepage');
+    });
 
     Route::group(['middleware' => ['role:user']], function () {
-        Route::view('/colors',          'dashboard.colors');
-        Route::view('/typography',      'dashboard.typography');
-        Route::view('/charts',          'dashboard.charts');
-        Route::view('/widgets',         'dashboard.widgets');
-        Route::view('/404',             'dashboard.404');
-        Route::view('/500',             'dashboard.500');
-        Route::prefix('base')->group(function () {  
-            Route::view('/breadcrumb',      'dashboard.base.breadcrumb');
-            Route::view('/cards',           'dashboard.base.cards');
-            Route::view('/carousel',        'dashboard.base.carousel');
-            Route::view('/collapse',        'dashboard.base.collapse');
+        Route::view('/colors',            'dashboard.colors');
+        Route::view('/typography',        'dashboard.typography');
+        Route::view('/charts',            'dashboard.charts');
+        Route::view('/widgets',           'dashboard.widgets');
+        Route::view('/404',               'dashboard.404');
+        Route::view('/500',               'dashboard.500');
+        Route::prefix('base')->group(function () {
+            Route::view('/breadcrumb',    'dashboard.base.breadcrumb');
+            Route::view('/cards',         'dashboard.base.cards');
+            Route::view('/carousel',      'dashboard.base.carousel');
+            Route::view('/collapse',      'dashboard.base.collapse');
 
-            Route::view('/forms',           'dashboard.base.forms');
-            Route::view('/jumbotron',       'dashboard.base.jumbotron');
-            Route::view('/list-group',      'dashboard.base.list-group');
-            Route::view('/navs',            'dashboard.base.navs');
+            Route::view('/forms',         'dashboard.base.forms');
+            Route::view('/jumbotron',     'dashboard.base.jumbotron');
+            Route::view('/list-group',    'dashboard.base.list-group');
+            Route::view('/navs',          'dashboard.base.navs');
 
-            Route::view('/pagination',      'dashboard.base.pagination');
-            Route::view('/popovers',        'dashboard.base.popovers');
-            Route::view('/progress',        'dashboard.base.progress');
-            Route::view('/scrollspy',       'dashboard.base.scrollspy');
+            Route::view('/pagination',    'dashboard.base.pagination');
+            Route::view('/popovers',      'dashboard.base.popovers');
+            Route::view('/progress',      'dashboard.base.progress');
+            Route::view('/scrollspy',     'dashboard.base.scrollspy');
 
-            Route::view('/switches',        'dashboard.base.switches');
-            Route::view('/tables',          'dashboard.base.tables');
-            Route::view('/tabs',            'dashboard.base.tabs');
-            Route::view('/tooltips',        'dashboard.base.tooltips');
+            Route::view('/switches',      'dashboard.base.switches');
+            Route::view('/tables',        'dashboard.base.tables');
+            Route::view('/tabs',          'dashboard.base.tabs');
+            Route::view('/tooltips',      'dashboard.base.tooltips');
         });
-        Route::prefix('buttons')->group(function () {  
-            Route::view('/buttons',         'dashboard.buttons.buttons');
-            Route::view('/button-group',    'dashboard.buttons.button-group');
-            Route::view('/dropdowns',       'dashboard.buttons.dropdowns');
-            Route::view('/brand-buttons',   'dashboard.buttons.brand-buttons');
+        Route::prefix('buttons')->group(function () {
+            Route::view('/buttons',       'dashboard.buttons.buttons');
+            Route::view('/button-group',  'dashboard.buttons.button-group');
+            Route::view('/dropdowns',     'dashboard.buttons.dropdowns');
+            Route::view('/brand-buttons', 'dashboard.buttons.brand-buttons');
         });
         Route::prefix('icon')->group(function () {  // word: "icons" - not working as part of adress
-            Route::view('/coreui-icons',    'dashboard.icons.coreui-icons');
-            Route::view('/flags',           'dashboard.icons.flags');
-            Route::view('/brands',          'dashboard.icons.brands');
+            Route::view('/coreui-icons',  'dashboard.icons.coreui-icons');
+            Route::view('/flags',         'dashboard.icons.flags');
+            Route::view('/brands',        'dashboard.icons.brands');
         });
-        Route::prefix('notifications')->group(function () {  
-            Route::view('/alerts',          'dashboard.notifications.alerts');
-            Route::view('/badge',           'dashboard.notifications.badge');
-            Route::view('/modals',          'dashboard.notifications.modals');
+        Route::prefix('notifications')->group(function () {
+            Route::view('/alerts',        'dashboard.notifications.alerts');
+            Route::view('/badge',         'dashboard.notifications.badge');
+            Route::view('/modals',        'dashboard.notifications.modals');
         });
-        Route::resource('notes', NotesController::class);
     });
-    
-    Auth::routes();
-
-    Route::resource('resource/{table}/resource', ResourceController::class)->names([
-        'index'     => 'resource.index',
-        'create'    => 'resource.create',
-        'store'     => 'resource.store',
-        'show'      => 'resource.show',
-        'edit'      => 'resource.edit',
-        'update'    => 'resource.update',
-        'destroy'   => 'resource.destroy'
-    ]);
 
     Route::group(['middleware' => ['role:admin']], function () {
-        Route::resource('bread',            [BreadController::class]);   //create BREAD (resource)
-        Route::resource('users',            [UsersController::class])->except( ['create', 'store'] );
-        Route::resource('roles',            [RolesController::class]);
-        Route::resource('mail',             [MailController::class]);
+        Route::resource('users',            UsersController::class)->except(['create', 'store']);
+        Route::resource('roles',            RolesController::class);
+        Route::resource('mail',             MailController::class);
         Route::get('prepareSend/{id}',      [MailController::class, 'prepareSend'])->name('prepareSend');
         Route::post('mailSend/{id}',        [MailController::class, 'send'])->name('mailSend');
         Route::get('/roles/move/move-up',   [RolesController::class, 'moveUp'])->name('roles.up');
         Route::get('/roles/move/move-down', [RolesController::class, 'available'])->name('roles.down');
-        Route::prefix('menu/element')->group(function () { 
+        Route::prefix('menu/element')->group(function () {
             Route::get('/',                 [MenuElementController::class, 'index'])->name('menu.index');
             Route::get('/move-up',          [MenuElementController::class, 'moveUp'])->name('menu.up');
             Route::get('/move-down',        [MenuElementController::class, 'moveDown'])->name('menu.down');
@@ -106,7 +93,8 @@ Route::group(['middleware' => ['get.menu']], function () {
             Route::get('/show',             [MenuElementController::class, 'show'])->name('menu.show');
             Route::get('/delete',           [MenuElementController::class, 'delete'])->name('menu.delete');
         });
-        Route::prefix('menu/menu')->group(function () { 
+
+        Route::prefix('menu/menu')->group(function () {
             Route::get('/',                 [MenuController::class, 'index'])->name('menu.menu.index');
             Route::get('/create',           [MenuController::class, 'create'])->name('menu.menu.create');
             Route::post('/store',           [MenuController::class, 'store'])->name('menu.menu.store');
@@ -114,6 +102,7 @@ Route::group(['middleware' => ['get.menu']], function () {
             Route::post('/update',          [MenuController::class, 'update'])->name('menu.menu.update');
             Route::get('/delete',           [MenuController::class, 'delete'])->name('menu.menu.delete');
         });
+
         Route::prefix('media')->group(function () {
             Route::get('/',                 [MediaController::class, 'index'])->name('media.folder.index');
             Route::get('/folder/store',     [MediaController::class, 'folderAdd'])->name('media.folder.add');

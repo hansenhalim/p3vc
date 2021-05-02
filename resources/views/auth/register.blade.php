@@ -54,19 +54,12 @@
                     <button class="btn btn-block btn-success" type="submit">{{ __('Register') }}</button>
                 </form>
             </div>
-            <div class="card-footer p-4">
+            <div class="card-footer">
               <div class="row">
-                <div class="col-6">
-                  <button class="btn btn-block btn-facebook" type="button">
-                    <span>facebook</span>
-                  </button>
+                <div class="col-12 text-center">
+                    Copyright &copy; 2021 Hansen Halim
                 </div>
-                <div class="col-6">
-                  <button class="btn btn-block btn-twitter" type="button">
-                    <span>twitter</span>
-                  </button>
-                </div>
-              </div>
+            </div>
             </div>
           </div>
         </div>
