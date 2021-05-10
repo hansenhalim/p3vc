@@ -18,11 +18,6 @@ class MenuElementController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('admin');
-    }
 
     public function index(Request $request){
         if($request->has('menu')){

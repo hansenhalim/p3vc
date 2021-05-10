@@ -14,8 +14,8 @@
                 </div>
               @endif
               <form id="search" action="{{ route('clusters.index') }}" method="get">
-                <div class="row mb-2">
-                  <div class="col-3">
+                <div class="row">
+                  <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
                       <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Sort by</option>
                       <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
@@ -23,13 +23,13 @@
                         Units</option>
                     </select>
                   </div>
-                  <div class="col-3">
+                  <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="order">
                       <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
                       <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
                     </select>
                   </div>
-                  <div class="col-6">
+                  <div class="col-md-6 mb-2">
                     <div class="input-group">
                       <input type="text" class="form-control" name="key" value="{{ request('key') }}">
                       <div class="input-group-append">
@@ -39,25 +39,24 @@
                   </div>
                 </div>
               </form>
-              <table class="table table-responsive-sm table-striped">
+              <table class="table table-striped">
                 <thead>
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Units</th>
-                    <th>Price</th>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Units</th>
+                    <th scope="col">Price</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach ($clusters as $cluster)
                     <tr class='clickable-row' data-href="{{ route('clusters.show', $cluster->id) }}">
-                      <td scope="row">
+                      <th scope="row">
                         {{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}
-                      </td>
+                      </th>
                       <td>{{ $cluster->name }}</td>
                       <td>{{ $cluster->units_count }}</td>
-                      <td>{{ $cluster->lastPrice }}</td>
-                      {{-- <td>{{ $cluster->lastPrice->cost_per_sqm ? number_format($cluster->lastPrice->cost_per_sqm) . __(' / sqm') : number_format($cluster->lastPrice->cost_per_month) . __(' / month') }}</td> --}}
+                      <td>{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}</td>
                     </tr>
                   @endforeach
                 </tbody>

@@ -33,14 +33,11 @@ Route::group(['middleware' => ['get.menu']], function () {
     ]);
 
     Route::group(['middleware' => ['role:operator']], function () {
-        
+        //
     });
 
     Route::group(['middleware' => ['role:supervisor']], function () {
-        // Route::resources([
-        //     'units' => UnitController::class,
-        //     'clusters' => ClusterController::class,
-        // ]);
+        //
     });
 
     Route::group(['middleware' => ['role:master']], function () {

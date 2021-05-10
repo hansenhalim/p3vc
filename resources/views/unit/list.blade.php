@@ -13,30 +13,27 @@
                   {{ session('status') }}
                 </div>
               @endif
-              <form id="search" action="{{ route('units.index') }}" method="get">
-                <div class="row mb-2">
-                  <div class="col-3">
+              <form id="search" action="{{ route('clusters.index') }}" method="get">
+                <div class="row">
+                  <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
-                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>{{ __('Sort by') }}</option>
-                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>{{ __('Name') }}
-                      </option>
+                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Sort by</option>
+                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
                       <option value="units_count" {{ request('sort') == 'units_count' ? 'selected' : '' }}>
-                        {{ __('Units') }}</option>
+                        Units</option>
                     </select>
                   </div>
-                  <div class="col-3">
+                  <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="order">
-                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>{{ __('Smallest') }}
-                      </option>
-                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>{{ __('Largest') }}
-                      </option>
+                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
+                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
                     </select>
                   </div>
-                  <div class="col-6">
+                  <div class="col-md-6 mb-2">
                     <div class="input-group">
-                      <input type="text" class="form-control" name="key" value="{{ request('key') }}">
+                      <input type="text" class="form-control" name="key" value="{{ request('key') }}" placeholder="use # for CIF">
                       <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-secondary">{{ __('Search') }}</button>
+                        <button type="submit" class="btn btn-outline-dark">Search</button>
                       </div>
                     </div>
                   </div>
@@ -45,13 +42,13 @@
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>
-                    <th>CIF</th>
-                    <th>Name</th>
-                    <th>Unit</th>
-                    <th>Cluster</th>
-                    <th>Area (m<sup>2</sup>)</th>
-                    <th>Balance</th>
-                    <th>Credit</th>
+                    <th scope="col">CIF</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Unit</th>
+                    <th scope="col">Cluster</th>
+                    <th scope="col">Area (m<sup>2</sup>)</th>
+                    <th scope="col">Balance</th>
+                    <th scope="col">Credit</th>
                   </tr>
                 </thead>
                 <tbody>
