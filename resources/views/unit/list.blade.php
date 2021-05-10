@@ -6,21 +6,21 @@
       <div class="row">
         <div class="col-lg-8">
           <div class="card">
-            <div class="card-header"><i class="fa fa-align-justify"></i> Unit List</div>
+            <div class="card-header">Unit List</div>
             <div class="card-body">
               @if (session('status'))
                 <div class="alert alert-success" role="alert">
                   {{ session('status') }}
                 </div>
               @endif
-              <form id="search" action="{{ route('clusters.index') }}" method="get">
+              <a class="btn btn-outline-dark mb-2" href="{{ route('units.create') }}">Create Unit</a>
+              <form id="search" action="{{ route('units.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
                       <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Sort by</option>
-                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
-                      <option value="units_count" {{ request('sort') == 'units_count' ? 'selected' : '' }}>
-                        Units</option>
+                      <option value="customers" {{ request('sort') == 'customers' ? 'selected' : '' }}>Name</option>
+                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Units</option>
                     </select>
                   </div>
                   <div class="col-md-3 col-6 mb-2">
@@ -61,7 +61,7 @@
                       <td>{{ $unit->area_sqm }}</td>
                       <td>{{ $unit->balance }}</td>
                       <td>
-                        {{ $unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1) }}
+                        {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
                       </td>
                     </tr>
                   @endforeach

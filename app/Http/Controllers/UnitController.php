@@ -4,13 +4,29 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Unit;
+use App\Models\Cluster;
+use App\Models\Customer;
 
 class UnitController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $units = Unit::with(['customer', 'cluster'])->paginate();
+        $key = $request->key;
+        $sort = $request->get('sort') ?? 'id';
+        $order = $request->get('order') ?? 'asc';
+
+        $query = Unit::query();
+
+        $query->with(['customer:id,name', 'cluster:id,name']);
+        $query->orderBy($sort, $order);
+
+        $query->when($key, function ($query, $key) {
+            return $query->where('name', 'like', '%' . $key . '%');
+        });
+
+        $units = $query->paginate();
+
         return view('unit.list', compact('units'));
     }
 
@@ -21,7 +37,9 @@ class UnitController extends Controller
      */
     public function create()
     {
-        //
+        $clusters = Cluster::with(['prices'])->get();
+        $customers = Customer::all();
+        return view('unit.create', compact('clusters', 'customers'));
     }
 
     /**

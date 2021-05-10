@@ -16,12 +16,13 @@ class ClusterController extends Controller
 
         $query = Cluster::query();
 
+        $query->with(['prices'])->withCount(['units']);
+        $query->orderBy($sort, $order);
+
         $query->when($key, function ($query, $key) {
             return $query->where('name', 'like', '%' . $key . '%');
         });
 
-        $query->orderBy($sort, $order);
-        $query->with(['prices'])->withCount(['units']);
         $clusters = $query->paginate();
 
         return view('cluster.list', compact('clusters'));
