@@ -75,19 +75,11 @@
     "@coreui/coreui": "^3.4.0",
     "@coreui/icons": "^2.0.1",
     "@coreui/utils": "^1.2.4",
-<<<<<<< HEAD
-    "@popperjs/core": "^2.4.0",
-    "axios": "^0.19.0",
-    "chart.js": "^2.9.3",
-    "cropperjs": "^1.5.7",
-    "laravel-mix": "^5.0.4",
-=======
     "@popperjs/core": "^2.9.2",
     "axios": "^0.19.0",
     "chart.js": "^2.9.3",
     "cropperjs": "^1.5.11",
     "laravel-mix": "^5.0.9",
->>>>>>> c3d8cdc325f7d6aa972970c25e8bcc6f25479c66
     "perfect-scrollbar": "1.5.0"
   },
   "devDependencies": {
