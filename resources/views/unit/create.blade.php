@@ -5,7 +5,8 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-md-6">
-          <div class="card">
+            <a class="btn btn-link text-dark mb-2" href="{{ route('units.index') }}"><i class="cil-caret-left"></i>Return</a>
+            <div class="card">
             <div class="card-header">Unit Create</div>
             <div class="card-body">
               @if (session('status'))
@@ -51,8 +52,8 @@
                 </div>
             </div>
             <div class="card-footer">
-              <button class="btn btn-sm btn-primary" type="submit"> Submit</button>
-              <button class="btn btn-sm btn-danger" type="reset"> Reset</button>
+              <button class="btn btn-dark" type="submit"> Submit</button>
+              <button class="btn btn-link text-dark" type="reset"> Reset</button>
               </form>
             </div>
           </div>

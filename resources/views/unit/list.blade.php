@@ -13,7 +13,7 @@
                   {{ session('status') }}
                 </div>
               @endif
-              <a class="btn btn-outline-dark mb-2" href="{{ route('units.create') }}">Create Unit</a>
+              <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a>
               <form id="search" action="{{ route('units.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
@@ -53,7 +53,7 @@
                 </thead>
                 <tbody>
                   @foreach ($units as $unit)
-                    <tr class='clickable-row' data-href="{{ route('units.show', $unit->id) }}">
+                    <tr>
                       <th scope="row">{{ $unit->id }}</th>
                       <td>{{ $unit->customer->name }}</td>
                       <td>{{ $unit->name }}</td>

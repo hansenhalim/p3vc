@@ -50,7 +50,7 @@
                 </thead>
                 <tbody>
                   @foreach ($clusters as $cluster)
-                    <tr class='clickable-row' data-href="{{ route('clusters.show', $cluster->id) }}">
+                    <tr>
                       <th scope="row">
                         {{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}
                       </th>
