@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-md-6">
-            <a class="btn btn-link text-dark mb-2" href="{{ route('units.index') }}"><i class="cil-caret-left"></i>Return</a>
+            <a class="btn btn-link text-dark mb-2" href="{{ route('units.index') }}"><i class="cib-youtube"></i>Return</a>
             <div class="card">
             <div class="card-header">Unit Create</div>
             <div class="card-body">
