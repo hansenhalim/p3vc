@@ -8,6 +8,7 @@ use App\Http\Controllers\MenuElementController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\CustomerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,50 +23,49 @@ use App\Http\Controllers\UnitController;
 
 Auth::routes();
 
-Route::group(['middleware' => ['get.menu']], function () {
-    Route::group(['middleware' => ['auth']], function () {
-        Route::view('/',                    'dashboard.homepage');
+
+Route::group(['middleware' => ['get.menu', 'auth']], function () {
+  Route::view('/',                    'dashboard.homepage');
+  Route::resources([
+    'units' => UnitController::class,
+    'clusters' => ClusterController::class,
+    'customers' => CustomerController::class,
+  ]);
+
+  Route::group(['middleware' => ['role:operator']], function () {
+    //
+  });
+
+  Route::group(['middleware' => ['role:supervisor']], function () {
+    //
+  });
+
+  Route::group(['middleware' => ['role:master']], function () {
+    Route::resource('users',            UsersController::class)->except(['create', 'store']);
+    Route::resource('roles',            RolesController::class);
+    Route::get('/roles/move/move-up',   [RolesController::class, 'moveUp'])->name('roles.up');
+    Route::get('/roles/move/move-down', [RolesController::class, 'available'])->name('roles.down');
+
+    Route::prefix('menu/element')->group(function () {
+      Route::get('/',                 [MenuElementController::class, 'index'])->name('menu.index');
+      Route::get('/move-up',          [MenuElementController::class, 'moveUp'])->name('menu.up');
+      Route::get('/move-down',        [MenuElementController::class, 'moveDown'])->name('menu.down');
+      Route::get('/create',           [MenuElementController::class, 'create'])->name('menu.create');
+      Route::post('/store',           [MenuElementController::class, 'store'])->name('menu.store');
+      Route::get('/get-parents',      [MenuElementController::class, 'getParents']);
+      Route::get('/edit',             [MenuElementController::class, 'edit'])->name('menu.edit');
+      Route::post('/update',          [MenuElementController::class, 'update'])->name('menu.update');
+      Route::get('/show',             [MenuElementController::class, 'show'])->name('menu.show');
+      Route::get('/delete',           [MenuElementController::class, 'delete'])->name('menu.delete');
     });
 
-    Route::resources([
-        'units' => UnitController::class,
-        'clusters' => ClusterController::class,
-    ]);
-
-    Route::group(['middleware' => ['role:operator']], function () {
-        //
+    Route::prefix('menu/menu')->group(function () {
+      Route::get('/',                 [MenuController::class, 'index'])->name('menu.menu.index');
+      Route::get('/create',           [MenuController::class, 'create'])->name('menu.menu.create');
+      Route::post('/store',           [MenuController::class, 'store'])->name('menu.menu.store');
+      Route::get('/edit',             [MenuController::class, 'edit'])->name('menu.menu.edit');
+      Route::post('/update',          [MenuController::class, 'update'])->name('menu.menu.update');
+      Route::get('/delete',           [MenuController::class, 'delete'])->name('menu.menu.delete');
     });
-
-    Route::group(['middleware' => ['role:supervisor']], function () {
-        //
-    });
-
-    Route::group(['middleware' => ['role:master']], function () {
-        Route::resource('users',            UsersController::class)->except(['create', 'store']);
-        Route::resource('roles',            RolesController::class);
-        Route::get('/roles/move/move-up',   [RolesController::class, 'moveUp'])->name('roles.up');
-        Route::get('/roles/move/move-down', [RolesController::class, 'available'])->name('roles.down');
-
-        Route::prefix('menu/element')->group(function () {
-            Route::get('/',                 [MenuElementController::class, 'index'])->name('menu.index');
-            Route::get('/move-up',          [MenuElementController::class, 'moveUp'])->name('menu.up');
-            Route::get('/move-down',        [MenuElementController::class, 'moveDown'])->name('menu.down');
-            Route::get('/create',           [MenuElementController::class, 'create'])->name('menu.create');
-            Route::post('/store',           [MenuElementController::class, 'store'])->name('menu.store');
-            Route::get('/get-parents',      [MenuElementController::class, 'getParents']);
-            Route::get('/edit',             [MenuElementController::class, 'edit'])->name('menu.edit');
-            Route::post('/update',          [MenuElementController::class, 'update'])->name('menu.update');
-            Route::get('/show',             [MenuElementController::class, 'show'])->name('menu.show');
-            Route::get('/delete',           [MenuElementController::class, 'delete'])->name('menu.delete');
-        });
-
-        Route::prefix('menu/menu')->group(function () {
-            Route::get('/',                 [MenuController::class, 'index'])->name('menu.menu.index');
-            Route::get('/create',           [MenuController::class, 'create'])->name('menu.menu.create');
-            Route::post('/store',           [MenuController::class, 'store'])->name('menu.menu.store');
-            Route::get('/edit',             [MenuController::class, 'edit'])->name('menu.menu.edit');
-            Route::post('/update',          [MenuController::class, 'update'])->name('menu.menu.update');
-            Route::get('/delete',           [MenuController::class, 'delete'])->name('menu.menu.delete');
-        });
-    });
+  });
 });

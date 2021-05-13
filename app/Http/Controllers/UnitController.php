@@ -50,7 +50,14 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $unit = $request->validate([
+            'name' => 'required|max:255',
+            'area_sqm' => 'required|numeric|max:10',
+            'customer_id' => 'required|exists:customers,id',
+            'cluster_id' => 'required|exists:clusters,id',
+        ]);
+
+        return Unit::create($unit);
     }
 
     /**
