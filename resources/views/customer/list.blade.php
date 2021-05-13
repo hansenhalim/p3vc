@@ -4,17 +4,17 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-10">
           <div class="card">
-            <div class="card-header">Unit List</div>
+            <div class="card-header">Customer List</div>
             <div class="card-body">
               @if (session('status'))
                 <div class="alert alert-success" role="alert">
                   {{ session('status') }}
                 </div>
               @endif
-              <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a>
-              <form id="search" action="{{ route('units.index') }}" method="get">
+              <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
+              <form id="search" action="{{ route('customers.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
@@ -44,39 +44,35 @@
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Cluster</th>
-                    <th scope="col">Area (m<sup>2</sup>)</th>
-                    <th scope="col">Balance</th>
-                    <th scope="col">Credit</th>
+                    <th scope="col">ID Link</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($units as $unit)
+                  @foreach ($customers as $customer)
                     <tr>
-                      <th scope="row">
-                        {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
-                      </th>
-                      <td>{{ $unit->customer->name }}</td>
-                      <td>{{ $unit->name }}</td>
-                      <td>{{ $unit->cluster->name }}</td>
-                      <td>{{ $unit->area_sqm }}</td>
-                      <td>{{ $unit->balance }}</td>
+                      <th scope="row">{{ $customer->id }}</th>
+                      <td>{{ $customer->name }}</td>
+                      <td>{{ $customer->idlink ?? '-' }}</td>
+                      <td>{{ $customer->phone_number ?? '-' }}</td>
                       <td>
-                        {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
+                        <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-success">Show</a>
+                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-info">Edit</a>
+                        <button class="btn btn-danger">Delete</button>
                       </td>
                     </tr>
                   @endforeach
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">
-                {{ $units->appends(request()->input())->links() }}
+                {{ $customers->appends(request()->input())->links() }}
               </div>
             </div>
             <div class="card-footer">
               <div class="row">
                 <div class="col-12 text-left">
-                  Showing {{ $units->count() }} of {{ $units->total() }}
+                  Showing {{ $customers->count() }} of {{ $customers->total() }}
                 </div>
               </div>
             </div>

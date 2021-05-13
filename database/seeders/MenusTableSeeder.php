@@ -146,6 +146,7 @@ class MenusTableSeeder extends Seeder
             $this->insertLink('master', 'Edit roles',              '/roles');
         $this->endDropdown();
         $this->insertTitle('master,supervisor,operator', 'Menu');
+        $this->insertLink('master,supervisor,operator', 'Customers', '/customers', 'cil-people');
         $this->insertLink('master,supervisor,operator', 'Clusters', '/clusters', 'cil-factory');
         $this->insertLink('master,supervisor,operator', 'Units', '/units', 'cil-house');
         $this->beginDropdown('master,supervisor,operator', 'Payments', 'cil-dollar');
