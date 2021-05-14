@@ -1068,6 +1068,8 @@ class CustomerSeeder extends Seeder
         foreach ($customers as $customer) {
             DB::table('customers')->insert([
                 'name' => $customer['name'],
+                'deleted_by' => null,
+                'deleted_at' => null,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

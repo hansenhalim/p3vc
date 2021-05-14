@@ -42,10 +42,12 @@
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">CIF</th>
                     <th scope="col">Name</th>
-                    <th scope="col">ID Link</th>
-                    <th scope="col">Phone Number</th>
+                    <th scope="col">Id&nbsp;Link</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
                     <th scope="col"></th>
                   </tr>
                 </thead>
@@ -54,12 +56,20 @@
                     <tr>
                       <th scope="row">{{ $customer->id }}</th>
                       <td>{{ $customer->name }}</td>
-                      <td>{{ $customer->idlink ?? '-' }}</td>
-                      <td>{{ $customer->phone_number ?? '-' }}</td>
+                      <td>{!! $customer->idlink ?? '-' !!}</td>
+                      <td>{!! $customer->phone_number ?? '-' !!}</td>
                       <td>
-                        <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-success">Show</a>
-                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-info">Edit</a>
-                        <button class="btn btn-danger">Delete</button>
+                        <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-info">Show</a>
+                      </td>
+                      <td>
+                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-success">Edit</a>
+                      </td>
+                      <td>
+                        <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
+                          @method('DELETE')
+                          @csrf
+                          <button type="submit" class="btn btn-link text-danger">Delete</button>
+                        </form>
                       </td>
                     </tr>
                   @endforeach

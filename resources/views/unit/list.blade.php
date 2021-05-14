@@ -46,7 +46,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Unit</th>
                     <th scope="col">Cluster</th>
-                    <th scope="col">Area (m<sup>2</sup>)</th>
+                    <th scope="col">Area&nbsp;(m<sup>2</sup>)</th>
                     <th scope="col">Balance</th>
                     <th scope="col">Credit</th>
                   </tr>
@@ -57,7 +57,7 @@
                       <th scope="row">
                         {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
                       </th>
-                      <td>{{ $unit->customer->name }}</td>
+                      <td>{!! $unit->customer->name ?? '<span class="badge bg-danger">NONE</span>' !!}</td>
                       <td>{{ $unit->name }}</td>
                       <td>{{ $unit->cluster->name }}</td>
                       <td>{{ $unit->area_sqm }}</td>

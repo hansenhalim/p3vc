@@ -1231,6 +1231,8 @@ class UnitSeeder extends Seeder
                 'name' => $unit['name'],
                 'area_sqm' => $unit['area_sqm'],
                 'balance' => 0,
+                'deleted_by' => null,
+                'deleted_at' => null,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

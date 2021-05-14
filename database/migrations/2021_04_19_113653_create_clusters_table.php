@@ -16,6 +16,8 @@ class CreateClustersTable extends Migration
         Schema::create('clusters', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

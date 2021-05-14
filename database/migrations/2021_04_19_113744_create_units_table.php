@@ -20,6 +20,8 @@ class CreateUnitsTable extends Migration
             $table->string('name');
             $table->float('area_sqm', 6, 2);
             $table->unsignedInteger('balance');
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

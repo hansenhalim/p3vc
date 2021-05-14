@@ -18,6 +18,8 @@ class CreateCustomersTable extends Migration
             $table->string('name');
             $table->string('idlink')->nullable();
             $table->string('phone_number')->nullable();
+            $table->foreignId('deleted_by')->nullable()->constrained('users');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

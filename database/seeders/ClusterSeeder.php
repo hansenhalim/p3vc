@@ -36,6 +36,8 @@ class ClusterSeeder extends Seeder
         foreach ($clusters as $cluster) {
             DB::table('clusters')->insert([
                 'name' => $cluster['name'],
+                'deleted_by' => null,
+                'deleted_at' => null,
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
