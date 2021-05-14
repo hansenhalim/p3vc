@@ -15,7 +15,6 @@ class ClusterSeeder extends Seeder
             ['name' => 'cluster 3'],
             ['name' => 'cluster 4'],
             ['name' => 'cluster 5'],
-            ['name' => 'cluster 6'],
             ['name' => 'villa 128'],
             ['name' => 'villa 133'],
             ['name' => 'villa 158'],
@@ -32,6 +31,7 @@ class ClusterSeeder extends Seeder
             ['name' => 'villa 574'],
             ['name' => 'villa 1000'],
             ['name' => 'villa 2000'],
+
         ];
         foreach ($clusters as $cluster) {
             DB::table('clusters')->insert([
