@@ -47,7 +47,6 @@
                     <th scope="col">Phone</th>
                     <th scope="col"></th>
                     <th scope="col"></th>
-                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -59,9 +58,7 @@
                       <td>{!! $customer->phone_number ?? '-' !!}</td>
                       <td>
                         <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-info">Show</a>
-                      </td>
-                      <td>
-                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-warning">Edit</a>
+                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-danger">Edit</a>
                       </td>
                       <td>
                         <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
