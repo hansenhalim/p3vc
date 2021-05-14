@@ -40,16 +40,37 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Customer</label>
+                  <label class="col-md-3 col-form-label">Occupant</label>
                   <div class="col-md-9">
-                    <select class="form-control" name="customer_id">
-                      <option value="">- PLEASE SELECT -</option>
-                      @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">{{ $customer->name }}</option>
-                      @endforeach
-                    </select>
+                    <nav>
+                      <div class="nav nav-pills mb-3" id="pills-tab">
+                        <a class="nav-link active" data-toggle="pill" href="#pills-home">Not Occupied</a>
+                        <a class="nav-link" data-toggle="pill" href="#pills-profile">Customer</a>
+                        <a class="nav-link" data-toggle="pill" href="#pills-contact">Create Customer</a>
+                      </div>
+                    </nav>
                   </div>
                 </div>
+                <div class="tab-content" id="pills-tabContent">
+                  <div class="tab-pane fade show active" id="pills-home"></div>
+                  <div class="tab-pane fade" id="pills-profile">
+                    <div class="form-group row">
+                      <label class="col-md-3 col-form-label">Area</label>
+                      <div class="col-md-9">
+                        <input class="form-control" type="text" name="area_sqm">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="pills-contact">
+                    <div class="form-group row">
+                      <label class="col-md-3 col-form-label">Area</label>
+                      <div class="col-md-9">
+                        <input class="form-control" type="text" name="area_sqm">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
             </div>
             <div class="card-footer">
               <button class="btn btn-primary" type="submit"> Submit</button>

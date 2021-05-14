@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-lg-10">
+        <div class="col-lg-8">
           <div class="card">
             <div class="card-header">Customer List</div>
             <div class="card-body">
@@ -13,6 +13,7 @@
                   {{ session('status') }}
                 </div>
               @endif
+              <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
               <form id="search" action="{{ route('customers.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
