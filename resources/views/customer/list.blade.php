@@ -13,7 +13,6 @@
                   {{ session('status') }}
                 </div>
               @endif
-              <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
               <form id="search" action="{{ route('customers.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
@@ -62,7 +61,7 @@
                         <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-info">Show</a>
                       </td>
                       <td>
-                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-success">Edit</a>
+                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-warning">Edit</a>
                       </td>
                       <td>
                         <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
