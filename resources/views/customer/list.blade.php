@@ -9,7 +9,7 @@
             <div class="card-header">Customer List</div>
             <div class="card-body">
               @if (session('status'))
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success">
                   {{ session('status') }}
                 </div>
               @endif
@@ -18,15 +18,16 @@
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
-                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Sort by</option>
-                      <option value="customers" {{ request('sort') == 'customers' ? 'selected' : '' }}>Name</option>
-                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Units</option>
+                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>CIF</option>
+                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
+                      <option value="idlink" {{ request('sort') == 'idlink' ? 'selected' : '' }}>Id Link</option>
+                      <option value="phone_number" {{ request('sort') == 'phone_number' ? 'selected' : '' }}>Phone</option>
                     </select>
                   </div>
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="order">
-                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
                       <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
+                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-2">

@@ -16,7 +16,7 @@ class CustomerController extends Controller
   {
     $key = $request->key;
     $sort = $request->get('sort') ?? 'id';
-    $order = $request->get('order') ?? 'asc';
+    $order = $request->get('order') ?? 'desc';
 
     $query = Customer::query();
 
@@ -49,7 +49,15 @@ class CustomerController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $customer = $request->validate([
+      'name' => 'required',
+      'idlink' => 'required|max:10',
+      'phone_number' => 'required|max:16',
+    ]);
+
+    Customer::create($customer);
+
+    return $request->stay ? redirect()->route('customers.create') : redirect()->route('customers.index');
   }
 
   /**
