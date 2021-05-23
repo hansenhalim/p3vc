@@ -4,9 +4,9 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-md-6">
-            <a class="btn btn-link mb-2" href="{{ route('units.index') }}"><< Return</a>
-            <div class="card">
+        <div class="col-md-8">
+          <a class="btn btn-link mb-2" href="{{ route('units.index') }}">&lt;&lt; Return</a>
+          <div class="card">
             <div class="card-header">Unit Create</div>
             <div class="card-body">
               @if (session('status'))
@@ -34,7 +34,9 @@
                     <select class="form-control" name="cluster_id">
                       <option value="">- PLEASE SELECT -</option>
                       @foreach ($clusters as $cluster)
-                        <option value="{{ $cluster->id }}">{{ $cluster->name }} ({{ number_format($cluster->prices->last()->cost) }}/{{ $cluster->prices->last()->per }})</option>
+                        <option value="{{ $cluster->id }}">{{ $cluster->name }}
+                          ({{ number_format($cluster->prices->last()->cost) }}/{{ $cluster->prices->last()->per }})
+                        </option>
                       @endforeach
                     </select>
                   </div>
@@ -70,7 +72,6 @@
                     </div>
                   </div>
                 </div>
-                
             </div>
             <div class="card-footer">
               <button class="btn btn-primary" type="submit"> Submit</button>
@@ -81,10 +82,9 @@
         </div>
       </div>
     </div>
-  </div>
 
-@endsection
+  @endsection
 
-@section('javascript')
+  @section('javascript')
 
-@endsection
+  @endsection
