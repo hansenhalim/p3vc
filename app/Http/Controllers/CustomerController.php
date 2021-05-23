@@ -4,14 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Unit;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function index(Request $request)
   {
     $key = $request->key;
@@ -20,6 +17,7 @@ class CustomerController extends Controller
 
     $query = Customer::query();
 
+    $query->withCount(['units']);
     $query->orderBy($sort, $order);
 
     $query->when($key, function ($query, $key) {
@@ -55,7 +53,9 @@ class CustomerController extends Controller
       'phone_number' => 'required|max:16',
     ]);
 
-    Customer::create($customer);
+    $customer = Customer::create($customer);
+
+    $request->session()->flash('status', 'Successfully created <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '.</a>');
 
     return $request->stay ? redirect()->route('customers.create') : redirect()->route('customers.index');
   }
@@ -68,7 +68,9 @@ class CustomerController extends Controller
    */
   public function show($id)
   {
-    //
+    $customer = Customer::find($id);
+    $units = Unit::where('customer_id', $id)->paginate();
+    return view('customer.show', compact('customer', 'units'));
   }
 
   /**
@@ -103,6 +105,8 @@ class CustomerController extends Controller
   public function destroy($id)
   {
     Customer::destroy($id);
+    Customer::where('id', $id)->update(['deleted_by' => Auth::id()])->first();
+
     return redirect()->route('customers.index');
   }
 }

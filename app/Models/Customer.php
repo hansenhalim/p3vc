@@ -13,8 +13,8 @@ class Customer extends Model
         'name', 'idlink', 'phone_number',
     ];
 
-    public function unit()
+    public function units()
     {
-        return $this->hasOne(Unit::class);
+        return $this->hasMany(Unit::class);
     }
 }

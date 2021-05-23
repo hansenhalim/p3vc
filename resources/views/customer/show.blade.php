@@ -4,41 +4,52 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
+        <div class="col-md-6">
+          <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
+          <div class="card">
+            <div class="card-header">Customer Show</div>
+            <div class="card-body">
+              @if (session('status'))
+                <div class="alert alert-success">
+                  {!! session('status') !!}
+                </div>
+              @endif
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">CIF</label>
+                <div class="col-md-9">
+                  <input class="form-control" type="text" value="{{ $customer->id }}" disabled>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Name</label>
+                <div class="col-md-9">
+                  <input class="form-control" type="text" value="{{ $customer->name }}" disabled>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Id Link</label>
+                <div class="col-md-9">
+                  <input class="form-control" type="text" value="{{ $customer->idlink }}" disabled>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 col-form-label">Phone</label>
+                <div class="col-md-9">
+                  <input class="form-control" type="text" value="{{ $customer->phone_number }}" disabled>
+                  @error('phone_number')
+                    <div class="text-danger">{{ $message }}</div>
+                  @enderror
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-lg-8">
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                  {{ session('status') }}
-                </div>
-              @endif
-              <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a>
-              <form id="search" action="{{ route('units.index') }}" method="get">
-                <div class="row">
-                  <div class="col-md-3 col-6 mb-2">
-                    <select class="custom-select" name="sort">
-                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>Sort by</option>
-                      <option value="customers" {{ request('sort') == 'customers' ? 'selected' : '' }}>Name</option>
-                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Units</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3 col-6 mb-2">
-                    <select class="custom-select" name="order">
-                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
-                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 mb-2">
-                    <div class="input-group">
-                      <input type="text" class="form-control" name="key" value="{{ request('key') }}" placeholder="use # for CIF">
-                      <div class="input-group-append">
-                        <button type="submit" class="btn btn-dark">Search</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form>
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>

@@ -10,8 +10,8 @@
             <div class="card-header">Customer Create</div>
             <div class="card-body">
               @if (session('status'))
-                <div class="alert alert-success" role="alert">
-                  {{ session('status') }}
+                <div class="alert alert-success">
+                  {!! session('status') !!}
                 </div>
               @endif
               <form class="form-horizontal" action="{{ route('customers.store') }}" method="post">
@@ -43,8 +43,9 @@
                     @enderror
                   </div>
                 </div>
-                <div class="form-group row ml-2">
-                  <div class="form-check">
+                <div class="form-group row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-9 form-check">
                     <input class="form-check-input" type="checkbox" id="gridCheck" name="stay" checked>
                     <label class="form-check-label" for="gridCheck">
                       Submit another

@@ -33,7 +33,7 @@
                     <div class="input-group">
                       <input type="text" class="form-control" name="key" value="{{ request('key') }}">
                       <div class="input-group-append">
-                        <button type="submit" class="btn btn-outline-dark">Search</button>
+                        <button type="submit" class="btn btn-dark">Search</button>
                       </div>
                     </div>
                   </div>
