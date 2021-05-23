@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -16,7 +17,7 @@ class CustomerController extends Controller
   {
     $key = $request->key;
     $sort = $request->get('sort') ?? 'id';
-    $order = $request->get('order') ?? 'asc';
+    $order = $request->get('order') ?? 'desc';
 
     $query = Customer::query();
 
@@ -49,7 +50,15 @@ class CustomerController extends Controller
    */
   public function store(Request $request)
   {
-    //
+    $customer = $request->validate([
+      'name'          => 'required|max:50',
+      'idlink'        => 'required|max:10',
+      'phone_number'  => 'required|max:16',
+    ]);
+
+    Customer::create($customer);
+
+    return redirect()->route('customers.index');
   }
 
   /**
@@ -94,7 +103,10 @@ class CustomerController extends Controller
    */
   public function destroy($id)
   {
-    Customer::destroy($id);
+    $customer = Customer::find($id);
+    $customer->deleted_by = Auth::id();
+    $customer->save();
+    $customer->delete();
     return redirect()->route('customers.index');
   }
 }
