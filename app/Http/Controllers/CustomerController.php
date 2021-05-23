@@ -51,14 +51,14 @@ class CustomerController extends Controller
   public function store(Request $request)
   {
     $customer = $request->validate([
-      'name'          => 'required|max:50',
-      'idlink'        => 'required|max:10',
-      'phone_number'  => 'required|max:16',
+      'name' => 'required',
+      'idlink' => 'required|max:10',
+      'phone_number' => 'required|max:16',
     ]);
 
     Customer::create($customer);
 
-    return redirect()->route('customers.index');
+    return $request->stay ? redirect()->route('customers.create') : redirect()->route('customers.index');
   }
 
   /**

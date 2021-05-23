@@ -9,7 +9,7 @@
             <div class="card-header"><i class="fa fa-align-justify"></i> Cluster List</div>
             <div class="card-body">
               @if (session('status'))
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success">
                   {{ session('status') }}
                 </div>
               @endif
@@ -56,7 +56,8 @@
                       </th>
                       <td>{{ $cluster->name }}</td>
                       <td>{{ $cluster->units_count }}</td>
-                      <td>{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}</td>
+                      <td>{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}
+                      </td>
                     </tr>
                   @endforeach
                 </tbody>
