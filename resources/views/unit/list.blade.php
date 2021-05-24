@@ -31,7 +31,7 @@
                   </div>
                   <div class="col-md-6 mb-2">
                     <div class="input-group">
-                      <input type="text" class="form-control" name="key" value="{{ request('key') }}" placeholder="use # for CIF">
+                      <input type="text" class="form-control" name="key" value="{{ request('key') }}">
                       <div class="input-group-append">
                         <button type="submit" class="btn btn-dark">Search</button>
                       </div>

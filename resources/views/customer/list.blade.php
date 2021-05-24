@@ -9,8 +9,11 @@
             <div class="card-header">Customer List</div>
             <div class="card-body">
               @if (session('status'))
-                <div class="alert alert-success">
+                <div class="alert alert-success alert-dismissible fade show">
                   {!! session('status') !!}
+                  <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                  </button>
                 </div>
               @endif
               <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
@@ -27,8 +30,8 @@
                   </div>
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="order">
-                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
                       <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
+                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-2">

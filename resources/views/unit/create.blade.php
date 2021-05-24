@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
           <a class="btn btn-link mb-2" href="{{ route('units.index') }}">&lt;&lt; Return</a>
           <div class="card">
             <div class="card-header">Unit Create</div>

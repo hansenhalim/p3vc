@@ -10,8 +10,11 @@
             <div class="card-header">Customer Create</div>
             <div class="card-body">
               @if (session('status'))
-                <div class="alert alert-success">
+                <div class="alert alert-success alert-dismissible fade show">
                   {!! session('status') !!}
+                  <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                  </button>
                 </div>
               @endif
               <form class="form-horizontal" action="{{ route('customers.store') }}" method="post">
@@ -46,10 +49,8 @@
                 <div class="form-group row">
                   <div class="col-md-3"></div>
                   <div class="col-md-9 form-check">
-                    <input class="form-check-input" type="checkbox" id="gridCheck" name="stay" checked>
-                    <label class="form-check-label" for="gridCheck">
-                      Submit another
-                    </label>
+                    <input class="form-check-input" type="checkbox" name="stay" @if (session('stay')) checked @endif>
+                    <label class="form-check-label">Submit another</label>
                   </div>
                 </div>
             </div>
