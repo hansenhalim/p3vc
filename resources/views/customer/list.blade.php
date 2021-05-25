@@ -52,8 +52,7 @@
                     <th scope="col">Units</th>
                     <th scope="col">Id&nbsp;Link</th>
                     <th scope="col">Phone</th>
-                    <th scope="col"></th>
-                    <th scope="col"></th>
+                    <th scope="col">More</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -65,15 +64,20 @@
                       <td>{!! $customer->idlink ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
                       <td>{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
                       <td>
-                        <a href="{{ route('customers.show', ['customer' => $customer->id]) }}" class="btn btn-info">Show</a>
-                        <a href="{{ route('customers.edit', ['customer' => $customer->id]) }}" class="btn btn-danger">Edit</a>
-                      </td>
-                      <td>
-                        <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
-                          @method('DELETE')
-                          @csrf
-                          <button type="submit" class="btn btn-link text-danger">Delete</button>
-                        </form>
+                        <div class="btn-group">
+                          <a class="btn btn-info" href="{{ route('customers.show', ['customer' => $customer->id]) }}">Show</a>
+                          <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ route('customers.show', ['customer' => $customer->id]) }}">Show</a>
+                            <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}">Edit</a>
+                            <div class="dropdown-divider"></div>
+                            <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
+                              @method('DELETE')
+                              @csrf
+                              <a type="submit" class="dropdown-item">Delete</a>
+                            </form>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   @endforeach

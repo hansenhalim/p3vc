@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-xl-4 col-md-6">
           <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
           <div class="card">
             <div class="card-header">Customer Create</div>
@@ -20,7 +20,7 @@
               <form class="form-horizontal" action="{{ route('customers.store') }}" method="post">
                 @csrf
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Name</label>
+                  <label class="col-md-3 col-form-label">Name <span class="text-danger">*</span></label>
                   <div class="col-md-9">
                     <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" value="{{ old('name') }}">
                     @error('name')

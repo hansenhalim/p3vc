@@ -13,7 +13,7 @@ class CustomerController extends Controller
   {
     $key = $request->key;
     $sort = $request->get('sort') ?? 'id';
-    $order = $request->get('order') ?? 'asc';
+    $order = $request->get('order') ?? 'desc';
 
     $query = Customer::query();
 
