@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-lg-9">
+        <div class="col-xl-7">
           <div class="card">
             <div class="card-header">Customer List</div>
             <div class="card-body">
@@ -30,8 +30,8 @@
                   </div>
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="order">
+                      <option value="" {{ request('order') == '' ? 'selected' : '' }}>Largest</option>
                       <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
-                      <option value="desc" {{ request('order') == 'desc' ? 'selected' : '' }}>Largest</option>
                     </select>
                   </div>
                   <div class="col-md-6 mb-2">
@@ -47,34 +47,35 @@
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">CIF</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Units</th>
-                    <th scope="col">Id&nbsp;Link</th>
-                    <th scope="col">Phone</th>
-                    <th scope="col">More</th>
+                    <th>CIF</th>
+                    <th>Name</th>
+                    <th>Units</th>
+                    <th>Id&nbsp;Link</th>
+                    <th>Phone</th>
+                    <th>More</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach ($customers as $customer)
                     <tr>
-                      <th scope="row">{{ $customer->id }}</th>
-                      <td>{{ $customer->name }}</td>
-                      <td>{{ $customer->units_count }}</td>
-                      <td>{!! $customer->idlink ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
-                      <td>{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
-                      <td>
-                        <div class="btn-group">
-                          <a class="btn btn-info" href="{{ route('customers.show', ['customer' => $customer->id]) }}">Show</a>
-                          <button type="button" class="btn btn-info dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"></button>
+                      <th class="align-middle">{{ $customer->id }}</th>
+                      <td class="align-middle">{{ $customer->name }}</td>
+                      <td class="align-middle">{{ $customer->units_count }}</td>
+                      <td class="align-middle">{!! $customer->idlink ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">
+                        <div class="dropdown">
+                          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                            Action
+                          </button>
                           <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route('customers.show', ['customer' => $customer->id]) }}">Show</a>
-                            <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}">Edit</a>
+                            <a class="dropdown-item" href="{{ route('customers.show', ['customer' => $customer->id]) }}"><i class="cil-info"></i>&nbsp;View</a>
+                            <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}"><i class="cil-pencil"></i>&nbsp;Edit</a>
                             <div class="dropdown-divider"></div>
                             <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
                               @method('DELETE')
                               @csrf
-                              <a type="submit" class="dropdown-item">Delete</a>
+                              <button type="submit" class="dropdown-item"><i class="cil-trash"></i>&nbsp;Delete</button>
                             </form>
                           </div>
                         </div>
@@ -88,11 +89,7 @@
               </div>
             </div>
             <div class="card-footer">
-              <div class="row">
-                <div class="col-12 text-left">
-                  Showing {{ $customers->count() }} of {{ $customers->total() }}
-                </div>
-              </div>
+              Showing {{ $customers->firstItem() }} to {{ $customers->lastItem() }} of {{ $customers->total() }} entries
             </div>
           </div>
         </div>

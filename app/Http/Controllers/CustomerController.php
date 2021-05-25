@@ -45,7 +45,7 @@ class CustomerController extends Controller
 
     $customer = Customer::create($customer);
 
-    $request->session()->flash('status', 'Successfully created <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '.</a>');
+    $request->session()->flash('status', 'Successfully created <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '</a>.');
 
     return $request->stay ? redirect()->route('customers.create')->with('stay', true) : redirect()->route('customers.index');
   }

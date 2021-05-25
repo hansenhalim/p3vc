@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-xl-4 col-md-6">
           <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
           <div class="card">
             <div class="card-header">Customer Show</div>
@@ -16,25 +16,25 @@
               @endif
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">CIF</label>
-                <div class="col-md-9">
+                <div class="col">
                   <input class="form-control" type="text" value="{{ $customer->id }}" disabled>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Name</label>
-                <div class="col-md-9">
+                <div class="col">
                   <input class="form-control" type="text" value="{{ $customer->name }}" disabled>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Id Link</label>
-                <div class="col-md-9">
+                <div class="col">
                   <input class="form-control" type="text" value="{{ $customer->idlink }}" disabled>
                 </div>
               </div>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Phone</label>
-                <div class="col-md-9">
+                <div class="col">
                   <input class="form-control" type="text" value="{{ $customer->phone_number }}" disabled>
                   @error('phone_number')
                     <div class="text-danger">{{ $message }}</div>
