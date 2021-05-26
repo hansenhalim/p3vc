@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\DB;
 
 class PriceSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
     public function run()
     {
         $prices = [
@@ -28,7 +23,7 @@ class PriceSeeder extends Seeder
             ['cluster_id' => 11, 'cost' => 280000, 'per' => 'mth'],
             ['cluster_id' => 12, 'cost' => 300000, 'per' => 'mth'],
             ['cluster_id' => 13, 'cost' => 310000, 'per' => 'mth'],
-            ['cluster_id' => 14, 'cost' => 325000, 'per' => 'mth'],
+            ['cluster_id' => 14, 'cost' => 250000, 'per' => 'mth'],
             ['cluster_id' => 15, 'cost' => 400000, 'per' => 'mth'],
             ['cluster_id' => 16, 'cost' => 437000, 'per' => 'mth'],
             ['cluster_id' => 17, 'cost' => 557000, 'per' => 'mth'],
@@ -36,6 +31,7 @@ class PriceSeeder extends Seeder
             ['cluster_id' => 19, 'cost' => 574000, 'per' => 'mth'],
             ['cluster_id' => 20, 'cost' => 1000000, 'per' => 'mth'],
             ['cluster_id' => 21, 'cost' => 2000000, 'per' => 'mth'],
+            ['cluster_id' => 22, 'cost' => 554000, 'per' => 'mth'],
         ];
         foreach ($prices as $price) {
             DB::table('prices')->insert([
