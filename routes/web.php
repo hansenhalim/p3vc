@@ -23,9 +23,10 @@ use App\Http\Controllers\CustomerController;
 
 Auth::routes();
 
+Route::view('/',            'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
-  Route::view('/',                    'dashboard.homepage');
+  Route::view('/home',  'dashboard.homepage');
   Route::resources([
     'units' => UnitController::class,
     'clusters' => ClusterController::class,
