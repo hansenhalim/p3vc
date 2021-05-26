@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-8">
+        <div class="col-xl-7">
           <div class="card">
             <div class="card-header">Customer List</div>
             <div class="card-body">
@@ -24,7 +24,6 @@
                       <option value="" {{ request('sort') == '' ? 'selected' : '' }}>CIF</option>
                       <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
                       <option value="units_count" {{ request('sort') == 'units_count' ? 'selected' : '' }}>Units</option>
-                      <option value="idlink" {{ request('sort') == 'idlink' ? 'selected' : '' }}>Id Link</option>
                       <option value="phone_number" {{ request('sort') == 'phone_number' ? 'selected' : '' }}>Phone</option>
                     </select>
                   </div>
@@ -50,7 +49,6 @@
                     <th>CIF</th>
                     <th>Name</th>
                     <th>Units</th>
-                    <th>Id&nbsp;Link</th>
                     <th>Phone</th>
                     <th>More</th>
                   </tr>
@@ -61,7 +59,6 @@
                       <th class="align-middle">{{ $customer->id }}</th>
                       <td class="align-middle">{{ $customer->name }}</td>
                       <td class="align-middle">{{ $customer->units_count }}</td>
-                      <td class="align-middle">{!! $customer->idlink ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle">{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle">
                         <div class="dropdown">

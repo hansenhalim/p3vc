@@ -30,16 +30,6 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Id Link <span class="text-danger">*</span></label>
-                  <div class="col">
-                    <input class="form-control @error('idlink') is-invalid @enderror" type="text" name="idlink"
-                      value="{{ old('idlink') }}">
-                    @error('idlink')
-                      <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                  </div>
-                </div>
-                <div class="form-group row">
                   <label class="col-md-3 col-form-label">Phone <span class="text-danger">*</span></label>
                   <div class="col">
                     <input class="form-control @error('phone_number') is-invalid @enderror" type="text"

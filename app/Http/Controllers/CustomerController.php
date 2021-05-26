@@ -39,7 +39,6 @@ class CustomerController extends Controller
   {
     $customer = $request->validate([
       'name' => 'required',
-      'idlink' => 'required|max:10',
       'phone_number' => 'required|max:16',
     ]);
 
