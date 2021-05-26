@@ -1063,15 +1063,15 @@ class CustomerSeeder extends Seeder
             ['name' => 'SUKIMIN TANAKA'],
             ['name' => 'HERTATY  TJENDRA'],
             ['name' => 'FERBIO EKI RIYAPTO'],
-            ['name' => 'BASRI FERLING'],    //1054
-            ['name' => 'SYLVIA'],           //1055
-            ['name' => 'RATNA YULIATI'],    //1056
-            ['name' => 'JAP MONICA'],       //1057
-            ['name' => 'LYDIA'],            //1058
-            ['name' => 'DIONO NUGROHO'],    //1059
-            ['name' => 'RIKO HERMAWAN'],    //1060
-            ['name' => 'GHO BIN'],          //1061
-            ['name' => 'RAISHA NAOMI Z'],   //1062
+            ['name' => 'BASRI FERLING'],
+            ['name' => 'SYLVIA'],
+            ['name' => 'RATNA YULIATI'],
+            ['name' => 'JAP MONICA'],
+            ['name' => 'LYDIA'],
+            ['name' => 'DIONO NUGROHO'],
+            ['name' => 'RIKO HERMAWAN'],
+            ['name' => 'GHO BIN'],
+            ['name' => 'RAISHA NAOMI Z'],
         ];
         foreach ($customers as $customer) {
             DB::table('customers')->insert([
