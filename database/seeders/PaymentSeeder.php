@@ -7,27 +7,29 @@ use Illuminate\Support\Facades\DB;
 
 class PaymentSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        $payments = [
-            ['name' => 'Cash'],
-            ['name' => 'Bank Transfer'],
-            ['name' => 'LinkAja'],
-            ['name' => 'OVO'],
-            ['name' => 'Hutang'],
-            ['name' => 'Diskon'],
-        ];
-        foreach ($payments as $payment) {
-            DB::table('payments')->insert([
-                'name' => $payment['name'],
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        }
+  /**
+   * Run the database seeds.
+   *
+   * @return void
+   */
+  public function run()
+  {
+    $payments = [
+      ['name' => 'TAGIHAN'],
+      ['name' => 'DENDA'],
+      ['name' => 'OTHER'],
+      ['name' => 'BANK TRANSFER'],
+      ['name' => 'TUNAI'],
+      ['name' => 'LINKAJA'],
+      ['name' => 'HUTANG'],
+      ['name' => 'DISKON'],
+    ];
+    foreach ($payments as $payment) {
+      DB::table('payments')->insert([
+        'name' => $payment['name'],
+        'created_at' => now(),
+        'updated_at' => now()
+      ]);
     }
+  }
 }
