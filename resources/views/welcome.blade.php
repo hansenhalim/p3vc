@@ -81,7 +81,7 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    <img src="{{ asset('svg/P3VC.svg') }}" style="max-width: 50%">
+                    <img src="{{ asset('svg/P3VC.svg') }}" style="width: 200px">
                 </div>
             </div>
         </div>
