@@ -17,9 +17,11 @@ class CreateCustomersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone_number')->nullable();
-            $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->softDeletes();
+            $table->datetime('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->softDeletes();
         });
     }
 

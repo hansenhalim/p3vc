@@ -17,12 +17,14 @@ class PaymentSeeder extends Seeder
     $payments = [
       ['name' => 'TAGIHAN'],
       ['name' => 'DENDA'],
+      ['name' => 'TOP UP SALDO'],
       ['name' => 'OTHER'],
       ['name' => 'BANK TRANSFER'],
       ['name' => 'TUNAI'],
       ['name' => 'LINKAJA'],
       ['name' => 'HUTANG'],
       ['name' => 'DISKON'],
+      ['name' => 'SALDO UNIT'],
     ];
     foreach ($payments as $payment) {
       DB::table('payments')->insert([

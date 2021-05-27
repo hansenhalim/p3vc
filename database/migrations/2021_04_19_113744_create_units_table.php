@@ -21,9 +21,11 @@ class CreateUnitsTable extends Migration
             $table->float('area_sqm', 6, 2);
             $table->unsignedInteger('balance');
             $table->string('idlink')->nullable();
-            $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->softDeletes();
+            $table->datetime('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->softDeletes();
         });
     }
 

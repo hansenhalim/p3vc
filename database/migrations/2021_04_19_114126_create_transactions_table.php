@@ -17,9 +17,11 @@ class CreateTransactionsTable extends Migration
             $table->id();
             $table->foreignId('unit_id')->constrained();
             $table->date('period');
-            $table->boolean('approved');
-            $table->boolean('active');
+            $table->datetime('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users');
             $table->timestamps();
+            $table->foreignId('updated_by')->nullable()->constrained('users');
+            $table->softDeletes();
         });
     }
 
