@@ -23,7 +23,7 @@ class ClusterSeeder extends Seeder
             ['name' => 'villa 280'],
             ['name' => 'villa 300'],
             ['name' => 'villa 310'],
-            ['name' => 'villa 325'],
+            ['name' => 'villa 250'],
             ['name' => 'villa 400'],
             ['name' => 'villa 437'],
             ['name' => 'villa 557'],
