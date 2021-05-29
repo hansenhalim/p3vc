@@ -44,8 +44,8 @@
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              <table class="table table-responsive-sm">
-                <thead>
+              <table class="table table-responsive-sm table-striped">
+                <thead class="thead-dark">
                   <tr>
                     <th>#</th>
                     <th>Name</th>
@@ -71,14 +71,15 @@
                         {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
                       </td>
                     </tr>
-                    <thead>
+                    <thead class="thead-dark">
                       <tr>
                         <th></th>
-                        <th>#</th>
+                        <th></th>
+                        <th style="text-align: right">#</th>
                         <th>Periode</th>
                         <th>Iuran</th>
                         <th>Denda</th>
-                        <th colspan="2">Tagihan</th>
+                        <th>Tagihan</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -86,17 +87,26 @@
                         <tr>
                           <td></td>
                           <td></td>
+                          <th style="text-align: right">{{ $loop->iteration }}</th>
                           <td>{{ $month['period']->format('M Y') }}</td>
-                          <td>{{ number_format($month['credit']) }}</td>
-                          <td>{{ number_format($month['fine']) }}</td>
-                          <td></td>
-                          <td></td>
+                          <td style="text-align: right">{{ number_format($month['credit']) }}</td>
+                          <td style="text-align: right">{{ number_format($month['fine']) }}</td>
+                          <td>$total_credit</td>
                         </tr>
                       @empty
                           <tr>
                             <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
                           </tr>
                       @endforelse
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr>
                     </tbody>
                   @endforeach
                 </tbody>

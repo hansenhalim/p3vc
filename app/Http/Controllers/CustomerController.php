@@ -54,23 +54,36 @@ class CustomerController extends Controller
   {
     $customer = Customer::find($id);
     $units = Unit::where('customer_id', $id)
-      ->with(['customer:id,name', 'cluster:id,name'])
+      ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
       ->paginate();
 
     foreach ($units as $unit) {
-      $diffInMonths = now()->diffInMonths($unit->created_at->firstOfMonth());
+      $startMonth = $unit->created_at->firstOfMonth();
+      $endMonth = now()->firstOfMonth();
+      $diffInMonths = $startMonth->diffInMonths($endMonth);
+      $months = [];
+
       for ($i=0; $i < $diffInMonths; $i++) {
-        if(false) continue;
-        $months[$i] = [
-          'period' => $unit->created_at->addMonths($i),
+        $period = $unit->created_at->addMonths($i);
+        if($unit->transactions->first() !== null){
+          if(!$period->diffInMonths($unit->transactions->first()->period)){
+            $unit->transactions->shift();
+            continue;
+          }
+        }
+        $months[] = [
+          'period' => $period,
           'credit' => $unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1),
-          'fine' => 2000 * $i
+          'fine' => 2000 * ($diffInMonths - $i - 1)
         ];
       }
+
       $unit['months'] = $months;
+
+      unset($unit->transactions);
     }
 
-    // echo json_encode($diffInMonths);exit();
+    // echo json_encode($units);exit();
     
     return view('customer.show', compact('customer', 'units'));
   }
