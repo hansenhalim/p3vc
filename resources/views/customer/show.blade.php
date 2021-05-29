@@ -44,7 +44,7 @@
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              <table class="table table-responsive-sm table-striped">
+              <table class="table table-responsive-xl table-striped">
                 <thead class="thead-dark">
                   <tr>
                     <th>#</th>
@@ -82,7 +82,7 @@
                         <th>Tagihan</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody style="margin-bottom: 1rem">
                       @forelse ($unit->months as $month)
                         <tr>
                           <td></td>
@@ -91,10 +91,10 @@
                           <td>{{ $month['period']->format('M Y') }}</td>
                           <td style="text-align: right">{{ number_format($month['credit']) }}</td>
                           <td style="text-align: right">{{ number_format($month['fine']) }}</td>
-                          <td>$total_credit</td>
+                          <td>{{ number_format($month['credit']+$month['fine']) }}</td>
                         </tr>
                       @empty
-                          <tr>
+                          <tr class="table-success">
                             <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
                           </tr>
                       @endforelse
