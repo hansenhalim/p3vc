@@ -58,16 +58,19 @@ class CustomerController extends Controller
       ->paginate();
 
     foreach ($units as $unit) {
-      $now_month = now()->firstOfMonth();
-      $created_at_month = $unit->created_at->firstOfMonth();
-      $diffInMonths = $created_at_month->diffInMonths($now_month);
-      for ($i=0; $i < 12; $i++) {
-        $months[$i] = ['period'];
+      $diffInMonths = now()->diffInMonths($unit->created_at->firstOfMonth());
+      for ($i=0; $i < $diffInMonths; $i++) {
+        if(false) continue;
+        $months[$i] = [
+          'period' => $unit->created_at->addMonths($i),
+          'credit' => $unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1),
+          'fine' => 2000 * $i
+        ];
       }
       $unit['months'] = $months;
     }
 
-    echo json_encode($units[0]);exit();
+    // echo json_encode($diffInMonths);exit();
     
     return view('customer.show', compact('customer', 'units'));
   }

@@ -71,7 +71,7 @@
                         {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
                       </td>
                     </tr>
-                    @isset($unit->months)
+                    <thead>
                       <tr>
                         <th></th>
                         <th>#</th>
@@ -80,22 +80,24 @@
                         <th>Denda</th>
                         <th colspan="2">Tagihan</th>
                       </tr>
-                    @endisset
-                    @forelse ($unit->months as $month)
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>{{ $month }}</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                    @empty
+                    </thead>
+                    <tbody>
+                      @forelse ($unit->months as $month)
                         <tr>
-                          <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
+                          <td></td>
+                          <td></td>
+                          <td>{{ $month['period']->format('M Y') }}</td>
+                          <td>{{ number_format($month['credit']) }}</td>
+                          <td>{{ number_format($month['fine']) }}</td>
+                          <td></td>
+                          <td></td>
                         </tr>
-                    @endforelse
+                      @empty
+                          <tr>
+                            <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
+                          </tr>
+                      @endforelse
+                    </tbody>
                   @endforeach
                 </tbody>
               </table>
