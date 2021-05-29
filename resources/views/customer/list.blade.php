@@ -70,8 +70,8 @@
                             <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}"><i class="cil-pencil"></i>&nbsp;Edit</a>
                             <div class="dropdown-divider"></div>
                             <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
-                              @method('DELETE')
                               @csrf
+                              @method('DELETE')
                               <button type="submit" class="dropdown-item"><i class="cil-trash"></i>&nbsp;Delete</button>
                             </form>
                           </div>

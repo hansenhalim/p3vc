@@ -44,33 +44,58 @@
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              <table class="table table-responsive-sm table-striped">
+              <table class="table table-responsive-sm">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Cluster</th>
-                    <th scope="col">Area&nbsp;(m<sup>2</sup>)</th>
-                    <th scope="col">Balance</th>
-                    <th scope="col">Credit</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Customer</th>
+                    <th>Cluster</th>
+                    <th>Area&nbsp;(m<sup>2</sup>)</th>
+                    <th>Balance</th>
+                    <th>Credit</th>
                   </tr>
                 </thead>
                 <tbody>
                   @foreach ($units as $unit)
                     <tr>
-                      <th scope="row">
+                      <th>
                         {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
                       </th>
-                      <td>{!! $unit->customer->name ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
-                      <td>{{ $unit->name }}</td>
-                      <td>{{ $unit->cluster->name }}</td>
+                      <td><a href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></td>
+                      <td><a href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></td>
+                      <td><a href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></td>
                       <td>{{ $unit->area_sqm }}</td>
                       <td>{{ $unit->balance }}</td>
                       <td>
                         {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
                       </td>
                     </tr>
+                    @isset($unit->months)
+                      <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Periode</th>
+                        <th>Iuran</th>
+                        <th>Denda</th>
+                        <th colspan="2">Tagihan</th>
+                      </tr>
+                    @endisset
+                    @forelse ($unit->months as $month)
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ $month }}</td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    @empty
+                        <tr>
+                          <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
+                        </tr>
+                    @endforelse
                   @endforeach
                 </tbody>
               </table>

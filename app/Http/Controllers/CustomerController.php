@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Unit;
+use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
@@ -52,18 +53,44 @@ class CustomerController extends Controller
   public function show($id)
   {
     $customer = Customer::find($id);
-    $units = Unit::where('customer_id', $id)->paginate();
+    $units = Unit::where('customer_id', $id)
+      ->with(['customer:id,name', 'cluster:id,name'])
+      ->paginate();
+
+    foreach ($units as $unit) {
+      $now_month = now()->firstOfMonth();
+      $created_at_month = $unit->created_at->firstOfMonth();
+      $diffInMonths = $created_at_month->diffInMonths($now_month);
+      for ($i=0; $i < 12; $i++) {
+        $months[$i] = ['period'];
+      }
+      $unit['months'] = $months;
+    }
+
+    echo json_encode($units[0]);exit();
+    
     return view('customer.show', compact('customer', 'units'));
   }
 
   public function edit($id)
   {
-    //
+    $customer = Customer::find($id);
+    return view('customer.edit', compact('customer'));
   }
 
   public function update(Request $request, $id)
   {
-    //
+    $customerNew = $request->validate([
+      'name' => 'required',
+      'phone_number' => 'required|max:16',
+    ]);
+
+    $customer = Customer::find($id);
+    $customer->update($customerNew);
+
+    $request->session()->flash('status', 'Successfully updated <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '</a>.');
+
+    return $request->stay ? redirect()->route('customers.create')->with('stay', true) : redirect()->route('customers.index');
   }
 
   public function destroy($id)
