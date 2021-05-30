@@ -1,6 +1,48 @@
 @extends('dashboard.base')
 
 @section('content')
+  <div class="modal fade" id="exampleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Payment</h5>
+          <button type="button" class="close" data-dismiss="modal">
+            <span>&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+
+            <div class="col-md-4">
+              <select class="custom-select">
+                <option value="4">Other</option>
+                <option value="5">Bank Transfer</option>
+                <option value="6">Tunai</option>
+                <option value="7">Linkaja</option>
+                <option value="8">Hutang</option>
+                <option value="9">Diskon</option>
+                <option value="10">Saldo Unit</option>
+              </select>
+            </div>
+            
+            <div class="col mb-3 mb-md-0">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Rp.</span>
+                </div>
+                <input type="text" class="form-control" placeholder="Amount">
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Send message</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
@@ -83,7 +125,7 @@
                             <th colspan="4"></th>
                             <th class="text-right"><input type="checkbox" class="mth-chck" checked></th>
                             <th class="text-center">{{ $loop->iteration }}</th>
-                            <td>{{ $month['period']->format('M Y') }}</td>
+                            <td>{{ $month['period']->format('F Y') }}</td>
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
                           </tr>
@@ -97,7 +139,7 @@
                           </tr>
                           <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
-                              <button type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
+                              <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
                             </th>
                           </tr>
                           <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
