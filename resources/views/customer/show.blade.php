@@ -40,93 +40,144 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-xl-8">
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              <table class="table table-responsive-xl table-striped">
-                <thead class="thead-dark">
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Customer</th>
-                    <th>Cluster</th>
-                    <th>Area&nbsp;(m<sup>2</sup>)</th>
-                    <th>Balance</th>
-                    <th>Credit</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @foreach ($units as $unit)
+              <table class="table table-responsive-md">
+                @foreach ($units as $unit)
+                  <thead class="thead-dark">
                     <tr>
-                      <th>
-                        {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
-                      </th>
-                      <td><a href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></td>
-                      <td><a href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></td>
-                      <td><a href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></td>
-                      <td>{{ $unit->area_sqm }}</td>
-                      <td>{{ $unit->balance }}</td>
-                      <td>
-                        {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
-                      </td>
+                      <th></th>
+                      <th class="text-center">#</th>
+                      <th>Name</th>
+                      <th>Customer</th>
+                      <th colspan="2">Cluster</th>
+                      <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
+                      <th class="text-right">Balance</th>
+                      <th class="text-right">Credit</th>
                     </tr>
-                    <thead class="thead-dark">
+                  </thead>
+                  <tbody>
+                    <tr class="table-light">
+                      <th class="text-right"><input type="checkbox" class="unt-chk"></th>
+                      <th class="text-center">{{ $loop->iteration }}</th>
+                      <th><a class="text-dark" href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></th>
+                      <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></th>
+                      <th colspan="2"><a class="text-dark" href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></th>
+                      <td class="text-right">{{ $unit->area_sqm }}</td>
+                      <td class="text-right">{{ $unit->balance }}</td>
+                      <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                    </tr>
+                    <thead class="thead-light">
                       <tr>
-                        <th></th>
-                        <th></th>
-                        <th style="text-align: right">#</th>
+                        <th colspan="5"></th>
+                        <th class="text-center">#</th>
                         <th>Periode</th>
-                        <th>Iuran</th>
-                        <th>Denda</th>
-                        <th>Tagihan</th>
+                        <th class="text-right">Iuran</th>
+                        <th class="text-right">Denda</th>
                       </tr>
                     </thead>
-                    <tbody style="margin-bottom: 1rem">
+                    <tbody>
                       @forelse ($unit->months as $month)
                         <tr>
-                          <td></td>
-                          <td></td>
-                          <th style="text-align: right">{{ $loop->iteration }}</th>
+                          <th colspan="4"></th>
+                          <th class="text-right"><input type="checkbox" class="mth-chk"></th>
+                          <th class="text-center">{{ $loop->iteration }}</th>
                           <td>{{ $month['period']->format('M Y') }}</td>
-                          <td style="text-align: right">{{ number_format($month['credit']) }}</td>
-                          <td style="text-align: right">{{ number_format($month['fine']) }}</td>
-                          <td>{{ number_format($month['credit']+$month['fine']) }}</td>
+                          <td class="text-right">{{ number_format($month['credit']) }}</td>
+                          <td class="text-right">{{ number_format($month['fine']) }}</td>
                         </tr>
-                      @empty
-                          <tr class="table-success">
-                            <td colspan="7" style="text-align: center">No tunggak tunggak club :)</td>
+                        <tbody>
+                          <tr class="table-secondary">
+                            <th colspan="8" class="text-right">Tagihan</th>
+                            <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
+                          <tr class="table-secondary">
+                            <th colspan="10" class="text-right"><button class="btn btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button></th>
+                          </tr>
+                          <tr class="table-secondary">
+                            <th colspan="8" class="text-right">Sisa</th>
+                            <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
+                          </tr>
+                        </tbody>
+                      @empty
+                        <tr class="table-success">
+                          <td colspan="10" style="text-align: center">No tunggak-tunggak club :)</td>
+                        </tr>
                       @endforelse
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                      <tr style="background: white">
+                        <td colspan="10"></td>
                       </tr>
                     </tbody>
-                  @endforeach
-                </tbody>
+                  </tbody>
+                @endforeach
               </table>
-              <div class="d-flex justify-content-center">
-                {{ $units->appends(request()->input())->links() }}
-              </div>
             </div>
-            <div class="card-footer">
-              <div class="row">
-                <div class="col-12 text-left">
-                  Showing {{ $units->count() }} of {{ $units->total() }}
-                </div>
-              </div>
+            <div class="card-footer d-flex justify-content-between">
+              <button id="dbg-btn" type="button"></i>debug-btn</button>
+              <button id="sbt-btn" type="submit" class="btn btn-primary btn-secondary" disabled></i>Submit</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <script>
+    submitBtn = document.getElementById('sbt-btn')
+    debugBtn = document.getElementById('dbg-btn')
+    unitChecks = document.getElementsByClassName('unt-chk')
+    monthChecks = document.getElementsByClassName('mth-chk')
+
+    function validateSubmission() {
+      submitBtn.disabled = !submitBtn.disabled
+      submitBtn.classList.toggle('btn-secondary')
+    }
+
+    function echo() {
+      console.log('echo function executed :)')
+    }
+
+    // function togglePayment(params) {
+      
+    // }
+    
+    debugBtn.addEventListener('click', validateSubmission)
+
+    for (unitCheck of unitChecks) {
+      unitCheck.addEventListener('change', function() {
+        unitCheckWrapper  = this.parentNode
+        unit              = unitCheckWrapper.parentNode.parentNode
+        monthsHeader      = unit.nextElementSibling
+        months            = monthsHeader.nextElementSibling
+        unitMonthChecks   = months.getElementsByClassName('mth-chk')
+
+        if (this.checked) for (unitMonthCheck of unitMonthChecks) unitMonthCheck.checked = true
+        else for (unitMonthCheck of unitMonthChecks) unitMonthCheck.checked = false
+
+        echo()
+      })
+    }
+
+    for (monthCheck of monthChecks) {
+      monthCheck.addEventListener('change', function () {
+        monthCheckWrapper = this.parentNode
+        month             = monthCheckWrapper.parentNode
+        months            = month.parentNode
+        unitMonthChecks   = months.getElementsByClassName('mth-chk')
+        monthsHeader      = months.previousElementSibling
+        monthUnit         = monthsHeader.previousElementSibling
+        monthUnitCheck    = monthUnit.getElementsByClassName('unt-chk')[0]
+
+        checked = true
+        for (unitMonthCheck of unitMonthChecks) if (checked) checked = unitMonthCheck.checked
+        monthUnitCheck.checked = checked
+
+        echo()
+      })
+    }
+    
+  </script>
 
 @endsection
 

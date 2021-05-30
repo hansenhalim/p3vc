@@ -55,7 +55,7 @@ class CustomerController extends Controller
     $customer = Customer::find($id);
     $units = Unit::where('customer_id', $id)
       ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
-      ->paginate();
+      ->get();
 
     foreach ($units as $unit) {
       $startMonth = $unit->created_at->firstOfMonth();
@@ -79,8 +79,6 @@ class CustomerController extends Controller
       }
 
       $unit['months'] = $months;
-
-      unset($unit->transactions);
     }
 
     // echo json_encode($units);exit();
