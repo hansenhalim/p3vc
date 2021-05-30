@@ -13,7 +13,7 @@
         <div class="modal-body">
           <div class="form-group row">
 
-            <div class="col-md-4">
+            <div class="col-md-4 mb-3 mb-md-0">
               <select class="custom-select">
                 <option value="4">Other</option>
                 <option value="5">Bank Transfer</option>
@@ -25,7 +25,7 @@
               </select>
             </div>
             
-            <div class="col mb-3 mb-md-0">
+            <div class="col">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp.</span>
