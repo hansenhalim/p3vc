@@ -101,7 +101,7 @@
                     </thead>
                     <tbody>
                       <tr class="table-light">
-                        <th class="text-right"><input type="checkbox" class="unt-chck" checked></th>
+                        <th class="text-right"><input type="checkbox" class="unt-chck"></th>
                         <th class="text-center">{{ $loop->iteration }}</th>
                         <th><a class="text-dark" href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></th>
                         <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></th>
@@ -123,26 +123,26 @@
                         @forelse ($unit->months as $month)
                           <tr class="mth" id="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="4"></th>
-                            <th class="text-right"><input type="checkbox" class="mth-chck" checked></th>
+                            <th class="text-right"><input type="checkbox" class="mth-chck"></th>
                             <th class="text-center">{{ $loop->iteration }}</th>
                             <td>{{ $month['period']->format('F Y') }}</td>
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
                           </tr>
-                          <tr class="table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Tagihan</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Bank Transfer</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
                               <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
                             </th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Sisa</th>
                             <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
