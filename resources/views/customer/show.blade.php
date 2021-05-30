@@ -88,14 +88,14 @@
                           <td class="text-right">{{ number_format($month['credit']) }}</td>
                           <td class="text-right">{{ number_format($month['fine']) }}</td>
                         </tr>
-                        <tr class="pymnt-sctn table-secondary">
+                        <tr class="d-none table-secondary">
                           <th colspan="8" class="text-right">Tagihan</th>
                           <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                         </tr>
-                        <tr class="pymnt-sctn table-secondary table-borderless">
+                        <tr class="d-none table-secondary table-borderless">
                           <th colspan="10" class="text-right"><button class="btn btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button></th>
                         </tr>
-                        <tr class="pymnt-sctn table-secondary table-borderless">
+                        <tr class="d-none table-secondary table-borderless">
                           <th colspan="8" class="text-right">Sisa</th>
                           <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
                         </tr>
@@ -126,7 +126,6 @@
     debugBtn = document.getElementById('dbg-btn')
     unitChecks = document.getElementsByClassName('unt-chck')
     monthChecks = document.getElementsByClassName('mth-chck')
-    paymentSection = document.getElementsByClassName('pymnt-sctn')
 
     function validateSubmission() {
       submitBtn.disabled = !submitBtn.disabled
@@ -137,8 +136,20 @@
       console.log('echo function executed :)')
     }
 
-    function togglePayment(month) {      
-      console.log(month)
+    function togglePayment(month, show = false) {
+      firstPaymentSection   = month.nextElementSibling
+      secondPaymentSection  = firstPaymentSection.nextElementSibling
+      thirdPaymentSection   = secondPaymentSection.nextElementSibling
+
+      if (show) {
+        firstPaymentSection.classList.remove('d-none')
+        secondPaymentSection.classList.remove('d-none')
+        thirdPaymentSection.classList.remove('d-none')
+      } else {
+        firstPaymentSection.classList.add('d-none')
+        secondPaymentSection.classList.add('d-none')
+        thirdPaymentSection.classList.add('d-none')
+      }
     }
     
     debugBtn.addEventListener('click', validateSubmission)
@@ -151,14 +162,11 @@
         months            = monthsHeader.nextElementSibling
         unitMonthChecks   = months.getElementsByClassName('mth-chck')
 
-        if (this.checked) for (unitMonthCheck of unitMonthChecks) unitMonthCheck.checked = true
-        else for (unitMonthCheck of unitMonthChecks) unitMonthCheck.checked = false
+        for (unitMonthCheck of unitMonthChecks) unitMonthCheck.checked = this.checked
 
         months = months.getElementsByClassName('mth')
-        for (month of months) {
-          togglePayment(month)
-        }
-        
+        for (month of months) this.checked ? togglePayment(month, true) : togglePayment(month)
+
       })
     }
 
@@ -176,7 +184,8 @@
         for (unitMonthCheck of unitMonthChecks) if (checked) checked = unitMonthCheck.checked
         monthUnitCheck.checked = checked
 
-        togglePayment(month)
+        this.checked ? togglePayment(month, true) : togglePayment(month)
+
       })
     }
     
