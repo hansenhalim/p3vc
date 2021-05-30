@@ -1,20 +1,19 @@
 @extends('dashboard.base')
 
 @section('content')
-  <div class="modal fade" id="exampleModal" tabindex="-1">
+  <div class="modal fade" id="paymentModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Add Payment</h5>
+          <h5 class="modal-title">Add Payment</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-group row">
-
             <div class="col-md-4 mb-3 mb-md-0">
-              <select class="custom-select">
+              <select class="custom-select" id="pymnt-mthd">
                 <option value="4">Other</option>
                 <option value="5">Bank Transfer</option>
                 <option value="6">Tunai</option>
@@ -24,21 +23,19 @@
                 <option value="10">Saldo Unit</option>
               </select>
             </div>
-            
             <div class="col">
               <div class="input-group">
                 <div class="input-group-prepend">
                   <span class="input-group-text">Rp.</span>
                 </div>
-                <input type="text" class="form-control" placeholder="Amount">
+                <input id="pymnt-amnt" type="text" class="form-control" placeholder="Amount">
               </div>
             </div>
-
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Send message</button>
+          <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" onclick="addToPayments()">OK&nbsp;&check;</button>
         </div>
       </div>
     </div>
@@ -129,20 +126,20 @@
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
                           </tr>
-                          <tr class="d-none table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Tagihan</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
-                            <th colspan="8" class="text-right">Bank Transfer</th>
+                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;Bank Transfer</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
-                              <button data-toggle="modal" data-target="#exampleModal" type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
+                              <button data-toggle="modal" data-target="#paymentModal" type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
                             </th>
                           </tr>
-                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Sisa</th>
                             <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
@@ -175,6 +172,9 @@
     debugBtn = document.getElementById('dbg-btn')
     unitChecks = document.getElementsByClassName('unt-chck')
     monthChecks = document.getElementsByClassName('mth-chck')
+    paymentMethod = document.getElementById('pymnt-mthd')
+    paymentAmount = document.getElementById('pymnt-amnt')
+    deletePayments = document.getElementsByClassName('dlt-pymnt')
 
     function validateSubmission() {
       submitBtn.disabled = !submitBtn.disabled
@@ -183,6 +183,16 @@
 
     function echo() {
       console.log('echo function executed :)')
+    }
+
+    function addToPayments() {
+      method = paymentMethod.value
+      amount = paymentAmount.value
+      var paymentModal = document.getElementById('paymentModal')
+      var modal = new coreui.Modal(paymentModal) // initialized with defaults
+      if (parseInt(method) && parseInt(amount)) {
+        modal.hide()
+      }
     }
 
     function togglePayment(month, show = false) {
@@ -224,6 +234,12 @@
 
         togglePayment(month, this.checked)
 
+      })
+    }
+
+    for (deletePayment of deletePayments) {
+      deletePayment.addEventListener('click', function () {
+        this.parentNode.parentNode.remove()
       })
     }
 
