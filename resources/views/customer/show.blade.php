@@ -83,19 +83,19 @@
               <div class="card-header">Unit List</div>
               <div class="card-body">
                 <table class="table table-responsive-md">
-                  @foreach ($units as $unit)
-                    <thead class="thead-dark">
-                      <tr>
-                        <th></th>
-                        <th class="text-center">#</th>
-                        <th>Name</th>
-                        <th>Customer</th>
-                        <th colspan="2">Cluster</th>
-                        <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                        <th class="text-right">Balance</th>
-                        <th class="text-right">Credit</th>
-                      </tr>
-                    </thead>
+                  <thead class="thead-dark">
+                    <tr>
+                      <th></th>
+                      <th class="text-center">#</th>
+                      <th>Name</th>
+                      <th>Customer</th>
+                      <th colspan="2">Cluster</th>
+                      <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
+                      <th class="text-right">Balance</th>
+                      <th class="text-right">Credit</th>
+                    </tr>
+                  </thead>
+                  @forelse ($units as $unit)
                     <tbody>
                       <tr class="table-light">
                         <th class="text-right"><input type="checkbox" class="unt-chck"></th>
@@ -153,7 +153,11 @@
                         </tr>
                       </tbody>
                     </tbody>
-                  @endforeach
+                  @empty
+                    <tr class="table-secondary">
+                      <td colspan="9" style="text-align: center">Oops, nothing found here :(</td>
+                    </tr>
+                  @endforelse
                 </table>
               </div>
               <div class="card-footer d-flex justify-content-between">

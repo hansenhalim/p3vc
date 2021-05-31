@@ -146,16 +146,14 @@ class MenusTableSeeder extends Seeder
             $this->insertLink('master', 'Edit roles',              '/roles');
         $this->endDropdown();
         $this->insertTitle('master,supervisor,operator', 'Menu');
-        $this->insertLink('master,supervisor,operator', 'Customers', '/customers', 'cil-people');
-        $this->insertLink('master,supervisor,operator', 'Clusters', '/clusters', 'cil-factory');
-        $this->insertLink('master,supervisor,operator', 'Units', '/units', 'cil-house');
-        $this->beginDropdown('master,supervisor,operator', 'Payments', 'cil-dollar');
-            $this->insertLink('master,supervisor,operator', 'Methods', '/payments');
+        $this->insertLink('master,operator', 'Customers', '/customers', 'cil-people');
+        $this->insertLink('master,operator', 'Clusters', '/clusters', 'cil-factory');
+        $this->insertLink('master,operator', 'Units', '/units', 'cil-house');
+        $this->beginDropdown('master,operator', 'Payments', 'cil-dollar');
+            $this->insertLink('master,operator', 'Methods', '/payments');
+            $this->insertLink('master,operator', 'Reports', '/payments');
         $this->endDropdown();
-        $this->beginDropdown('master,supervisor,operator', 'Transactions', 'cil-cart');
-            $this->insertLink('master,supervisor,operator', 'Create', '/transactions/create');
-            $this->insertLink('master,supervisor,operator', 'Reports', '/transactions');
-        $this->endDropdown();
+        $this->insertLink('master,operator', 'Transactions', '/transactions', 'cil-cart');
 
         $this->joinAllByTransaction(); ///   <===== Must by use on end of this seeder
     }

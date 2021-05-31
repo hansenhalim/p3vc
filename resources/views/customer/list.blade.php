@@ -54,7 +54,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($customers as $customer)
+                  @forelse ($customers as $customer)
                     <tr>
                       <th class="align-middle">{{ $customer->id }}</th>
                       <td class="align-middle">{{ $customer->name }}</td>
@@ -78,7 +78,11 @@
                         </div>
                       </td>
                     </tr>
-                  @endforeach
+                  @empty
+                    <tr>
+                      <td colspan="5" style="text-align: center">Oops, nothing found here :(</td>
+                    </tr>
+                  @endforelse
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">

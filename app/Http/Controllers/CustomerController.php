@@ -109,7 +109,7 @@ class CustomerController extends Controller
 
   public function destroy($id)
   {
-    Customer::where('id', $id)->update(['deleted_by' => Auth::id()]);
+    Customer::where('id', $id)->update(['updated_by' => Auth::id()]);
     Customer::destroy($id);
 
     return redirect()->route('customers.index');

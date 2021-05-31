@@ -52,7 +52,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($units as $unit)
+                  @forelse ($units as $unit)
                     <tr>
                       <th scope="row">
                         {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
@@ -66,7 +66,11 @@
                         {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
                       </td>
                     </tr>
-                  @endforeach
+                  @empty
+                    <tr>
+                      <td colspan="7" style="text-align: center">Oops, nothing found here :(</td>
+                    </tr>
+                  @endforelse
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">

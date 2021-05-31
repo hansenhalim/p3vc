@@ -49,7 +49,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($clusters as $cluster)
+                  @forelse ($clusters as $cluster)
                     <tr>
                       <th scope="row">
                         {{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}
@@ -59,7 +59,11 @@
                       <td>{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}
                       </td>
                     </tr>
-                  @endforeach
+                  @empty
+                    <tr>
+                      <td colspan="4" style="text-align: center">Oops, nothing found here :(</td>
+                    </tr>
+                  @endforelse
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">
