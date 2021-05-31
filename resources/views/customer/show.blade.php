@@ -5,7 +5,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Add Payment</h5>
+          <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
@@ -34,7 +34,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-link" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="button" class="btn btn-primary" onclick="addToPayments()">OK&nbsp;&check;</button>
         </div>
       </div>
@@ -176,6 +176,11 @@
     paymentAmount = document.getElementById('pymnt-amnt')
     deletePayments = document.getElementsByClassName('dlt-pymnt')
 
+    //wait till page loaded :)
+    document.addEventListener("DOMContentLoaded", function(event) {
+      paymentModal = new coreui.Modal(document.getElementById('paymentModal'))
+    })
+
     function validateSubmission() {
       submitBtn.disabled = !submitBtn.disabled
       submitBtn.classList.toggle('btn-secondary')
@@ -186,13 +191,12 @@
     }
 
     function addToPayments() {
-      method = paymentMethod.value
-      amount = paymentAmount.value
-      var paymentModal = document.getElementById('paymentModal')
-      var modal = new coreui.Modal(paymentModal) // initialized with defaults
-      if (parseInt(method) && parseInt(amount)) {
-        modal.hide()
-      }
+      method = parseInt(paymentMethod.value)
+      amount = parseInt(paymentAmount.value)
+      
+      if (!(Number.isInteger(method) && Number.isInteger(amount))) return false
+
+      paymentModal.hide()
     }
 
     function togglePayment(month, show = false) {
