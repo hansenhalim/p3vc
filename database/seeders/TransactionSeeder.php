@@ -12304,7 +12304,7 @@ class TransactionSeeder extends Seeder
         'period' => $transaction['period'],
         'approved_at' => now(),
         'approved_by' => 5,
-        'created_at' => now(),
+        'created_at' => $transaction['created_at'],
         'updated_by' => 3,
       ]);
     }
