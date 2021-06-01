@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
       ClusterSeeder::class,
       PriceSeeder::class,
       UnitSeeder::class,
-      TransactionSeeder::class,
-      PaymentTransactionSeeder::class,
+      // TransactionSeeder::class,
+      // PaymentTransactionSeeder::class,
     ]);
   }
 }

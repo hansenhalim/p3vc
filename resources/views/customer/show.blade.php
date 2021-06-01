@@ -75,19 +75,19 @@
               <div class="card-header">Unit List</div>
               <div class="card-body">
                 <table class="table table-responsive-md">
-                  <thead class="thead-dark">
-                    <tr>
-                      <th></th>
-                      <th class="text-center">#</th>
-                      <th>Name</th>
-                      <th>Customer</th>
-                      <th colspan="2">Cluster</th>
-                      <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                      <th class="text-right">Balance</th>
-                      <th class="text-right">Credit</th>
-                    </tr>
-                  </thead>
                   @forelse ($units as $unit)
+                    <thead class="thead-dark">
+                      <tr>
+                        <th></th>
+                        <th class="text-center">#</th>
+                        <th>Name</th>
+                        <th>Customer</th>
+                        <th colspan="2">Cluster</th>
+                        <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
+                        <th class="text-right">Balance</th>
+                        <th class="text-right">Credit</th>
+                      </tr>
+                    </thead>
                     <tbody>
                       <tr class="table-light">
                         <th class="text-right"><input type="checkbox" class="unt-chck"></th>
@@ -97,7 +97,7 @@
                         <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></th>
                         <th colspan="2"><a class="text-dark" href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></th>
                         <td class="text-right">{{ $unit->area_sqm }}</td>
-                        <td class="text-right">{{ $unit->balance }}</td>
+                        <td class="text-right">0</td>
                         <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
                       </tr>
                       <thead class="thead-light">
@@ -189,16 +189,13 @@
                               data-index="{{ $loop->index }}"
                           >
                             <th colspan="8" class="text-right">Sisa</th>
-                            <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
+                            <th class="text-right text-success">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
                         @empty
                           <tr class="table-success">
                             <td colspan="10" style="text-align: center">No tunggak-tunggak club :)</td>
                           </tr>
                         @endforelse
-                        <tr style="background: white">
-                          <td colspan="10"></td>
-                        </tr>
                       </tbody>
                     </tbody>
                   @empty
@@ -208,8 +205,7 @@
                   @endforelse
                 </table>
               </div>
-              <div class="card-footer d-flex justify-content-between">
-                <button id="dbg-btn" type="button"></i>debug-btn</button>
+              <div class="card-footer d-flex justify-content-end">
                 <button id="sbmt-btn" type="submit" class="btn btn-primary btn-secondary" disabled></i>Submit</button>
               </div>
             </form>
@@ -219,9 +215,7 @@
     </div>
   </div>
   <script>
-    submitBtn = document.getElementById('pymnt-btn')
     submitBtn = document.getElementById('sbmt-btn')
-    debugBtn = document.getElementById('dbg-btn')
     unitChecks = document.getElementsByClassName('unt-chck')
     monthChecks = document.getElementsByClassName('mth-chck')
     paymentMethod = document.getElementById('pymnt-mthd')
@@ -233,9 +227,14 @@
       paymentModal = new coreui.Modal(document.getElementById('paymentModal'))
     })
 
-    function validateSubmission() {
-      submitBtn.disabled = !submitBtn.disabled
-      submitBtn.classList.toggle('btn-secondary')
+    function validateSubmission(enable) {
+      if(enable) {
+        submitBtn.disabled = false
+        submitBtn.classList.remove('btn-secondary')        
+      }else {
+        submitBtn.disabled = true
+        submitBtn.classList.add('btn-secondary')        
+      }
     }
 
     function echo() {
@@ -307,10 +306,33 @@
         show ? paymentSection.classList.remove('d-none') : paymentSection.classList.add('d-none')
         for (payment of paymentSection.getElementsByTagName('INPUT')) payment.disabled = !show
       }
+      updateRemainder()
     }
 
     function updateRemainder() {
-      
+      billLessThanOrEqualToPaid = 0
+      monthCheckedCount = 0
+      for (monthCheck of monthChecks) {
+        if(monthCheck.checked){
+          monthCheckedCount++
+          month = monthCheck.parentNode.parentNode
+          bill = parseInt(month.nextElementSibling.children[1].innerHTML.replace(',',''))
+          paid = 0
+          paymentDetails = document.querySelectorAll('[data-month="' + month.getAttribute('id') + '"]')
+          remainder = paymentDetails[paymentDetails.length-1]
+          
+          for (paymentDetail of paymentDetails) if (paymentDetail.getElementsByTagName('input').length) paid += parseInt(paymentDetail.getElementsByTagName('input')[0].parentNode.lastElementChild.value)
+
+          remainder.lastElementChild.innerHTML = new Intl.NumberFormat().format(Math.abs(bill-paid))
+          bill<=paid ? remainder.lastElementChild.classList.remove('text-danger') : remainder.lastElementChild.classList.add('text-danger')
+          billLessThanOrEqualToPaid += bill<=paid ? 0 : 1
+        }
+      }
+      if (!monthCheckedCount) {
+        validateSubmission(billLessThanOrEqualToPaid)
+        return
+      }
+      validateSubmission(!billLessThanOrEqualToPaid)
     }
 
     paymentModal.addEventListener('show.coreui.modal', (event) => {
@@ -325,8 +347,6 @@
       }
       event.target.querySelector('[onclick="addPayments(this)"]').setAttribute('data-month', event.relatedTarget.parentNode.parentNode.getAttribute('data-month'))
     })
-    
-    debugBtn.addEventListener('click', validateSubmission)
 
     for (unitCheck of unitChecks) {
       unitCheck.addEventListener('change', function() {
