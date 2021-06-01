@@ -78,7 +78,7 @@
       <div class="row">
         <div class="col-xl-8">
           <div class="card">
-            <form action="{{ route('customers.store') }}" method="post">
+            <form action="{{ route('transactions.store') }}" method="post">
               @csrf
               <div class="card-header">Unit List</div>
               <div class="card-body">
@@ -101,6 +101,7 @@
                         <th class="text-right"><input type="checkbox" class="unt-chck"></th>
                         <th class="text-center">{{ $loop->iteration }}</th>
                         <th><a class="text-dark" href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></th>
+                        <input type="hidden" name="units[{{ $loop->index }}][unit_id]" value="{{ $unit->id }}">
                         <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></th>
                         <th colspan="2"><a class="text-dark" href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></th>
                         <td class="text-right">{{ $unit->area_sqm }}</td>
@@ -125,14 +126,62 @@
                             <td>{{ $month['period']->format('F Y') }}</td>
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][period]" 
+                              value="{{ $month['period']->format('Y-m-d') }}"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][payment_id]" 
+                              value="1">
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][amount]" 
+                              value="{{ $month['credit'] }}"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][payment_id]" 
+                              value="2"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][amount]" 
+                              value="{{ $month['fine'] }}"
+                            >
                           </tr>
                           <tr class="table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Tagihan</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
-                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;Bank Transfer</th>
-                            <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
+                          <tr class="table-secondary table-borderless table-sm pymnt" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;OTHER</th>
+                            <th class="text-right">{{ number_format('250000') }}</th>
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][payment_id]" 
+                              value="4"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][amount]" 
+                              value="250000"
+                            >
+                          </tr>
+                          <tr class="table-secondary table-borderless table-sm pymnt" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;BANK TRANSFER</th>
+                            <th class="text-right">{{ number_format('50000') }}</th>
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][3][payment_id]" 
+                              value="5"
+                            >
+                            <input 
+                              type="hidden" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][3][amount]" 
+                              value="50000"
+                            >
                           </tr>
                           <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
@@ -141,7 +190,7 @@
                           </tr>
                           <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Sisa</th>
-                            <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
+                            <th class="text-right text-danger">0</th>
                           </tr>
                         @empty
                           <tr class="table-success">
@@ -205,7 +254,10 @@
 
     function togglePayment(month, show = false) {
       paymentSections = document.querySelectorAll('[data-month="' + month.getAttribute('id') + '"]')
-      for (paymentSection of paymentSections) show ? paymentSection.classList.remove('d-none') : paymentSection.classList.add('d-none')
+      for (paymentSection of paymentSections) {
+        show ? paymentSection.classList.remove('d-none') : paymentSection.classList.add('d-none')
+        if (paymentSection.classList.contains('pymnt')) for (payment of paymentSection.getElementsByTagName('INPUT')) payment.disabled = !show
+      }
     }
     
     debugBtn.addEventListener('click', validateSubmission)

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Symfony\Component\VarDumper\VarDumper;
 
 class TransactionController extends Controller
 {
@@ -34,7 +35,10 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // foreach($request->get('methods') as $method){
+        //     echo $method;
+        // }
+        return json_encode($request->all()); exit();
     }
 
     /**

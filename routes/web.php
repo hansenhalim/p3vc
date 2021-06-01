@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\TransactionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,7 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
     'units' => UnitController::class,
     'clusters' => ClusterController::class,
     'customers' => CustomerController::class,
+    'transactions' => TransactionController::class,
   ]);
 
   Route::group(['middleware' => ['role:operator']], function () {
