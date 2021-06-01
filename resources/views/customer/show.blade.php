@@ -5,23 +5,15 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+          <h5 class="modal-title" id="exampleModalCenterTitle">Add Payments</h5>
           <button type="button" class="close" data-dismiss="modal">
             <span>&times;</span>
           </button>
         </div>
         <div class="modal-body">
           <div class="form-group row">
-            <div class="col-md-4 mb-3 mb-md-0">
-              <select class="custom-select" id="pymnt-mthd">
-                <option value="4">Other</option>
-                <option value="5">Bank Transfer</option>
-                <option value="6">Tunai</option>
-                <option value="7">Linkaja</option>
-                <option value="8">Hutang</option>
-                <option value="9">Diskon</option>
-                <option value="10">Saldo Unit</option>
-              </select>
+            <div class="col-sm-4 mb-3 mb-sm-0">
+              <select class="custom-select" id="pymnt-mthd"></select>
             </div>
             <div class="col">
               <div class="input-group">
@@ -35,7 +27,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" onclick="addToPayments()">OK&nbsp;&check;</button>
+          <button type="button" class="btn btn-primary" onclick="addPayments(this)">OK&nbsp;&check;</button>
         </div>
       </div>
     </div>
@@ -127,70 +119,77 @@
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
                             <input 
-                              type="hidden" 
+                              disabled
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][period]" 
                               value="{{ $month['period']->format('Y-m-d') }}"
                             >
                             <input 
-                              type="hidden" 
+                              disabled
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][payment_id]" 
                               value="1">
                             <input 
-                              type="hidden" 
+                              disabled
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][amount]" 
                               value="{{ $month['credit'] }}"
                             >
                             <input 
-                              type="hidden" 
+                              disabled
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][payment_id]" 
                               value="2"
                             >
                             <input 
-                              type="hidden" 
+                              disabled
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][amount]" 
                               value="{{ $month['fine'] }}"
                             >
                           </tr>
-                          <tr class="table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class=" table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Tagihan</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm pymnt" data-month="{{ $unit->id.$month['period']->format('my') }}">
-                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;OTHER</th>
+                          {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                            <th colspan="8" class="text-right"><i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;OTHER</th>
                             <th class="text-right">{{ number_format('250000') }}</th>
                             <input 
-                              type="hidden" 
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][payment_id]" 
                               value="4"
                             >
                             <input 
-                              type="hidden" 
+                              type="hidden"
+                              class="mth-hdn" 
                               name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][amount]" 
                               value="250000"
                             >
-                          </tr>
-                          <tr class="table-secondary table-borderless table-sm pymnt" data-month="{{ $unit->id.$month['period']->format('my') }}">
-                            <th colspan="8" class="text-right"><i class="cil-trash text-danger dlt-pymnt" style="cursor: pointer;"></i>&nbsp;BANK TRANSFER</th>
-                            <th class="text-right">{{ number_format('50000') }}</th>
-                            <input 
-                              type="hidden" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][3][payment_id]" 
-                              value="5"
-                            >
-                            <input 
-                              type="hidden" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][3][amount]" 
-                              value="50000"
-                            >
-                          </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          </tr> --}}
+                          <tr class=" table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
-                              <button data-toggle="modal" data-target="#paymentModal" type="button" class="btn btn-sm btn-square btn-outline-success"><i class="cil-wallet"></i>&nbsp;Add Payments</button>
+                              <button data-toggle="modal"
+                                      data-target="#paymentModal"
+                                      data-payments="[@foreach ($payments as $payment){{ $payment->id }}@if (!$loop->last),@endif @endforeach]"
+                                      type="button"
+                                      class="btn btn-sm btn-square btn-outline-success"
+                              ><i class="cil-wallet"></i>&nbsp;Add Payments</button>
                             </th>
                           </tr>
-                          <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class=" table-secondary table-borderless table-sm"
+                              data-month="{{ $unit->id.$month['period']->format('my') }}"
+                              data-parent-index="{{ $loop->parent->index }}"
+                              data-index="{{ $loop->index }}"
+                          >
                             <th colspan="8" class="text-right">Sisa</th>
-                            <th class="text-right text-danger">0</th>
+                            <th class="text-right text-danger">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
                         @empty
                           <tr class="table-success">
@@ -227,7 +226,7 @@
     monthChecks = document.getElementsByClassName('mth-chck')
     paymentMethod = document.getElementById('pymnt-mthd')
     paymentAmount = document.getElementById('pymnt-amnt')
-    deletePayments = document.getElementsByClassName('dlt-pymnt')
+    payments = {!! json_encode($payments, JSON_HEX_TAG) !!}
 
     //wait till page loaded :)
     document.addEventListener("DOMContentLoaded", function(event) {
@@ -243,22 +242,89 @@
       console.log('echo function executed :)')
     }
 
-    function addToPayments() {
+    function addPayments(e) {
       method = parseInt(paymentMethod.value)
       amount = parseInt(paymentAmount.value)
-      
-      if (!(Number.isInteger(method) && Number.isInteger(amount))) return false
 
+      if (!(Number.isInteger(method) && Number.isInteger(amount))) return false
       paymentModal.hide()
+
+      dataMonth = e.getAttribute('data-month')
+      remainder = document.querySelectorAll('[data-month="' + dataMonth + '"]')
+      remainder = remainder[remainder.length-1]
+      paymentButton = remainder.previousElementSibling
+      paymentButtonAdd = paymentButton.getElementsByTagName('button')[0]
+      paymentIds = JSON.parse(paymentButtonAdd.getAttribute('data-payments'))
+      paymentIds = paymentIds.filter(paymentId => paymentId !== method)
+      paymentButtonAdd.setAttribute('data-payments', JSON.stringify(paymentIds))
+
+      tr = document.createElement('TR')
+      tr.setAttribute('class', 'table-secondary table-borderless table-sm')
+      tr.setAttribute('data-month', dataMonth)
+      th = document.createElement('th')
+      th.setAttribute('colspan', '8')
+      th.setAttribute('class', 'text-right')
+      th.innerHTML = '<i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;'
+      th.innerHTML += payments.filter(payment => payment.id === method )[0].name
+      tr.appendChild(th)
+      th = document.createElement('TH')
+      th.setAttribute('class', 'text-right')
+      th.innerHTML = new Intl.NumberFormat().format(amount)
+      tr.appendChild(th)
+      input = document.createElement('INPUT')
+      input.setAttribute('type', 'hidden')
+      input.setAttribute('class', 'mth-hdn')
+      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder.getAttribute('data-index') + '][payments][' + method + '][payment_id]')
+      input.setAttribute('value', method)
+      tr.appendChild(input)
+      input = document.createElement('INPUT')
+      input.setAttribute('type', 'hidden')
+      input.setAttribute('class', 'mth-hdn')
+      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder.getAttribute('data-index') + '][payments][' + method + '][amount]')
+      input.setAttribute('value', amount)
+      tr.appendChild(input)
+      remainder.parentNode.insertBefore(tr, paymentButton)
+      updateRemainder()
+    }
+
+    function removePayment(e) {
+      paymentId = parseInt(e.parentNode.parentNode.getElementsByClassName('mth-hdn')[0].value)
+      dataMonth = e.parentNode.parentNode.getAttribute('data-month')
+      remainder = document.querySelectorAll('[data-month="' + dataMonth + '"]')
+      paymentButton = remainder[remainder.length - 2].getElementsByTagName('button')[0]
+      paymentIds = JSON.parse(paymentButton.getAttribute('data-payments'))
+      paymentIds.push(paymentId)
+      paymentIds.sort(function(a, b){return a - b});
+      paymentButton.setAttribute('data-payments', JSON.stringify(paymentIds))
+      e.parentNode.parentNode.remove()
+      updateRemainder()
     }
 
     function togglePayment(month, show = false) {
+      for (hidden of month.getElementsByClassName('mth-hdn')) hidden.disabled = !show
       paymentSections = document.querySelectorAll('[data-month="' + month.getAttribute('id') + '"]')
       for (paymentSection of paymentSections) {
         show ? paymentSection.classList.remove('d-none') : paymentSection.classList.add('d-none')
-        if (paymentSection.classList.contains('pymnt')) for (payment of paymentSection.getElementsByTagName('INPUT')) payment.disabled = !show
+        for (payment of paymentSection.getElementsByTagName('INPUT')) payment.disabled = !show
       }
     }
+
+    function updateRemainder() {
+      
+    }
+
+    paymentModal.addEventListener('show.coreui.modal', (event) => {
+      paymentIds = JSON.parse(event.relatedTarget.getAttribute('data-payments'))
+      paymentMethod.innerHTML = '<option disabled selected>[CHOOSE]</option>'
+      paymentAmount.value = ''
+      for (paymentId of paymentIds) {
+        option = document.createElement('option')
+        option.innerHTML = payments.filter(payment => payment.id === paymentId )[0].name
+        option.value = payments.filter(payment => payment.id === paymentId )[0].id
+        paymentMethod.appendChild(option)
+      }
+      event.target.querySelector('[onclick="addPayments(this)"]').setAttribute('data-month', event.relatedTarget.parentNode.parentNode.getAttribute('data-month'))
+    })
     
     debugBtn.addEventListener('click', validateSubmission)
 
@@ -294,12 +360,6 @@
 
         togglePayment(month, this.checked)
 
-      })
-    }
-
-    for (deletePayment of deletePayments) {
-      deletePayment.addEventListener('click', function () {
-        this.parentNode.parentNode.remove()
       })
     }
 

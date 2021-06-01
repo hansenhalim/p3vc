@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Unit;
-use App\Models\Transaction;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
@@ -81,9 +81,11 @@ class CustomerController extends Controller
       $unit['months'] = $months;
     }
 
-    // echo json_encode($units);exit();
+    $payments = Payment::get(['id', 'name'])->except([1,2,3,11]);
+
+    // echo json_encode($payments);exit();
     
-    return view('customer.show', compact('customer', 'units'));
+    return view('customer.show', compact('customer', 'units', 'payments'));
   }
 
   public function edit($id)

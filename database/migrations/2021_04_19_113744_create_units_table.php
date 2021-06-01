@@ -19,7 +19,6 @@ class CreateUnitsTable extends Migration
             $table->foreignId('cluster_id')->constrained();
             $table->string('name');
             $table->float('area_sqm', 6, 2);
-            $table->unsignedInteger('balance');
             $table->string('idlink')->nullable();
             $table->datetime('approved_at')->nullable();
             $table->foreignId('approved_by')->nullable()->constrained('users');

@@ -1230,7 +1230,6 @@ class UnitSeeder extends Seeder
         'cluster_id' => $unit['cluster_id'],
         'name' => $unit['name'],
         'area_sqm' => $unit['area_sqm'],
-        'balance' => $unit['balance'],
         'idlink' => $unit['idlink'],
         'approved_at' => '2020-06-01 00:00:00',
         'approved_by' => 5,
