@@ -129,27 +129,27 @@
                               disabled
                               type="hidden"
                               class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][payment_id]" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][payment_id]" 
                               value="1">
                             <input 
                               disabled
                               type="hidden"
                               class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][0][amount]" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][amount]" 
                               value="{{ $month['credit'] }}"
                             >
                             <input 
                               disabled
                               type="hidden"
                               class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][payment_id]" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][payment_id]" 
                               value="2"
                             >
                             <input 
                               disabled
                               type="hidden"
                               class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][1][amount]" 
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][amount]" 
                               value="{{ $month['fine'] }}"
                             >
                           </tr>

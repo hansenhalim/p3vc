@@ -27,5 +27,4 @@ yarn-error.log
 composer.phar
 coreui.zip
 .htaccess
-database/seeder/TransactionSeeder.php
-database/seeder/PaymentTransactionSeeder.php
+database/seeders/DatabaseSeeder.php
