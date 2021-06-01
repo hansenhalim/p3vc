@@ -153,7 +153,7 @@
                               value="{{ $month['fine'] }}"
                             >
                           </tr>
-                          <tr class=" table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="8" class="text-right">Tagihan</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
@@ -173,7 +173,7 @@
                               value="250000"
                             >
                           </tr> --}}
-                          <tr class=" table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <tr class="d-none table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="10" class="text-right">
                               <button data-toggle="modal"
                                       data-target="#paymentModal"
@@ -183,7 +183,7 @@
                               ><i class="cil-wallet"></i>&nbsp;Add Payments</button>
                             </th>
                           </tr>
-                          <tr class=" table-secondary table-borderless table-sm"
+                          <tr class="d-none table-secondary table-borderless table-sm"
                               data-month="{{ $unit->id.$month['period']->format('my') }}"
                               data-parent-index="{{ $loop->parent->index }}"
                               data-index="{{ $loop->index }}"
