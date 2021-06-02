@@ -62,9 +62,7 @@
                       <td>{{ $unit->cluster->name }}</td>
                       <td>{{ $unit->area_sqm }}</td>
                       <td>{{ $unit->balance }}</td>
-                      <td>
-                        {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
-                      </td>
+                      <td>{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
                     </tr>
                   @empty
                     <tr>

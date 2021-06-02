@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Customer;
-use App\Models\Unit;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 
@@ -53,7 +52,7 @@ class CustomerController extends Controller
   public function show($id)
   {
     $customer = Customer::find($id);
-    $units = Unit::where('customer_id', $id)
+    $units = $customer->units()
       ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
       ->get();
 
