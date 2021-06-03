@@ -64,12 +64,14 @@ class CustomerController extends Controller
 
       for ($i=0; $i < $diffInMonths; $i++) {
         $period = $unit->created_at->addMonths($i);
-        if($unit->transactions->first() !== null){
+
+        if($unit->transactions->first()){
           if(!$period->diffInMonths($unit->transactions->first()->period)){
             $unit->transactions->shift();
             continue;
           }
         }
+        
         $months[] = [
           'period' => $period,
           'credit' => $unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1),
@@ -82,7 +84,7 @@ class CustomerController extends Controller
 
     $payments = Payment::get(['id', 'name'])->except([1,2,3,11]);
 
-    // echo json_encode($payments);exit();
+    // echo json_encode($units);exit();
     
     return view('customer.show', compact('customer', 'units', 'payments'));
   }

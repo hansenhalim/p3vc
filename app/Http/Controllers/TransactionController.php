@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -14,7 +16,14 @@ class TransactionController extends Controller
    */
   public function index()
   {
-    //
+    $transactions = Transaction::query()
+      ->with(['unit'])
+      ->latest()
+      ->paginate();
+
+    // echo json_encode($transactions); exit();
+
+    return view('transaction.list', compact('transactions'));
   }
 
   /**
@@ -41,17 +50,16 @@ class TransactionController extends Controller
         foreach ($item['months'] as $month) {
           $transaction = $unit->transactions()->create([
             'period' => $month['period'],
+            'updated_by' => Auth::id()
           ]);
           foreach ($month['payments'] as $payment) {
-            $transaction->payments()->attach($payment['payment_id'], [
-                'amount' => $payment['amount']
-            ]);
+            $transaction->payments()->attach($payment['payment_id'], ['amount' => $payment['amount']]);
           }
         }
       }
     }
 
-    $request->session()->flash('status', 'Successfully created transactions. Thankyou ;)');
+    $request->session()->flash('status', 'Successfully created transactions. Thankyou.');
     
     return back();
   }
@@ -99,5 +107,23 @@ class TransactionController extends Controller
   public function destroy($id)
   {
     //
+  }
+
+  public function print()
+  {
+    return redirect()->route('transactions.index');
+  }
+
+  public function approve(Request $request, $id)
+  {
+    Transaction::find($id)
+      ->update([
+        'approved_by' => Auth::id(),
+        'approved_at' => now()
+      ]);
+
+    $request->session()->flash('status', 'Successfully approved transactions. Thankyou.');
+
+    return back();
   }
 }

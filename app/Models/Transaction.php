@@ -9,7 +9,7 @@ class Transaction extends Model
 {
   use SoftDeletes;
 
-  protected $fillable = ['period'];
+  protected $fillable = ['period', 'approved_at', 'approved_by', 'updated_by'];
 
   public function unit()
   {

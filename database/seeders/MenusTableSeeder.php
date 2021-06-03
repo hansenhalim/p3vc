@@ -153,7 +153,7 @@ class MenusTableSeeder extends Seeder
             $this->insertLink('master,operator', 'Methods', '/payments');
             $this->insertLink('master,operator', 'Reports', '/payments');
         $this->endDropdown();
-        $this->insertLink('master,operator', 'Transactions', '/transactions', 'cil-cart');
+        $this->insertLink('master,supervisor,operator', 'Transactions', '/transactions', 'cil-cart');
 
         $this->joinAllByTransaction(); ///   <===== Must by use on end of this seeder
     }

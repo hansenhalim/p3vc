@@ -24,7 +24,7 @@ use App\Http\Controllers\TransactionController;
 
 Auth::routes();
 
-Route::view('/',            'welcome');
+Route::view('/', 'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
@@ -36,11 +36,11 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   ]);
 
   Route::group(['middleware' => ['role:operator']], function () {
-    //
+    Route::get('/transactions/print', [TransactionController::class, 'print'])->name('transactions.print');
   });
 
   Route::group(['middleware' => ['role:supervisor']], function () {
-    //
+    Route::get('/transactions/approve/{transaction}', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
 
   Route::group(['middleware' => ['role:master']], function () {

@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-xl-7">
           <div class="card">
-            <div class="card-header">Customer List</div>
+            <div class="card-header">Transaction List</div>
             <div class="card-body">
               @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show">
@@ -16,8 +16,7 @@
                   </button>
                 </div>
               @endif
-              <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
-              <form id="search" action="{{ route('customers.index') }}" method="get">
+              {{-- <form id="search" action="{{ route('transactions.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
                     <select class="custom-select" name="sort">
@@ -42,38 +41,36 @@
                     </div>
                   </div>
                 </div>
-              </form>
+              </form> --}}
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>
                     <th>CIF</th>
-                    <th>Name</th>
-                    <th>Units</th>
-                    <th>Phone</th>
+                    <th>Unit</th>
+                    <th>Period</th>
+                    <th>Approved At</th>
                     <th>More</th>
                   </tr>
                 </thead>
                 <tbody>
-                  @forelse ($customers as $customer)
+                  @forelse ($transactions as $transaction)
                     <tr>
-                      <th class="align-middle">#{{ $customer->id }}</th>
-                      <td class="align-middle">{{ $customer->name }}</td>
-                      <td class="align-middle">{{ $customer->units_count }}</td>
-                      <td class="align-middle">{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
+                      <td class="align-middle">{{ $transaction->unit->name }}</td>
+                      <td class="align-middle">{{ date('F Y', strtotime($transaction->period)) }}</td>
+                      <td class="align-middle">{!! $transaction->approved_at ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle">
                         <div class="dropdown">
                           <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
                             Action
                           </button>
                           <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route('customers.show', ['customer' => $customer->id]) }}"><i class="cil-info"></i>&nbsp;View</a>
-                            <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}"><i class="cil-pencil"></i>&nbsp;Edit</a>
-                            <div class="dropdown-divider"></div>
-                            <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
-                              @csrf
-                              @method('DELETE')
-                              <button type="submit" class="dropdown-item"><i class="cil-trash"></i>&nbsp;Delete</button>
-                            </form>
+                            @if(Auth::user()->hasRole('operator') && $transaction->approved_at)
+                              <a class="dropdown-item" href="{{ route('transactions.print') }}"><i class="cil-print"></i>&nbsp;Print</a>
+                            @endif
+                            @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
+                              <a class="dropdown-item" href="{{ route('transactions.approve', ['transaction' => $transaction->id]) }}"><i class="cil-check"></i>&nbsp;Approve</a>
+                            @endif
                           </div>
                         </div>
                       </td>
@@ -86,11 +83,11 @@
                 </tbody>
               </table>
               <div class="d-flex justify-content-center">
-                {{ $customers->appends(request()->input())->links() }}
+                {{ $transactions->appends(request()->input())->links() }}
               </div>
             </div>
             <div class="card-footer">
-              Showing {{ $customers->firstItem() }} to {{ $customers->lastItem() }} of {{ $customers->total() }} entries
+              Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} entries
             </div>
           </div>
         </div>
