@@ -38,8 +38,7 @@ class PriceSeeder extends Seeder
                 'cluster_id' => $price['cluster_id'],
                 'cost' => $price['cost'],
                 'per' => $price['per'],
-                'created_at' => now(),
-                'updated_at' => now()
+                'created_at' => now()
             ]);
         }
     }

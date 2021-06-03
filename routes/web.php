@@ -42,7 +42,7 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   });
 
   Route::group(['middleware' => ['role:supervisor']], function () {
-    Route::get('/transactions/approve/{transaction}', [TransactionController::class, 'approve'])->name('transactions.approve');
+    Route::post('/transactions/{transaction}/approval', [TransactionController::class, 'approval'])->name('transactions.approval');
   });
 
   Route::group(['middleware' => ['role:master']], function () {

@@ -66,15 +66,19 @@ class CustomerController extends Controller
         $period = $unit->created_at->addMonths($i);
 
         if($unit->transactions->first()){
-          if(!$period->diffInMonths($unit->transactions->first()->period)){
-            $unit->transactions->shift();
-            continue;
+          foreach ($unit->transactions as $key => $transaction) {
+            if(!$period->diffInMonths($transaction->period)){
+              $unit->transactions->forget($key);
+              continue 2;
+            }
           }
         }
+
+        $price = $unit->cluster->prices->last();
         
         $months[] = [
           'period' => $period,
-          'credit' => $unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1),
+          'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
           'fine' => 2000 * ($diffInMonths - $i - 1)
         ];
       }
@@ -112,8 +116,15 @@ class CustomerController extends Controller
 
   public function destroy($id)
   {
-    Customer::where('id', $id)->update(['updated_by' => Auth::id()]);
-    Customer::destroy($id);
+    $customer = Customer::find($id);
+
+    $customer->update([
+      'updated_by' => Auth::id(),
+      'approved_at' => null,
+      'approved_by' => null,
+    ]);
+
+    $customer->delete();
 
     return redirect()->route('customers.index');
   }

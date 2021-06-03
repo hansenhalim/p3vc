@@ -13,7 +13,7 @@
                   {{ session('status') }}
                 </div>
               @endif
-              <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a>
+              {{-- <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a> --}}
               <form id="search" action="{{ route('units.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
