@@ -29,13 +29,15 @@ Route::view('/', 'welcome');
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
   Route::resources([
-    'units' => UnitController::class,
-    'clusters' => ClusterController::class,
-    'customers' => CustomerController::class,
     'transactions' => TransactionController::class,
   ]);
 
   Route::group(['middleware' => ['role:operator']], function () {
+    Route::resources([
+      'units' => UnitController::class,
+      'clusters' => ClusterController::class,
+      'customers' => CustomerController::class,
+    ]);
     Route::get('/transactions/print', [TransactionController::class, 'print'])->name('transactions.print');
   });
 

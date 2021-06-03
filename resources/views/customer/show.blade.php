@@ -316,7 +316,7 @@
         if(monthCheck.checked){
           monthCheckedCount++
           month = monthCheck.parentNode.parentNode
-          bill = parseInt(month.nextElementSibling.children[1].innerHTML.replace(',',''))
+          bill = parseInt(month.nextElementSibling.children[1].innerHTML.replace(/,/g,''))
           paid = 0
           paymentDetails = document.querySelectorAll('[data-month="' + month.getAttribute('id') + '"]')
           remainder = paymentDetails[paymentDetails.length-1]
