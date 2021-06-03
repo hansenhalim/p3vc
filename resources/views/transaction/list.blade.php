@@ -61,9 +61,7 @@
                       <td class="align-middle">{!! $transaction->approved_at ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle">
                         <div class="dropdown">
-                          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-                            Action
-                          </button>
+                          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Action</button>
                           <div class="dropdown-menu">
                             <a class="dropdown-item" href="#"><i class="cil-info"></i>&nbsp;Show</a>
                             @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
