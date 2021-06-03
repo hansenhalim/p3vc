@@ -65,11 +65,12 @@
                             Action
                           </button>
                           <div class="dropdown-menu">
-                            @if(Auth::user()->hasRole('operator') && $transaction->approved_at)
-                              <a class="dropdown-item" href="{{ route('transactions.print') }}"><i class="cil-print"></i>&nbsp;Print</a>
-                            @endif
+                            <a class="dropdown-item" href="#"><i class="cil-info"></i>&nbsp;Show</a>
                             @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
                               <a class="dropdown-item" href="{{ route('transactions.approve', ['transaction' => $transaction->id]) }}"><i class="cil-check"></i>&nbsp;Approve</a>
+                            @endif
+                            @if(Auth::user()->hasRole('operator') && $transaction->approved_at)
+                              <a class="dropdown-item" href="{{ route('transactions.print') }}"><i class="cil-print"></i>&nbsp;Print</a>
                             @endif
                           </div>
                         </div>
