@@ -72,7 +72,14 @@ class TransactionController extends Controller
    */
   public function show($id)
   {
-    //
+    $transaction = Transaction::query()
+      ->where('id', $id)
+      ->with(['unit.customer', 'payments'])
+      ->first();
+
+    // echo json_encode($transaction); exit();
+
+    return view('transaction.show', compact('transaction'));
   }
 
   /**
@@ -114,16 +121,26 @@ class TransactionController extends Controller
     return redirect()->route('transactions.index');
   }
 
-  public function approve(Request $request, $id)
+  public function approval(Request $request, $id)
   {
-    Transaction::find($id)
-      ->update([
-        'approved_by' => Auth::id(),
-        'approved_at' => now()
-      ]);
+    switch ($request->approval) {
+      case 'true':
+        Transaction::find($id)
+        ->update([
+          'approved_by' => Auth::id(),
+          'approved_at' => now()
+        ]);
+        $request->session()->flash('status', 'Successfully approved transactions. Thankyou.');
+        break;
+      
+      default:
+        Transaction::destroy($id);
+        $request->session()->flash('status', 'Successfully rejected transactions. Thankyou.');
+        break;
+    }
 
-    $request->session()->flash('status', 'Successfully approved transactions. Thankyou.');
+    // echo json_encode($request->all()); exit();
 
-    return back();
+    return redirect()->route('transactions.index');
   }
 }

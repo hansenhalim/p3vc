@@ -116,8 +116,15 @@ class CustomerController extends Controller
 
   public function destroy($id)
   {
-    Customer::where('id', $id)->update(['updated_by' => Auth::id()]);
-    Customer::destroy($id);
+    $customer = Customer::find($id);
+
+    $customer->update([
+      'updated_by' => Auth::id(),
+      'approved_at' => null,
+      'approved_by' => null,
+    ]);
+
+    $customer->delete();
 
     return redirect()->route('customers.index');
   }

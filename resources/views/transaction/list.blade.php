@@ -16,32 +16,6 @@
                   </button>
                 </div>
               @endif
-              {{-- <form id="search" action="{{ route('transactions.index') }}" method="get">
-                <div class="row">
-                  <div class="col-md-3 col-6 mb-2">
-                    <select class="custom-select" name="sort">
-                      <option value="" {{ request('sort') == '' ? 'selected' : '' }}>CIF</option>
-                      <option value="name" {{ request('sort') == 'name' ? 'selected' : '' }}>Name</option>
-                      <option value="units_count" {{ request('sort') == 'units_count' ? 'selected' : '' }}>Units</option>
-                      <option value="phone_number" {{ request('sort') == 'phone_number' ? 'selected' : '' }}>Phone</option>
-                    </select>
-                  </div>
-                  <div class="col-md-3 col-6 mb-2">
-                    <select class="custom-select" name="order">
-                      <option value="" {{ request('order') == '' ? 'selected' : '' }}>Largest</option>
-                      <option value="asc" {{ request('order') == 'asc' ? 'selected' : '' }}>Smallest</option>
-                    </select>
-                  </div>
-                  <div class="col-md-6 mb-2">
-                    <div class="input-group">
-                      <input type="text" class="form-control" name="key" value="{{ request('key') }}" placeholder="use # for CIF">
-                      <div class="input-group-append">
-                        <button type="submit" class="btn btn-dark">Search</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </form> --}}
               <table class="table table-responsive-sm table-striped">
                 <thead>
                   <tr>
@@ -65,10 +39,7 @@
                             Action
                           </button>
                           <div class="dropdown-menu">
-                            <a class="dropdown-item" href="#"><i class="cil-info"></i>&nbsp;Show</a>
-                            @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
-                              <a class="dropdown-item" href="{{ route('transactions.approve', ['transaction' => $transaction->id]) }}"><i class="cil-check"></i>&nbsp;Approve</a>
-                            @endif
+                            <a class="dropdown-item" href="{{ route('transactions.show', ['transaction' => $transaction->id]) }}"><i class="cil-info"></i>&nbsp;Show</a>
                             @if(Auth::user()->hasRole('operator') && $transaction->approved_at)
                               <a class="dropdown-item" href="{{ route('transactions.print') }}"><i class="cil-print"></i>&nbsp;Print</a>
                             @endif

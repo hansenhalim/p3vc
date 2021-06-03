@@ -34,9 +34,9 @@
   </div>
   <div class="container-fluid">
     <div class="fade-in">
+      <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
       <div class="row">
         <div class="col-xl-4 col-md-6">
-          <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
           <div class="card">
             <div class="card-header">Customer Show</div>
             <div class="card-body">

@@ -16,7 +16,7 @@
                   </button>
                 </div>
               @endif
-              <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a>
+              {{-- <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a> --}}
               <form id="search" action="{{ route('customers.index') }}" method="get">
                 <div class="row">
                   <div class="col-md-3 col-6 mb-2">
@@ -67,12 +67,12 @@
                           </button>
                           <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ route('customers.show', ['customer' => $customer->id]) }}"><i class="cil-info"></i>&nbsp;View</a>
-                            <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}"><i class="cil-pencil"></i>&nbsp;Edit</a>
-                            <div class="dropdown-divider"></div>
+                            {{-- <a class="dropdown-item" href="{{ route('customers.edit', ['customer' => $customer->id]) }}"><i class="cil-pencil"></i>&nbsp;Edit</a> --}}
+                            {{-- <div class="dropdown-divider"></div> --}}
                             <form class="form-inline" action="{{ route('customers.destroy', ['customer' => $customer->id]) }}" method="post">
                               @csrf
                               @method('DELETE')
-                              <button type="submit" class="dropdown-item"><i class="cil-trash"></i>&nbsp;Delete</button>
+                              {{-- <button type="submit" class="dropdown-item"><i class="cil-trash"></i>&nbsp;Delete</button> --}}
                             </form>
                           </div>
                         </div>

@@ -38,8 +38,7 @@ class ClusterSeeder extends Seeder
                 'name' => $cluster['name'],
                 'deleted_by' => null,
                 'deleted_at' => null,
-                'created_at' => now(),
-                'updated_at' => now()
+                'created_at' => now()
             ]);
         }
     }
