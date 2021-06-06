@@ -28,7 +28,7 @@ class TransactionController extends Controller
       $transaction->amount /= 2;
     }
 
-    echo json_encode($transactions); exit();
+    // echo json_encode($transactions); exit();
 
     return view('transaction.list', compact('transactions'));
   }
