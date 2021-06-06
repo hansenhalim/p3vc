@@ -64,7 +64,7 @@
               </table>
             </div>
               @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
-                <form action="{{ route('transactions.approval', ['transaction' => $transaction->id]) }}" method="POST">
+                <form action="{{ route('transactions.approve', ['transaction' => $transaction->id]) }}" method="POST">
                   @csrf
                   <div class="card-footer d-flex justify-content-between">
                     <button value="false" name="approval" type="submit" class="btn btn-link text-danger"><i class="cil-thumb-down"></i>&nbsp;Reject</button>

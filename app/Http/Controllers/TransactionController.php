@@ -51,20 +51,40 @@ class TransactionController extends Controller
    */
   public function store(Request $request)
   {
+    $credits = [1,2,3,11];
+
     foreach ($request->units as $item) {
       $unit = Unit::find($item['unit_id']);
+
       if (isset($item['months'])) {
+
         foreach ($item['months'] as $month) {
+          $balance = 0;
+
+          foreach ($month['payments'] as $payment) {
+            if (in_array($payment['payment_id'], $credits)) $balance -= $payment['amount'];
+            else $balance += $payment['amount'];
+          }
+
+          if ($balance < 0) continue;
+
           $transaction = $unit->transactions()->create([
             'period' => $month['period'],
             'updated_by' => Auth::id()
           ]);
+
           foreach ($month['payments'] as $payment) {
+            if (!$payment['amount']) continue;
             $transaction->payments()->attach($payment['payment_id'], ['amount' => $payment['amount']]);
           }
+          
+          if ($balance > 0) $transaction->payments()->attach(3, ['amount' => $balance]);
+
         }
       }
     }
+
+    // echo json_encode($request->all()); exit();
 
     $request->session()->flash('status', 'Successfully created transactions. Thankyou.');
     
