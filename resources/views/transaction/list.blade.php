@@ -49,7 +49,7 @@
                     </tr>
                   @empty
                     <tr>
-                      <td colspan="5" style="text-align: center">Oops, nothing found here :(</td>
+                      <td colspan="6" style="text-align: center">Oops, nothing found here :(</td>
                     </tr>
                   @endforelse
                 </tbody>
