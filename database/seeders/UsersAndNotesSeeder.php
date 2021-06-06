@@ -39,7 +39,7 @@ class UsersAndNotesSeeder extends Seeder
             'name' => 'Hansen Halim',
             'email' => 'fpsecond.hh@p3villacitra.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$ZXBAcKEoMOwt42HUdDkWZeZ5Y39J4GmhuzCCG/yO6le6mkp5NpTiS', // password
+            'password' => '$2y$15$FrYifT9HrAvGb3516NHlCOA7aL9UQsXoj09ytM6gNxzXvigUWaxHa', // password
             'remember_token' => Str::random(10),
             'menuroles' => 'master,supervisor,operator' 
         ]);
@@ -63,7 +63,7 @@ class UsersAndNotesSeeder extends Seeder
             'name' => 'Operator 1',
             'email' => 'opr1@p3villacitra.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$.s62g.L4t34.JtCvIr4L/OczmGIqw4.ZIJZCe2f.xcvNtmpe4ixZm', // password
+            'password' => '$2y$10$qSRUZ8FcbzFN.jAA6O2.POXeQK9rfhXA6vDOVTFNOjRG0tg7JLbma', // password
             'remember_token' => Str::random(10),
             'menuroles' => 'operator'
         ]);

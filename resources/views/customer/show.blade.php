@@ -92,21 +92,21 @@
                       <tr class="table-light">
                         <th class="text-right"><input type="checkbox" class="unt-chck"></th>
                         <th class="text-center">{{ $loop->iteration }}</th>
-                        <th><a class="text-dark" href="{{ route('units.show', ['unit' => $unit->id]) }}">{{ $unit->name }}</a></th>
-                        <input type="hidden" name="units[{{ $loop->index }}][unit_id]" value="{{ $unit->id }}">
-                        <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $unit->customer->id]) }}">{{ $unit->customer->name }}</a></th>
-                        <th colspan="2"><a class="text-dark" href="{{ route('clusters.show', ['cluster' => $unit->cluster->id]) }}">{{ $unit->cluster->name }}</a></th>
+                        <th>{{ $unit->name }}</th>
+                        <th>{{ $unit->customer->name }}</th>
+                        <th colspan="2">{{ $unit->cluster->name }}</th>
                         <td class="text-right">{{ $unit->area_sqm }}</td>
-                        <td class="text-right">0</td>
+                        <td class="text-right">{{ $unit->balance }}</td>
                         <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                        <input type="hidden" name="units[{{ $loop->index }}][unit_id]" value="{{ $unit->id }}">
                       </tr>
                       <thead class="thead-light">
                         <tr>
                           <th colspan="5"></th>
                           <th class="text-center">#</th>
-                          <th>Periode</th>
-                          <th class="text-right">Iuran</th>
-                          <th class="text-right">Denda</th>
+                          <th>Period</th>
+                          <th class="text-right">Credit</th>
+                          <th class="text-right">Fine</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -115,7 +115,7 @@
                             <th colspan="4"></th>
                             <th class="text-right"><input type="checkbox" class="mth-chck"></th>
                             <th class="text-center">{{ $loop->iteration }}</th>
-                            <td>{{ $month['period']->format('F Y') }}</td>
+                            <td>{{ $month['period']->formatLocalized('%B %Y') }}</td>
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
                             <td class="text-right">{{ number_format($month['fine']) }}</td>
                             <input 
@@ -154,7 +154,7 @@
                             >
                           </tr>
                           <tr class="d-none table-secondary table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
-                            <th colspan="8" class="text-right">Tagihan</th>
+                            <th colspan="8" class="text-right">TAGIHAN</th>
                             <th class="text-right">{{ number_format($month['credit'] + $month['fine']) }}</th>
                           </tr>
                           {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">

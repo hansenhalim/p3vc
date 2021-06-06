@@ -6,29 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateClustersTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
-    {
-        Schema::create('clusters', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('deleted_by')->nullable()->constrained('users');
-            $table->softDeletes();
-            $table->timestamps();
-        });
-    }
+  /**
+   * Run the migrations.
+   *
+   * @return void
+   */
+  public function up()
+  {
+    Schema::create('clusters', function (Blueprint $table) {
+      $table->id();
+      $table->string('name');
+      $table->datetime('approved_at')->nullable();
+      $table->foreignId('approved_by')->nullable()->constrained('users');
+      $table->timestamps();
+      $table->foreignId('updated_by')->nullable()->constrained('users');
+      $table->softDeletes();
+    });
+  }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('clusters');
-    }
+  /**
+   * Reverse the migrations.
+   *
+   * @return void
+   */
+  public function down()
+  {
+    Schema::dropIfExists('clusters');
+  }
 }

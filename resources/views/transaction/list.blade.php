@@ -23,6 +23,7 @@
                     <th>Unit</th>
                     <th>Period</th>
                     <th>Approved At</th>
+                    <th>Amount</th>
                     <th>More</th>
                   </tr>
                 </thead>
@@ -31,8 +32,9 @@
                     <tr>
                       <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
                       <td class="align-middle">{{ $transaction->unit->name }}</td>
-                      <td class="align-middle">{{ date('F Y', strtotime($transaction->period)) }}</td>
-                      <td class="align-middle">{!! $transaction->approved_at ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
+                      <td class="align-middle">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">{{ number_format($transaction->amount) }}</td>
                       <td class="align-middle">
                         <div class="dropdown">
                           <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Action</button>

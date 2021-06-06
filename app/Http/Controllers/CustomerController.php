@@ -12,8 +12,8 @@ class CustomerController extends Controller
   public function index(Request $request)
   {
     $key = $request->key;
-    $sort = $request->get('sort') ?? 'id';
-    $order = $request->get('order') ?? 'desc';
+    $sort = $request->sort ?? 'id';
+    $order = $request->order ?? 'desc';
 
     $query = Customer::query();
 
@@ -86,7 +86,25 @@ class CustomerController extends Controller
       $unit['months'] = $months;
     }
 
-    $payments = Payment::get(['id', 'name'])->except([1,2,3,11]);
+    $payments = Payment::get(['id', 'name'])->only([4,5,6,7,8,9,10]);
+
+    foreach ($units as $unit) {
+      $balance = 0;
+      foreach ($unit->transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 3:
+              $balance += $payment->pivot->amount;
+              break;
+            
+            case 10:
+              $balance -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+      $unit['balance'] = $balance;
+    }
 
     // echo json_encode($units);exit();
     

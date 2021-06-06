@@ -10,6 +10,7 @@ use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,22 +29,22 @@ Route::view('/', 'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
-  Route::resources([
-    'transactions' => TransactionController::class,
-  ]);
 
   Route::group(['middleware' => ['role:operator']], function () {
-    Route::resources([
-      'units' => UnitController::class,
-      'clusters' => ClusterController::class,
-      'customers' => CustomerController::class,
-    ]);
     Route::get('/transactions/print', [TransactionController::class, 'print'])->name('transactions.print');
+    Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+
+    Route::resource('units', UnitController::class);
+    Route::resource('clusters', ClusterController::class);
+    Route::resource('customers', CustomerController::class);
+    Route::resource('payments', PaymentController::class);
   });
 
   Route::group(['middleware' => ['role:supervisor']], function () {
-    Route::post('/transactions/{transaction}/approval', [TransactionController::class, 'approval'])->name('transactions.approval');
+    Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
+
+  Route::resource('transactions', TransactionController::class);
 
   Route::group(['middleware' => ['role:master']], function () {
     Route::resource('users',            UsersController::class)->except(['create', 'store']);

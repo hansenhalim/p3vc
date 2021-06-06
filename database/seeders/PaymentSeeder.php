@@ -29,7 +29,10 @@ class PaymentSeeder extends Seeder
     foreach ($payments as $payment) {
       DB::table('payments')->insert([
         'name' => $payment['name'],
-        'created_at' => now()
+        'approved_at' => '2020-06-01 00:00:00',
+        'approved_by' => 5,
+        'created_at' => '2020-06-01 00:00:00',
+        'updated_by' => 3,
       ]);
     }
   }

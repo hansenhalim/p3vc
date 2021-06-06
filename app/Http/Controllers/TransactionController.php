@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,12 +17,18 @@ class TransactionController extends Controller
    */
   public function index()
   {
-    $transactions = Transaction::query()
-      ->with(['unit'])
-      ->latest()
-      ->paginate();
+    $transactions = Transaction::with(['unit:id,name,customer_id', 'payments:id'])->latest()->paginate();
 
-    // echo json_encode($transactions); exit();
+    foreach ($transactions as $transaction) {
+      $transaction->period = Carbon::make($transaction->period);
+      $transaction->approved_at = Carbon::make($transaction->approved_at);
+      foreach ($transaction->payments as $payment) {
+        $transaction->amount += $payment->pivot->amount;
+      }
+      $transaction->amount /= 2;
+    }
+
+    // echo json_encode($transactions->all()); exit();
 
     return view('transaction.list', compact('transactions'));
   }
@@ -77,6 +84,8 @@ class TransactionController extends Controller
       ->with(['unit.customer', 'payments'])
       ->first();
 
+    $transaction->period = Carbon::make($transaction->period);
+
     // echo json_encode($transaction); exit();
 
     return view('transaction.show', compact('transaction'));
@@ -121,7 +130,7 @@ class TransactionController extends Controller
     return redirect()->route('transactions.index');
   }
 
-  public function approval(Request $request, $id)
+  public function approve(Request $request, $id)
   {
     switch ($request->approval) {
       case 'true':
@@ -142,5 +151,26 @@ class TransactionController extends Controller
     // echo json_encode($request->all()); exit();
 
     return redirect()->route('transactions.index');
+  }
+
+  public function report(Request $request)
+  {
+    // $red = [1,2,3,11];
+    // $green = [4,5,6,7,8,9,10];
+
+    // $dateFrom = $request->dateFrom ?? '2021-06-05 13:16:00';
+    // $dateTo = $request->dateTo ?? '2021-06-05 13:17:00';
+
+    // $transactions = Transaction::query()
+    //   ->with(['payments'])
+    //   ->whereBetween('created_at', [$dateFrom, $dateTo])
+    //   ->whereNotNull('approved_at')
+    //   ->paginate();
+
+    // echo json_encode($transactions); exit();
+
+    // return view('transaction.report', compact('transactions'));
+
+    echo json_encode($request->all()); exit();
   }
 }

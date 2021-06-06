@@ -25,9 +25,9 @@
                 <tbody>
                   <tr class="table-light">
                     <th class="text-center">1</th>
-                    <th><a class="text-dark" href="{{ route('units.show', ['unit' => $transaction->unit->id]) }}">{{ $transaction->unit->name }}</a></th>
-                    <th><a class="text-dark" href="{{ route('customers.show', ['customer' => $transaction->unit->customer->id]) }}">{{ $transaction->unit->customer->name }}</a></th>
-                    <th><a class="text-dark" href="{{ route('clusters.show', ['cluster' => $transaction->unit->cluster->id]) }}">{{ $transaction->unit->cluster->name }}</a></th>
+                    <th>{{ $transaction->unit->name }}</th>
+                    <th>{{ $transaction->unit->customer->name }}</th>
+                    <th>{{ $transaction->unit->cluster->name }}</th>
                     <td class="text-right">{{ $transaction->unit->area_sqm }}</td>
                     <td class="text-right">0</td>
                     <td class="text-right">{{ number_format($transaction->unit->cluster->prices->last()->cost * ($transaction->unit->cluster->prices->last()->per == 'sqm' ? $transaction->unit->area_sqm : 1)) }}</td>
@@ -36,21 +36,21 @@
                     <tr>
                       <th colspan="3"></th>
                       <th class="text-right">#</th>
-                      <th>Periode</th>
-                      <th class="text-right">Iuran</th>
-                      <th class="text-right">Denda</th>
+                      <th>Period</th>
+                      <th class="text-right">Credit</th>
+                      <th class="text-right">Fine</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="mth">
                       <th colspan="3"></th>
                       <th class="text-right">1</th>
-                      <td>{{ date('F Y', strtotime($transaction->period)) }}</td>
+                      <td>{{ $transaction->period->formatLocalized('%B %Y') }}</td>
                       <td class="text-right">{{ number_format($transaction->payments->where('id', 1)->first()->pivot->amount ?? 0) }}</td>
                       <td class="text-right">{{ number_format($transaction->payments->where('id', 2)->first()->pivot->amount ?? 0) }}</td>
                     </tr>
                     <tr class="table-secondary table-sm">
-                      <th colspan="6" class="text-right">Tagihan</th>
+                      <th colspan="6" class="text-right">TAGIHAN</th>
                       <th class="text-right">{{ number_format(($transaction->payments->where('id', 1)->first()->pivot->amount ?? 0) + ($transaction->payments->where('id', 2)->first()->pivot->amount ?? 0)) }}</th>
                     </tr>
                     @foreach ($transaction->payments->except([1, 2]) as $payment)
