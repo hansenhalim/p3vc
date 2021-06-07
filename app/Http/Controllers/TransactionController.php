@@ -175,22 +175,27 @@ class TransactionController extends Controller
 
   public function report(Request $request)
   {
-    // $red = [1,2,3,11];
-    // $green = [4,5,6,7,8,9,10];
+    if (!($request->dateFrom && $request->dateTo)) return view('transaction.report');
 
-    // $dateFrom = $request->dateFrom ?? '2021-06-05 13:16:00';
-    // $dateTo = $request->dateTo ?? '2021-06-05 13:17:00';
+    $date['from'] = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
+    $date['to'] = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC');
 
-    // $transactions = Transaction::query()
-    //   ->with(['payments'])
-    //   ->whereBetween('created_at', [$dateFrom, $dateTo])
-    //   ->whereNotNull('approved_at')
-    //   ->paginate();
+    $transactions = Transaction::with(['payments'])
+      ->whereBetween('created_at', [$date['from'], $date['to']->addDay()->subSecond()])
+      ->whereNotNull('approved_at')
+      ->paginate();
+
+    foreach ($transactions as $transaction) {
+      $transaction->period = Carbon::make($transaction->period);
+      $transaction->approved_at = Carbon::make($transaction->approved_at);
+      foreach ($transaction->payments as $payment) {
+        $transaction->amount += $payment->pivot->amount;
+      }
+      $transaction->amount /= 2;
+    }
 
     // echo json_encode($transactions); exit();
 
-    // return view('transaction.report', compact('transactions'));
-
-    echo json_encode($request->all()); exit();
+    return view('transaction.report', compact('transactions'));
   }
 }
