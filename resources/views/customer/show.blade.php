@@ -90,7 +90,7 @@
                     </thead>
                     <tbody>
                       <tr class="table-light">
-                        <th class="text-right"><input type="checkbox" class="unt-chck"></th>
+                        <th class="text-right"><input type="checkbox" class="unt-chck" @if(!Auth::user()->hasRole('operator'))disabled @endif></th>
                         <th class="text-center">{{ $loop->iteration }}</th>
                         <th>{{ $unit->name }}</th>
                         <th>{{ $unit->customer->name }}</th>
@@ -113,7 +113,7 @@
                         @forelse ($unit->months as $month)
                           <tr class="mth" id="{{ $unit->id.$month['period']->format('my') }}">
                             <th colspan="4"></th>
-                            <th class="text-right"><input type="checkbox" class="mth-chck"></th>
+                            <th class="text-right"><input type="checkbox" class="mth-chck" @if(!Auth::user()->hasRole('operator'))disabled @endif></th>
                             <th class="text-center">{{ $loop->iteration }}</th>
                             <td>{{ $month['period']->formatLocalized('%B %Y') }}</td>
                             <td class="text-right">{{ number_format($month['credit']) }}</td>
@@ -206,7 +206,11 @@
                 </table>
               </div>
               <div class="card-footer d-flex justify-content-end">
-                <button id="sbmt-btn" type="submit" class="btn btn-primary btn-secondary" disabled></i>Submit</button>
+                @if(Auth::user()->hasRole('operator'))
+                  <button id="sbmt-btn" type="submit" class="btn btn-primary btn-secondary" disabled></i>Submit</button>
+                @else
+                  <button id="sbmt-btn-fk" type="button" class="btn btn-primary" onclick="alert('Because you are not an operator')"></i>Just lookin' around</button>
+                @endif
               </div>
             </form>
           </div>

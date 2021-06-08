@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+  public function __construct()
+  {
+    $this->payment_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    $this->credits = [1, 2, 3, 11];
+    $this->debits = [4, 5, 6, 7, 8, 9, 10];
+  }
   /**
    * Display a listing of the resource.
    *
@@ -51,8 +57,6 @@ class TransactionController extends Controller
    */
   public function store(Request $request)
   {
-    $credits = [1,2,3,11];
-
     foreach ($request->units as $item) {
       $unit = Unit::find($item['unit_id']);
 
@@ -62,7 +66,7 @@ class TransactionController extends Controller
           $balance = 0;
 
           foreach ($month['payments'] as $payment) {
-            if (in_array($payment['payment_id'], $credits)) $balance -= $payment['amount'];
+            if (in_array($payment['payment_id'], $this->credits)) $balance -= $payment['amount'];
             else $balance += $payment['amount'];
           }
 
@@ -77,9 +81,8 @@ class TransactionController extends Controller
             if (!$payment['amount']) continue;
             $transaction->payments()->attach($payment['payment_id'], ['amount' => $payment['amount']]);
           }
-          
-          if ($balance > 0) $transaction->payments()->attach(3, ['amount' => $balance]);
 
+          if ($balance > 0) $transaction->payments()->attach(3, ['amount' => $balance]);
         }
       }
     }
@@ -87,7 +90,7 @@ class TransactionController extends Controller
     // echo json_encode($request->all()); exit();
 
     $request->session()->flash('status', 'Successfully created transactions. Thankyou.');
-    
+
     return back();
   }
 
@@ -155,13 +158,13 @@ class TransactionController extends Controller
     switch ($request->approval) {
       case 'true':
         Transaction::find($id)
-        ->update([
-          'approved_by' => Auth::id(),
-          'approved_at' => now()
-        ]);
+          ->update([
+            'approved_by' => Auth::id(),
+            'approved_at' => now()
+          ]);
         $request->session()->flash('status', 'Successfully approved transactions. Thankyou.');
         break;
-      
+
       default:
         Transaction::destroy($id);
         $request->session()->flash('status', 'Successfully rejected transactions. Thankyou.');
@@ -180,19 +183,29 @@ class TransactionController extends Controller
     $date['from'] = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
     $date['to'] = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC');
 
-    $transactions = Transaction::with(['payments'])
+    $transactions = Transaction::with(['payments:id', 'unit:id,name'])
       ->whereBetween('created_at', [$date['from'], $date['to']->addDay()->subSecond()])
       ->whereNotNull('approved_at')
       ->paginate();
 
+    $paymentDetailSums = [0,0,0,0,0,0,0,0,0,0,0];
+
     foreach ($transactions as $transaction) {
       $transaction->period = Carbon::make($transaction->period);
       $transaction->approved_at = Carbon::make($transaction->approved_at);
-      foreach ($transaction->payments as $payment) {
-        $transaction->amount += $payment->pivot->amount;
+      $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
+
+      foreach ($this->payment_ids as $key => $id) {
+        $amount = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
+        $paymentDetails[$key] = $amount;
+        $paymentDetailSums[$key] += $amount;
       }
-      $transaction->amount /= 2;
+
+      $transaction->paymentDetails = $paymentDetails;
     }
+
+    $transactions->amountSum = $transactions->sum('amount');
+    $transactions->paymentDetailSums = $paymentDetailSums;
 
     // echo json_encode($transactions); exit();
 
