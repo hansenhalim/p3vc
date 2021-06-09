@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
+use Barryvdh\DomPDF\PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use stdClass;
 
 class TransactionController extends Controller
 {
@@ -150,7 +152,9 @@ class TransactionController extends Controller
 
   public function print()
   {
-    return redirect()->route('transactions.index');
+    $data = 'hansen';
+    $pdf = PDF::loadView('pdf.invoice', $data);
+    return $pdf->download('invoice.pdf');
   }
 
   public function approve(Request $request, $id)
@@ -180,15 +184,17 @@ class TransactionController extends Controller
   {
     if (!($request->dateFrom && $request->dateTo)) return view('transaction.report');
 
-    $date['from'] = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
-    $date['to'] = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC');
+    $date = new stdClass;
+    $date->from = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
+    $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
-    $transactions = Transaction::with(['payments:id', 'unit:id,name'])
-      ->whereBetween('created_at', [$date['from'], $date['to']->addDay()->subSecond()])
+    $transactions = Transaction::query()
+      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->whereBetween('created_at', [$date->from, $date->to])
       ->whereNotNull('approved_at')
       ->paginate();
 
-    $paymentDetailSums = [0,0,0,0,0,0,0,0,0,0,0];
+    $allTransactions = Transaction::getTotals();
 
     foreach ($transactions as $transaction) {
       $transaction->period = Carbon::make($transaction->period);
@@ -196,16 +202,15 @@ class TransactionController extends Controller
       $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
 
       foreach ($this->payment_ids as $key => $id) {
-        $amount = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
-        $paymentDetails[$key] = $amount;
-        $paymentDetailSums[$key] += $amount;
+        $paymentDetails[$key] = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
+        $paymentDetailsSums[$key] = (int) ($allTransactions->firstWhere('id', $id)->total ?? 0);
       }
 
       $transaction->paymentDetails = $paymentDetails;
     }
 
-    $transactions->amountSum = $transactions->sum('amount');
-    $transactions->paymentDetailSums = $paymentDetailSums;
+    $transactions->paymentDetailsSums = $paymentDetailsSums;
+    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum()/2;
 
     // echo json_encode($transactions); exit();
 

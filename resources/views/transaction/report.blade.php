@@ -39,6 +39,7 @@
                       <th>CIF</th>
                       <th>Unit</th>
                       <th>Period</th>
+                      <th>Created&nbsp;At</th>
                       <th>Approved&nbsp;At</th>
                       <th>Amount</th>
                       <th>TAGIHAN</th>
@@ -60,6 +61,7 @@
                         <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
                         <td class="align-middle">{{ $transaction->unit->name }}</td>
                         <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
+                        <td class="align-middle">{{ $transaction->created_at->setTimezone('Asia/Jakarta') }}</td>
                         <td class="align-middle">{{ $transaction->approved_at->setTimezone('Asia/Jakarta') }}</td>
                         <td class="align-middle text-right">{{ number_format($transaction->amount) }}</td>
                         @foreach ($transaction->paymentDetails as $paymentDetail)
@@ -68,16 +70,16 @@
                       </tr>
                       @if ($loop->last)
                         <tr class="bg-dark">
-                          <th class="align-middle text-right text-center" colspan="4">Total(s)</th>
-                          <th class="align-middle text-right">{{ number_format($transaction->amountSum) }}</th>
-                          @foreach ($transactions->paymentDetailSums as $paymentDetailSum)
-                            <th class="align-middle text-right">{{ number_format($paymentDetailSum) }}</th>
+                          <th class="align-middle text-right text-center" colspan="5">Total(s)</th>
+                          <th class="align-middle text-right">{{ number_format($transactions->paymentDetailsSumsSum) }}</th>
+                          @foreach ($transactions->paymentDetailsSums as $paymentDetailsSum)
+                            <th class="align-middle text-right">{{ number_format($paymentDetailsSum) }}</th>
                           @endforeach
                         </tr>
                       @endif
                     @empty
                       <tr>
-                        <td colspan="16" style="text-align: center">Oops, nothing found here :(</td>
+                        <td colspan="17" style="text-align: center">Oops, nothing found here :(</td>
                       </tr>
                     @endforelse
                   </tbody>
