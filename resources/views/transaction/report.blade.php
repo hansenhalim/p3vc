@@ -19,9 +19,7 @@
               <form action="{{ route('transactions.report') }}" method="get">
                 <div class="row">
                   <div class="col-md-6 col-xl-4 mb-2">
-                    <div id="reportrange"
-                      class="border rounded p-2"
-                      style="cursor: pointer">
+                    <div id="reportrange" class="border rounded p-2" style="cursor: pointer">
                       <i class="cil-calendar align-text-top"></i>&nbsp;<span></span>
                       <input type="hidden" name="dateFrom">
                       <input type="hidden" name="dateTo">
@@ -101,17 +99,12 @@
   </div>
 
   <script>
-    function getQueryVariable(variable)
-    { 
+    function getQueryVariable(variable) {
       var query = window.location.search.substring(1)
       var vars = query.split("&")
-      for (var i=0;i<vars.length;i++)
-      {
-        var pair = vars[i].split("="); 
-        if (pair[0] == variable)
-        { 
-          return pair[1]
-        } 
+      for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split("=");
+        if (pair[0] == variable) return pair[1]
       }
       return undefined
     }

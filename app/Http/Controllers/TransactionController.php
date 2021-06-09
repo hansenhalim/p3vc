@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
-use Barryvdh\DomPDF\PDF;
+use \PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -152,9 +152,9 @@ class TransactionController extends Controller
 
   public function print()
   {
-    $data = 'hansen';
+    $data = ['name' => '404 not found'];
     $pdf = PDF::loadView('pdf.invoice', $data);
-    return $pdf->download('invoice.pdf');
+    return $pdf->download('report.pdf');
   }
 
   public function approve(Request $request, $id)
@@ -210,7 +210,7 @@ class TransactionController extends Controller
     }
 
     $transactions->paymentDetailsSums = $paymentDetailsSums;
-    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum()/2;
+    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum() / 2;
 
     // echo json_encode($transactions); exit();
 
