@@ -196,6 +196,9 @@ class TransactionController extends Controller
 
     $allTransactions = Transaction::getTotals();
 
+    $paymentDetails = [];
+    $paymentDetailsSums = [];
+
     foreach ($transactions as $transaction) {
       $transaction->period = Carbon::make($transaction->period);
       $transaction->approved_at = Carbon::make($transaction->approved_at);
