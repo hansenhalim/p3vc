@@ -22,11 +22,12 @@ class Transaction extends Model
     return $this->belongsToMany(Payment::class)->withPivot('amount');
   }
 
-  public static function getTotals()
+  public static function getTotals($date)
   {
     return DB::table('payment_transaction AS pt')
       ->join('payments AS p', 'pt.payment_id', '=', 'p.id')
       ->join('transactions AS t', 't.id', '=', 'pt.transaction_id')
+      ->whereBetween('t.created_at', [$date->from, $date->to])
       ->select(DB::raw('SUM(amount) as total, p.id'))
       ->orderBy('payment_id')
       ->groupBy('p.id')

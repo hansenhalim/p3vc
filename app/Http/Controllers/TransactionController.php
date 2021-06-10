@@ -194,7 +194,7 @@ class TransactionController extends Controller
       ->whereNotNull('approved_at')
       ->paginate();
 
-    $allTransactions = Transaction::getTotals();
+    $allTransactions = Transaction::getTotals($date);
 
     $paymentDetails = [];
     $paymentDetailsSums = [];
