@@ -31,7 +31,7 @@
                 </div>
               </form>
               @isset($transactions)
-                <table class="table table-responsive table-striped table-bordered">
+                <table class="table table-responsive table-striped table-bordered text-nowrap">
                   <thead class="thead-dark">
                     <tr>
                       <th>CIF</th>
