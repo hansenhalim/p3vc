@@ -92,15 +92,7 @@ class CustomerController extends Controller
       $balance = 0;
       foreach ($unit->transactions as $transaction) {
         foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 3:
-              $balance += $payment->pivot->amount;
-              break;
-            
-            case 10:
-              $balance -= $payment->pivot->amount;
-              break;
-          }
+          $payment->id === 3 ? $balance += $payment->pivot->amount : $balance -= $payment->pivot->amount;
         }
       }
       $unit['balance'] = $balance;
