@@ -40,7 +40,7 @@
                 </div>
               </form>
               <table class="table table-striped">
-                <thead>
+                <thead class="thead-dark">
                   <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>

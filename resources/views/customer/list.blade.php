@@ -44,12 +44,12 @@
                 </div>
               </form>
               <table class="table table-responsive-sm table-striped">
-                <thead>
+                <thead class="thead-dark">
                   <tr>
                     <th>CIF</th>
                     <th>Name</th>
-                    <th>Units</th>
                     <th>Phone</th>
+                    <th>Units</th>
                     <th>More</th>
                   </tr>
                 </thead>
@@ -58,8 +58,8 @@
                     <tr>
                       <th class="align-middle">#{{ $customer->id }}</th>
                       <td class="align-middle">{{ $customer->name }}</td>
-                      <td class="align-middle">{{ $customer->units_count }}</td>
                       <td class="align-middle">{!! $customer->phone_number ?? '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">{{ $customer->units_count }}</td>
                       <td class="align-middle">
                         <div class="dropdown">
                           <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">

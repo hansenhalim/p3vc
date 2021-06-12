@@ -40,15 +40,15 @@
                 </div>
               </form>
               <table class="table table-responsive-sm table-striped">
-                <thead>
+                <thead class="thead-dark">
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Unit</th>
-                    <th scope="col">Cluster</th>
-                    <th scope="col">Area&nbsp;(m<sup>2</sup>)</th>
-                    <th scope="col">Balance</th>
-                    <th scope="col">Credit</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Unit</th>
+                    <th>Cluster</th>
+                    <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
+                    <th class="text-right">Balance</th>
+                    <th class="text-right">Credit</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -60,9 +60,9 @@
                       <td>{!! $unit->customer->name ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
                       <td>{{ $unit->name }}</td>
                       <td>{{ $unit->cluster->name }}</td>
-                      <td>{{ $unit->area_sqm }}</td>
-                      <td>{{ $unit->balance }}</td>
-                      <td>{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                      <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                      <td class="text-right">{{ number_format($unit->balance) }}</td>
+                      <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
                     </tr>
                   @empty
                     <tr>

@@ -27,6 +27,9 @@
                   </div>
                   <div class="col mb-2">
                     <button type="submit" class="btn btn-primary">Generate</button>
+                    @isset($transactions)
+                      <a class="btn btn-outline-primary" href="{{ route('transactions.report.print', request()->input()) }}" target="_blank" rel="noopener noreferrer"><i class="cil-cloud-download align-text-bottom"></i></a>
+                    @endisset
                   </div>
                 </div>
               </form>

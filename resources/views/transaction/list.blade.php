@@ -16,14 +16,14 @@
                   </button>
                 </div>
               @endif
-              <table class="table table-responsive-sm table-striped">
-                <thead>
+              <table class="table table-responsive-sm table-striped text-nowrap">
+                <thead class="thead-dark">
                   <tr>
                     <th>CIF</th>
                     <th>Unit</th>
                     <th>Period</th>
                     <th>Approved At</th>
-                    <th>Amount</th>
+                    <th class="text-right">Amount</th>
                     <th>More</th>
                   </tr>
                 </thead>
@@ -34,14 +34,18 @@
                       <td class="align-middle">{{ $transaction->unit->name }}</td>
                       <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
                       <td class="align-middle">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge bg-danger text-white">None</span>' !!}</td>
-                      <td class="align-middle">{{ number_format($transaction->amount) }}</td>
+                      <td class="align-middle text-right">{{ number_format($transaction->amount) }}</td>
                       <td class="align-middle">
                         <div class="dropdown">
-                          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">Action</button>
+                          <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown">Action</button>
                           <div class="dropdown-menu">
-                            <a class="dropdown-item" href="{{ route('transactions.show', ['transaction' => $transaction->id]) }}"><i class="cil-info"></i>&nbsp;Show</a>
-                            @if(Auth::user()->hasRole('operator') && $transaction->approved_at)
-                              <a class="dropdown-item" href="{{ route('transactions.print') }}"><i class="cil-print"></i>&nbsp;Print</a>
+                            <a class="dropdown-item"
+                              href="{{ route('transactions.show', ['transaction' => $transaction->id]) }}"><i
+                                class="cil-info"></i>&nbsp;Show</a>
+                            @if (Auth::user()->hasRole('operator') && $transaction->approved_at)
+                              <a class="dropdown-item" href="{{ route('transactions.print', ['transaction' => $transaction->id]) }}" target="_blank"
+                                rel="noopener noreferrer"><i class="cil-print"></i>&nbsp;Print</a>
                             @endif
                           </div>
                         </div>
@@ -59,7 +63,8 @@
               </div>
             </div>
             <div class="card-footer">
-              Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} entries
+              Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of
+              {{ $transactions->total() }} entries
             </div>
           </div>
         </div>

@@ -95,8 +95,8 @@
                         <th>{{ $unit->name }}</th>
                         <th>{{ $unit->customer->name }}</th>
                         <th colspan="2">{{ $unit->cluster->name }}</th>
-                        <td class="text-right">{{ $unit->area_sqm }}</td>
-                        <td class="text-right">{{ $unit->balance }}</td>
+                        <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                        <td class="text-right">{{ number_format($unit->balance) }}</td>
                         <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
                         <input type="hidden" name="units[{{ $loop->index }}][unit_id]" value="{{ $unit->id }}">
                       </tr>

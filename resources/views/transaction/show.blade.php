@@ -10,7 +10,7 @@
             @csrf
             <div class="card-header">Unit List</div>
             <div class="card-body">
-              <table class="table table-responsive-md">
+              <table class="table table-responsive-md text-nowrap">
                 <thead class="thead-dark">
                   <tr>
                     <th class="text-center">#</th>
@@ -28,8 +28,8 @@
                     <th>{{ $transaction->unit->name }}</th>
                     <th>{{ $transaction->unit->customer->name }}</th>
                     <th>{{ $transaction->unit->cluster->name }}</th>
-                    <td class="text-right">{{ $transaction->unit->area_sqm }}</td>
-                    <td class="text-right">0</td>
+                    <td class="text-right">{{ number_format($transaction->unit->area_sqm) }}</td>
+                    <td class="text-right">{{ number_format($transaction->unit->balance) }}</td>
                     <td class="text-right">{{ number_format($transaction->unit->cluster->prices->last()->cost * ($transaction->unit->cluster->prices->last()->per == 'sqm' ? $transaction->unit->area_sqm : 1)) }}</td>
                   </tr>
                   <thead class="thead-light">
