@@ -34,7 +34,15 @@ class UnitController extends Controller
       $balance = 0;
       foreach ($unit->transactions as $transaction) {
         foreach ($transaction->payments as $payment) {
-          $payment->id === 3 ? $balance += $payment->pivot->amount : $balance -= $payment->pivot->amount;
+          switch ($payment->id) {
+            case 3:
+              $balance += $payment->pivot->amount;
+              break;
+            
+            case 10:
+              $balance -= $payment->pivot->amount;
+              break;
+          }
         }
       }
       $unit['balance'] = $balance;

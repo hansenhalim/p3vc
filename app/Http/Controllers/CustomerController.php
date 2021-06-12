@@ -57,6 +57,24 @@ class CustomerController extends Controller
       ->get();
 
     foreach ($units as $unit) {
+      $balance = 0;
+      foreach ($unit->transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 3:
+              $balance += $payment->pivot->amount;
+              break;
+            
+            case 10:
+              $balance -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+      $unit['balance'] = $balance;
+    }
+
+    foreach ($units as $unit) {
       $startMonth = $unit->created_at->firstOfMonth();
       $endMonth = now()->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
@@ -87,16 +105,6 @@ class CustomerController extends Controller
     }
 
     $payments = Payment::get(['id', 'name'])->only([4,5,6,7,8,9,10]);
-
-    foreach ($units as $unit) {
-      $balance = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          $payment->id === 3 ? $balance += $payment->pivot->amount : $balance -= $payment->pivot->amount;
-        }
-      }
-      $unit['balance'] = $balance;
-    }
 
     // echo json_encode($units);exit();
     
