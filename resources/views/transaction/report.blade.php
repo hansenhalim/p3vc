@@ -40,20 +40,20 @@
                       <th>CIF</th>
                       <th>Unit</th>
                       <th>Period</th>
-                      <th>Created&nbsp;At</th>
-                      <th>Approved&nbsp;At</th>
-                      <th>Amount</th>
-                      <th>TAGIHAN</th>
-                      <th>DENDA</th>
-                      <th>TOP&nbsp;UP&nbsp;SALDO</th>
-                      <th>OTHER</th>
-                      <th>BANK&nbsp;TRANSFER</th>
-                      <th>TUNAI</th>
-                      <th>LINKAJA</th>
-                      <th>HUTANG</th>
-                      <th>DISKON</th>
-                      <th>SALDO&nbsp;UNIT</th>
-                      <th>BAYAR&nbsp;HUTANG</th>
+                      <th>Created At</th>
+                      <th>Approved At</th>
+                      <th class="text-right">Amount</th>
+                      <th class="text-right">TAGIHAN</th>
+                      <th class="text-right">DENDA</th>
+                      <th class="text-right">T.SALDO</th>
+                      <th class="text-right">OTHER</th>
+                      <th class="text-right">BANK</th>
+                      <th class="text-right">TUNAI</th>
+                      <th class="text-right">LINKAJA</th>
+                      <th class="text-right">HUTANG</th>
+                      <th class="text-right">DISKON</th>
+                      <th class="text-right">SALDO</th>
+                      <th class="text-right">B.HUTANG</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -80,7 +80,7 @@
                       @endif
                     @empty
                       <tr>
-                        <td colspan="17" style="text-align: center">Oops, nothing found here :(</td>
+                        <td colspan="17" class="text-center">Oops, nothing found here :(</td>
                       </tr>
                     @endforelse
                   </tbody>
