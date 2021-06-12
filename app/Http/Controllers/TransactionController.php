@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
-use \PDF;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -150,11 +150,48 @@ class TransactionController extends Controller
     //
   }
 
-  public function print()
+  public function printReport(Request $request)
   {
-    $data = ['name' => '404 not found'];
+    $date = new stdClass;
+    $date->from = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
+    $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
+
+    $transactions = Transaction::query()
+      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->whereBetween('created_at', [$date->from, $date->to])
+      ->whereNotNull('approved_at')
+      ->paginate();
+
+    $allTransactions = Transaction::getTotals($date);
+
+    $paymentDetails = [];
+    $paymentDetailsSums = [];
+
+    foreach ($transactions as $transaction) {
+      $transaction->period = Carbon::make($transaction->period);
+      $transaction->approved_at = Carbon::make($transaction->approved_at);
+      $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
+
+      foreach ($this->payment_ids as $key => $id) {
+        $paymentDetails[$key] = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
+        $paymentDetailsSums[$key] = (int) ($allTransactions->firstWhere('id', $id)->total ?? 0);
+      }
+
+      $transaction->paymentDetails = $paymentDetails;
+    }
+
+    $transactions->paymentDetailsSums = $paymentDetailsSums;
+    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum() / 2;
+
+    $pdf = PDF::loadView('pdf.report', $transactions)->setPaper('a4', 'landscape');;
+    return $pdf->stream('report.pdf');
+  }
+
+  public function print($id)
+  {
+    $data = ['name' => $id];
     $pdf = PDF::loadView('pdf.invoice', $data);
-    return $pdf->download('report.pdf');
+    return $pdf->stream('report.pdf');
   }
 
   public function approve(Request $request, $id)

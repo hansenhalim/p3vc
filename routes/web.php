@@ -31,10 +31,11 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
 
   Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
   Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
   Route::group(['middleware' => ['role:operator']], function () {
-    Route::get('/transactions/print', [TransactionController::class, 'print'])->name('transactions.print');
+    Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
 
     Route::resource('units', UnitController::class);
     Route::resource('clusters', ClusterController::class);
