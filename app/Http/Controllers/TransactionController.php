@@ -160,7 +160,7 @@ class TransactionController extends Controller
       ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
       ->whereBetween('created_at', [$date->from, $date->to])
       ->whereNotNull('approved_at')
-      ->paginate();
+      ->get();
 
     $allTransactions = Transaction::getTotals($date);
 
@@ -183,7 +183,10 @@ class TransactionController extends Controller
     $transactions->paymentDetailsSums = $paymentDetailsSums;
     $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum() / 2;
 
-    $pdf = PDF::loadView('pdf.report', $transactions)->setPaper('a4', 'landscape');;
+    // echo json_encode($transactions); exit();
+
+    $data = ['transactions' => $transactions];
+    $pdf = PDF::loadView('pdf.report', $data)->setPaper('a4', 'landscape');
     return $pdf->stream('report.pdf');
   }
 
