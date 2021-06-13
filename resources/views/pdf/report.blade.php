@@ -61,8 +61,8 @@
           <th style="text-align: left">#{{ $transaction->unit->customer_id }}</th>
           <td style="text-align: left">{{ $transaction->unit->name }}</td>
           <td style="text-align: left">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
-          <td style="text-align: left">{{ $transaction->created_at->setTimezone('Asia/Jakarta') }}</td>
-          <td style="text-align: left">{{ $transaction->approved_at->setTimezone('Asia/Jakarta') }}</td>
+          <td style="text-align: left">{{ $transaction->created_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
+          <td style="text-align: left">{{ $transaction->approved_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
           <td style="text-align: right">{{ number_format($transaction->amount) }}</td>
           @foreach ($transaction->paymentDetails as $paymentDetail)
             <td style="text-align: right">{{ number_format($paymentDetail) }}</td>
