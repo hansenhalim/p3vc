@@ -29,6 +29,7 @@ class Transaction extends Model
       ->join('transactions AS t', 't.id', '=', 'pt.transaction_id')
       ->whereBetween('t.created_at', [$date->from, $date->to])
       ->whereNull('t.deleted_at')
+      ->whereNotNull('approved_at')
       ->select(DB::raw('SUM(amount) as total, p.id'))
       ->orderBy('payment_id')
       ->groupBy('p.id')
