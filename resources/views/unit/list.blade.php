@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-7">
           <div class="card">
             <div class="card-header">Unit List</div>
             <div class="card-body">
@@ -39,30 +39,32 @@
                   </div>
                 </div>
               </form>
-              <table class="table table-responsive-sm table-striped">
+              <table class="table table-responsive-sm table-striped text-nowrap">
                 <thead class="thead-dark">
                   <tr>
-                    <th>#</th>
-                    <th>Name</th>
+                    <th>CIF</th>
                     <th>Unit</th>
-                    <th>Cluster</th>
-                    <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                    <th class="text-right">Balance</th>
-                    <th class="text-right">Credit</th>
+                    <th>Name</th>
+                    {{-- <th>Cluster</th> --}}
+                    {{-- <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th> --}}
+                    {{-- <th class="text-right">Balance</th> --}}
+                    {{-- <th class="text-right">Credit</th> --}}
+                    <th class="text-right">Total tunggakan</th>
+                    <th class="text-right">Total periode</th>
                   </tr>
                 </thead>
                 <tbody>
                   @forelse ($units as $unit)
                     <tr>
-                      <th scope="row">
-                        {{ ($units->currentpage() - 1) * $units->perpage() + $loop->iteration }}
-                      </th>
-                      <td>{!! $unit->customer->name ?? '<span class="badge bg-danger text-white">NONE</span>' !!}</td>
+                      <th>{{ $unit->customer->id }}</th>
                       <td>{{ $unit->name }}</td>
-                      <td>{{ $unit->cluster->name }}</td>
-                      <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
-                      <td class="text-right">{{ number_format($unit->balance) }}</td>
+                      <td>{{ $unit->customer->name }}</td>
+                      {{-- <td>{{ $unit->cluster->name }}</td> --}}
+                      {{-- <td class="text-right">{{ number_format($unit->area_sqm) }}</td> --}}
+                      {{-- <td class="text-right">{{ number_format($unit->balance) }}</td> --}}
                       <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                      {{-- <td class="text-right">{{ number_format(0) }}</td> --}}
+                      <td class="text-right">{{ 0 }}</td>
                     </tr>
                   @empty
                     <tr>
