@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
+use App\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class TransactionController extends Controller
   public function index()
   {
     $transactions = Transaction::query()
+      ->withoutGlobalScope(ApprovedScope::class)
       ->with(['unit:id,name,customer_id'])
       ->withSum('payments', 'payment_transaction.amount')
       ->latest()
@@ -100,6 +102,7 @@ class TransactionController extends Controller
   public function show($id)
   {
     $transaction = Transaction::query()
+      ->withoutGlobalScope(ApprovedScope::class)
       ->where('id', $id)
       ->with(['unit.customer', 'payments'])
       ->first();
@@ -194,7 +197,9 @@ class TransactionController extends Controller
   {
     switch ($request->approval) {
       case 'true':
-        Transaction::find($id)
+        Transaction::query()
+          ->withoutGlobalScope(ApprovedScope::class)
+          ->where('id', $id)
           ->update([
             'approved_by' => Auth::id(),
             'approved_at' => now()

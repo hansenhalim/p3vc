@@ -36,7 +36,7 @@ class Transaction extends Model
 
   public function getApprovedAtAttribute($value)
   {
-    return Carbon::parse($value)->diffForHumans();
+    return Carbon::make($value);
   }
 
   public static function getTotals($date)

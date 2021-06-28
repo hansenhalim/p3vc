@@ -63,7 +63,7 @@
                         <td class="align-middle">{{ $transaction->unit->name }}</td>
                         <td class="align-middle">{{ $transaction->period }}</td>
                         <td class="align-middle">{{ $transaction->created_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
-                        <td class="align-middle">{{ $transaction->approved_at }}</td>
+                        <td class="align-middle">{{ $transaction->approved_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
                         <td class="align-middle text-right">{{ number_format($transaction->amount) }}</td>
                         @foreach ($transaction->paymentDetails as $paymentDetail)
                           <td class="align-middle text-right">{{ number_format($paymentDetail) }}</td>
