@@ -25,16 +25,11 @@ class TransactionController extends Controller
    */
   public function index()
   {
-    $transactions = Transaction::with(['unit:id,name,customer_id', 'payments:id'])->latest()->paginate();
-
-    foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
-      foreach ($transaction->payments as $payment) {
-        $transaction->amount += $payment->pivot->amount;
-      }
-      $transaction->amount /= 2;
-    }
+    $transactions = Transaction::query()
+      ->with(['unit:id,name,customer_id'])
+      ->withSum('payments', 'payment_transaction.amount')
+      ->latest()
+      ->paginate();
 
     // echo json_encode($transactions); exit();
 
