@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\ApprovedScope;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
@@ -21,6 +22,11 @@ class Transaction extends Model
   public function payments()
   {
     return $this->belongsToMany(Payment::class)->withPivot('amount');
+  }
+
+  protected static function booted()
+  {
+    static::addGlobalScope(new ApprovedScope);
   }
 
   public function getPeriodAttribute($value)
