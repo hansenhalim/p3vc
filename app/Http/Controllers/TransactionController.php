@@ -104,8 +104,6 @@ class TransactionController extends Controller
       ->with(['unit.customer', 'payments'])
       ->first();
 
-    $transaction->period = Carbon::make($transaction->period);
-
     // echo json_encode($transaction); exit();
 
     return view('transaction.show', compact('transaction'));
@@ -235,8 +233,6 @@ class TransactionController extends Controller
     $paymentDetailsSums = [];
 
     foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
       $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
 
       foreach ($this->payment_ids as $key => $id) {

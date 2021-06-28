@@ -32,8 +32,8 @@
                     <tr>
                       <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
                       <td class="align-middle">{{ $transaction->unit->name }}</td>
-                      <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
-                      <td class="align-middle">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge bg-danger text-white">None</span>' !!}</td>
+                      <td class="align-middle">{{ $transaction->period }}</td>
+                      <td class="align-middle">{!! $transaction->approved_at ?? : '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle text-right">{{ number_format($transaction->amount) }}</td>
                       <td class="align-middle">
                         <div class="dropdown">

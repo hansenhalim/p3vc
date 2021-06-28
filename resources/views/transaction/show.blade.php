@@ -45,7 +45,7 @@
                     <tr class="mth">
                       <th colspan="3"></th>
                       <th class="text-right">1</th>
-                      <td>{{ $transaction->period->formatLocalized('%B %Y') }}</td>
+                      <td>{{ $transaction->period }}</td>
                       <td class="text-right">{{ number_format($transaction->payments->where('id', 1)->first()->pivot->amount ?? 0) }}</td>
                       <td class="text-right">{{ number_format($transaction->payments->where('id', 2)->first()->pivot->amount ?? 0) }}</td>
                     </tr>
