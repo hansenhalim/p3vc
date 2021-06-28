@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,16 @@ class Transaction extends Model
   public function payments()
   {
     return $this->belongsToMany(Payment::class)->withPivot('amount');
+  }
+
+  public function getPeriodAttribute($value)
+  {
+    return Carbon::parse($value)->formatLocalized('%b %Y');
+  }
+
+  public function getApprovedAtAttribute($value)
+  {
+    return Carbon::parse($value)->diffForHumans();
   }
 
   public static function getTotals($date)
