@@ -153,9 +153,8 @@ class TransactionController extends Controller
     $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
     $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->with(['payments:id', 'unit:id,name,customer_id'])
       ->whereBetween('created_at', [$date->from, $date->to])
-      ->whereNotNull('approved_at')
       ->get();
 
     $allTransactions = Transaction::getTotals($date);
@@ -164,8 +163,6 @@ class TransactionController extends Controller
     $paymentDetailsSums = [];
 
     foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
       $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
 
       foreach ($this->payment_ids as $key => $id) {
@@ -227,9 +224,8 @@ class TransactionController extends Controller
     $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
     $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->with(['payments:id', 'unit:id,name,customer_id'])
       ->whereBetween('created_at', [$date->from, $date->to])
-      ->whereNotNull('approved_at')
       ->paginate();
 
     $allTransactions = Transaction::getTotals($date);

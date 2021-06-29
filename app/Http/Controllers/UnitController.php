@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Cluster;
 use App\Models\Customer;
+use Illuminate\Database\Eloquent\Builder;
 
 class UnitController extends Controller
 {
@@ -16,39 +17,17 @@ class UnitController extends Controller
     $sort = $request->get('sort') ?? 'id';
     $order = $request->get('order') ?? 'asc';
 
-    $query = Unit::query();
+    $units = Unit::query()
+      ->with(['customer:id,name', 'cluster:id,name'])
+      ->withCount(['transactions' => function (Builder $query) {
+        $query->where('content', 'like', 'code%');
+      }])
+      ->orderBy($sort, $order)
+      ->when($key, fn ($query, $key) => $query->where('name', 'like', '%' . $key . '%'))
+      ->paginate();
 
-    $query->with(['customer:id,name', 'cluster:id,name', 'transactions.payments' => function ($query) {
-      $query->whereIn('payment_id', [3, 10]);
-    }]);
-    
-    $query->orderBy($sort, $order);
-
-    $query->when($key, function ($query, $key) {
-      return $query->where('name', 'like', '%' . $key . '%');
-    });
-
-    $units = $query->paginate();
-
-    foreach ($units as $unit) {
-      $balance = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 3:
-              $balance += $payment->pivot->amount;
-              break;
-            
-            case 10:
-              $balance -= $payment->pivot->amount;
-              break;
-          }
-        }
-      }
-      $unit['balance'] = $balance;
-    }
-
-    // echo json_encode($units);exit();
+    echo json_encode($units);
+    exit;
 
     return view('unit.list', compact('units'));
   }
