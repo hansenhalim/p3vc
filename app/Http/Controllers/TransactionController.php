@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\Unit;
+use App\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,16 +26,12 @@ class TransactionController extends Controller
    */
   public function index()
   {
-    $transactions = Transaction::with(['unit:id,name,customer_id', 'payments:id'])->latest()->paginate();
-
-    foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
-      foreach ($transaction->payments as $payment) {
-        $transaction->amount += $payment->pivot->amount;
-      }
-      $transaction->amount /= 2;
-    }
+    $transactions = Transaction::query()
+      ->withoutGlobalScope(ApprovedScope::class)
+      ->with(['unit:id,name,customer_id'])
+      ->withSum('payments', 'payment_transaction.amount')
+      ->latest()
+      ->paginate();
 
     // echo json_encode($transactions); exit();
 
@@ -106,11 +103,10 @@ class TransactionController extends Controller
   public function show($id)
   {
     $transaction = Transaction::query()
+      ->withoutGlobalScope(ApprovedScope::class)
       ->where('id', $id)
       ->with(['unit.customer', 'payments'])
       ->first();
-
-    $transaction->period = Carbon::make($transaction->period);
 
     // echo json_encode($transaction); exit();
 
@@ -158,9 +154,8 @@ class TransactionController extends Controller
     $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
     $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->with(['payments:id', 'unit:id,name,customer_id'])
       ->whereBetween('created_at', [$date->from, $date->to])
-      ->whereNotNull('approved_at')
       ->get();
 
     $allTransactions = Transaction::getTotals($date);
@@ -169,8 +164,6 @@ class TransactionController extends Controller
     $paymentDetailsSums = [];
 
     foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
       $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
 
       foreach ($this->payment_ids as $key => $id) {
@@ -202,7 +195,9 @@ class TransactionController extends Controller
   {
     switch ($request->approval) {
       case 'true':
-        Transaction::find($id)
+        Transaction::query()
+          ->withoutGlobalScope(ApprovedScope::class)
+          ->where('id', $id)
           ->update([
             'approved_by' => Auth::id(),
             'approved_at' => now()
@@ -230,9 +225,8 @@ class TransactionController extends Controller
     $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
     $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id', 'unit.customer:id'])
+      ->with(['payments:id', 'unit:id,name,customer_id'])
       ->whereBetween('created_at', [$date->from, $date->to])
-      ->whereNotNull('approved_at')
       ->paginate();
 
     $allTransactions = Transaction::getTotals($date);
@@ -241,8 +235,6 @@ class TransactionController extends Controller
     $paymentDetailsSums = [];
 
     foreach ($transactions as $transaction) {
-      $transaction->period = Carbon::make($transaction->period);
-      $transaction->approved_at = Carbon::make($transaction->approved_at);
       $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
 
       foreach ($this->payment_ids as $key => $id) {
