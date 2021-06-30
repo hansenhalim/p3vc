@@ -57,6 +57,24 @@ class CustomerController extends Controller
       ->get();
 
     foreach ($units as $unit) {
+      $debt = 0;
+      foreach ($unit->transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 11:
+              $debt += $payment->pivot->amount;
+              break;
+              
+            case 8:
+              $debt -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+      $unit['debt'] = $debt;
+    }
+
+    foreach ($units as $unit) {
       $balance = 0;
       foreach ($unit->transactions as $transaction) {
         foreach ($transaction->payments as $payment) {

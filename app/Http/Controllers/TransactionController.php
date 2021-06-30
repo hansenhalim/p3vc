@@ -59,6 +59,7 @@ class TransactionController extends Controller
    */
   public function store(Request $request)
   {
+    // dd($request->all());
     foreach ($request->units as $item) {
       $unit = Unit::find($item['unit_id']);
 

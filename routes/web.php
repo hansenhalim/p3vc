@@ -38,6 +38,7 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
     Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
 
     Route::resource('units', UnitController::class);
+    Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
     Route::resource('clusters', ClusterController::class);
     Route::resource('customers', CustomerController::class)->except(['index', 'show']);
     Route::resource('payments', PaymentController::class);
