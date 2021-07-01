@@ -31,7 +31,7 @@ class Transaction extends Model
 
   public function getPeriodAttribute($value)
   {
-    return Carbon::parse($value)->formatLocalized('%b %Y');
+    return Carbon::parse($value);
   }
 
   public function getApprovedAtAttribute($value)
