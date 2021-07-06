@@ -57,45 +57,32 @@ class CustomerController extends Controller
       ->get();
 
     foreach ($units as $unit) {
-      $debt = 0;
+      $unit['balance'] = 0;
+      $unit['debt'] = 0;
+      
       foreach ($unit->transactions as $transaction) {
         foreach ($transaction->payments as $payment) {
           switch ($payment->id) {
             case 11:
-              $debt += $payment->pivot->amount;
+              $unit['debt'] += $payment->pivot->amount;
               break;
-              
             case 8:
-              $debt -= $payment->pivot->amount;
+              $unit['debt'] -= $payment->pivot->amount;
               break;
-          }
-        }
-      }
-      $unit['debt'] = $debt;
-    }
-
-    foreach ($units as $unit) {
-      $balance = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
             case 3:
-              $balance += $payment->pivot->amount;
+              $unit['balance'] += $payment->pivot->amount;
               break;
-            
             case 10:
-              $balance -= $payment->pivot->amount;
+              $unit['balance'] -= $payment->pivot->amount;
               break;
           }
         }
       }
-      $unit['balance'] = $balance;
-    }
 
-    foreach ($units as $unit) {
       $startMonth = $unit->created_at->firstOfMonth();
-      $endMonth = now()->firstOfMonth();
+      $endMonth = now()->addMonths(request('add-month', 0))->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
+      $diffInMonthsReal = $startMonth->diffInMonths(now()->firstOfMonth());
       $months = [];
 
       for ($i=0; $i < $diffInMonths; $i++) {
@@ -115,7 +102,7 @@ class CustomerController extends Controller
         $months[] = [
           'period' => $period,
           'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
-          'fine' => 2000 * ($diffInMonths - $i - 1)
+          'fine' => 2000 * max($diffInMonthsReal - $i - 1, 0)
         ];
       }
 

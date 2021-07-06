@@ -60,7 +60,7 @@
         <tr>
           <th style="text-align: left">#{{ $transaction->unit->customer_id }}</th>
           <td style="text-align: left">{{ $transaction->unit->name }}</td>
-          <td style="text-align: left">{{ $transaction->period }}</td>
+          <td style="text-align: left">{{ $transaction->period->formatLocalized('%B %Y') }}</td>
           <td style="text-align: left">{{ $transaction->created_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
           <td style="text-align: left">{{ $transaction->approved_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') }}</td>
           <td style="text-align: right">{{ number_format($transaction->amount) }}</td>
