@@ -28,3 +28,4 @@ composer.phar
 coreui.zip
 .htaccess
 database/seeders/DatabaseSeeder.php
+public/error_log
