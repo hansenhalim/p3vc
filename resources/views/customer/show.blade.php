@@ -101,14 +101,14 @@
                         <th class="text-right"><input type="checkbox" class="unt-chck" @if (!Auth::user()->hasRole('operator')) disabled @endif></th>
                         <th class="text-center">{{ $loop->iteration }}</th>
                         <th>{{ $unit->name }}</th>
-                        <th>{{ $unit->customer->name }}</th>
+                        <th>{{ $customer->name }}</th>
                         <th colspan="2">{{ $unit->cluster->name }}</th>
                         <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
                         <td class="text-right">
                           @if ($unit->debt == 0)
                             {{ number_format($unit->debt) }}
                           @else
-                            <a href="{{ route('units.debt', $unit->customer->id) }}"
+                            <a href="{{ route('units.debt', $customer->id) }}"
                               style="color:red;">{{ number_format($unit->debt) }}</a>
                           @endif
                         </td>

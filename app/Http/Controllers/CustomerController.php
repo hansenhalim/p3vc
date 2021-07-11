@@ -53,7 +53,7 @@ class CustomerController extends Controller
   {
     $customer = Customer::find($id);
     $units = $customer->units()
-      ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
+      ->with(['cluster', 'transactions'])
       ->get();
 
     foreach ($units as $unit) {
