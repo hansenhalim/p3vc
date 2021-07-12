@@ -48,7 +48,7 @@
           <th style="text-align: left">Created At</th>
           <th style="text-align: left">Approved At</th>
           <th style="text-align: right">Amount</th>
-          <th style="text-align: right">TAGIHAN</th>
+          <th style="text-align: right">IURAN</th>
           <th style="text-align: right">DENDA</th>
           <th style="text-align: right">T.SALDO</th>
           <th style="text-align: right">OTHER</th>
