@@ -149,11 +149,13 @@ class TransactionController extends Controller
     $transaction = Transaction::findOrFail($id);
     $transaction->periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
     $spellout = new NumberFormatter("id", NumberFormatter::SPELLOUT);
-    $transaction->balance = $transaction->payments->sum('pivot.amount')/2;
-    $transaction->balanceSpellout = $spellout->format($transaction->balance);
+    $transaction->balance = $transaction->payments->firstWhere('id', 3);
+    $transaction->amount = $transaction->payments->sum('pivot.amount')/2;
+    $transaction->amountSpellout = $spellout->format($transaction->amount);
+    unset($this->credits[2]);
     $transaction->credits = $transaction->payments->whereIn('id', $this->credits);
     $transaction->debits = $transaction->payments->whereIn('id', $this->debits);
-    // echo json_encode($transaction); exit;
+    // echo json_encode($transaction->balance); exit;
     $pdf = PDF::loadView('pdf.invoice', compact('transaction'));
 
     return $pdf->stream('invoice.pdf');

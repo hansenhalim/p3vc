@@ -32,7 +32,9 @@
     </tr>
     <tr>
       <td style="text-align: right; font-weight: bold; white-space: nowrap; width: 0">No. Bukti Pembayaran IKK :</td>
-      <td style="width: 184px">P3VC/{{ $transaction->unit->customer_id . '/' . $transaction->periodInRoman . '/' . $transaction->created_at->setTimezone('Asia/Jakarta')->year}}</td>
+      <td style="width: 184px">
+        P3VC/{{ $transaction->unit->customer_id . '/' . $transaction->periodInRoman . '/' . $transaction->created_at->setTimezone('Asia/Jakarta')->year }}
+      </td>
       <td colspan="2" rowspan="2" style="font-size: 30pt; padding: 0; vertical-align: top">P3VC</td>
     </tr>
     <tr>
@@ -63,7 +65,7 @@
       <td colspan="4">&nbsp;</td>
     </tr>
     <tr>
-      <td colspan="4" style="background: black; color: white; text-align: center; font-weight: bold">Credit</td>
+      <td colspan="4" style="background: black; color: white; text-align: center; font-weight: bold">Tagihan</td>
     </tr>
     @foreach ($transaction->credits as $payment)
       <tr>
@@ -73,7 +75,7 @@
       </tr>
     @endforeach
     <tr>
-      <td colspan="4" style="background: black; color: white; text-align: center; font-weight: bold">Debit</td>
+      <td colspan="4" style="background: black; color: white; text-align: center; font-weight: bold">Pembayaran</td>
     </tr>
     @foreach ($transaction->debits as $payment)
       <tr>
@@ -82,19 +84,24 @@
         <td style="text-align: right">IDR {{ number_format($payment->pivot->amount) }}</td>
       </tr>
     @endforeach
-    <tr>
-      <td colspan="2"></td>
-      <td style="text-align: right; font-weight: bold;">SISA</td>
-      <td style="text-align: right; border-top: 1px solid black">IDR {{ number_format($transaction->balance) }}</td>
-    </tr>
+    @isset($transaction->balance)
+      <tr>
+        <td colspan="2"></td>
+        <td style="text-align: right; font-weight: bold;">SISA</td>
+        <td style="text-align: right; border-top: 1px solid black">IDR {{ number_format($transaction->balance->pivot->amount) }}</td>
+      </tr>
+    @endisset
     <tr>
       <td colspan="4" style="text-align: center; font-weight: bold">&nbsp;</td>
     </tr>
     <tr>
-      <td colspan="4" style="background: black; color: white; text-align: center; font-weight: bold; border: 1px solid black">Terbilang</td>
+      <td colspan="4"
+        style="background: black; color: white; text-align: center; font-weight: bold; border: 1px solid black">
+        Terbilang</td>
     </tr>
     <tr>
-      <td colspan="4" style="text-align: center; border: 1px solid black">{{ $transaction->balanceSpellout }} rupiah</td>
+      <td colspan="4" style="text-align: center; border: 1px solid black">{{ $transaction->amountSpellout }} rupiah
+      </td>
     </tr>
   </table>
 </body>
