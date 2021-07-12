@@ -25,6 +25,7 @@
 </head>
 
 <body>
+  <img src="{{ public_path('img/P3VC.png') }}" style="position: absolute; z-index: -1; max-width: 60%; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.3;">
   <table>
     <tr>
       <td colspan="4" style="text-align: center; font-size: 24pt; font-weight: bold; padding-bottom: 24pt">IURAN
