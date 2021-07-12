@@ -158,6 +158,7 @@ class TransactionController extends Controller
     // echo json_encode($transaction->balance); exit;
     $pdf = PDF::loadView('pdf.invoice', compact('transaction'));
 
+    // return view('pdf.invoice', compact('transaction'));
     return $pdf->stream('invoice.pdf');
   }
 
@@ -176,8 +177,7 @@ class TransactionController extends Controller
         break;
 
       default:
-        Transaction::destroy($id);
-        $request->session()->flash('status', 'Successfully rejected transactions. Thankyou.');
+        $request->session()->flash('status', Transaction::withoutGlobalScope(ApprovedScope::class)->find($id)->delete() ? 'Successfully rejected transactions. Thankyou.' : 'Transaction rejection failed. Sorry.');
         break;
     }
 
