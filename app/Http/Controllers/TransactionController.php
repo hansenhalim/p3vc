@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use NumberFormatter;
 use stdClass;
 
 class TransactionController extends Controller
@@ -19,11 +20,7 @@ class TransactionController extends Controller
     $this->credits = [1, 2, 3, 11];
     $this->debits = [4, 5, 6, 7, 8, 9, 10];
   }
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
+
   public function index()
   {
     $transactions = Transaction::query()
@@ -38,22 +35,11 @@ class TransactionController extends Controller
     return view('transaction.list', compact('transactions'));
   }
 
-  /**
-   * Show the form for creating a new resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
   public function create()
   {
     //
   }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
   public function store(Request $request)
   {
     foreach ($request->units as $item) {
@@ -93,54 +79,28 @@ class TransactionController extends Controller
     return back();
   }
 
-  /**
-   * Display the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function show($id)
   {
     $transaction = Transaction::query()
       ->withoutGlobalScope(ApprovedScope::class)
-      ->where('id', $id)
       ->with(['unit.customer', 'payments'])
-      ->first();
+      ->findOrFail($id);
 
     // echo json_encode($transaction); exit();
 
     return view('transaction.show', compact('transaction'));
   }
 
-  /**
-   * Show the form for editing the specified resource.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function edit($id)
   {
     //
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function update(Request $request, $id)
   {
     //
   }
 
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  int  $id
-   * @return \Illuminate\Http\Response
-   */
   public function destroy($id)
   {
     //
@@ -178,16 +138,25 @@ class TransactionController extends Controller
 
     // echo json_encode($transactions); exit();
 
-    $data = ['transactions' => $transactions];
-    $pdf = PDF::loadView('pdf.report', $data)->setPaper('a4', 'landscape');
+    $pdf = PDF::loadView('pdf.report', compact('transactions'))
+      ->setPaper('a4', 'landscape');
+
     return $pdf->stream('report.pdf');
   }
 
   public function print($id)
   {
-    $data = ['name' => $id];
-    $pdf = PDF::loadView('pdf.invoice', $data);
-    return $pdf->stream('report.pdf');
+    $transaction = Transaction::findOrFail($id);
+    $transaction->periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
+    $spellout = new NumberFormatter("id", NumberFormatter::SPELLOUT);
+    $transaction->balance = $transaction->payments->sum('pivot.amount')/2;
+    $transaction->balanceSpellout = $spellout->format($transaction->balance);
+    $transaction->credits = $transaction->payments->whereIn('id', $this->credits);
+    $transaction->debits = $transaction->payments->whereIn('id', $this->debits);
+    // echo json_encode($transaction); exit;
+    $pdf = PDF::loadView('pdf.invoice', compact('transaction'));
+
+    return $pdf->stream('invoice.pdf');
   }
 
   public function approve(Request $request, $id)
@@ -250,5 +219,21 @@ class TransactionController extends Controller
     // echo json_encode($transactions); exit();
 
     return view('transaction.report', compact('transactions'));
+  }
+
+  private function numberToRomanRepresentation($number)
+  {
+    $map = array('M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400, 'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40, 'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1);
+    $returnValue = '';
+    while ($number > 0) {
+      foreach ($map as $roman => $int) {
+        if ($number >= $int) {
+          $number -= $int;
+          $returnValue .= $roman;
+          break;
+        }
+      }
+    }
+    return $returnValue;
   }
 }
