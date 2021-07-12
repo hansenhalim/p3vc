@@ -18,7 +18,7 @@ class UnitController extends Controller
     $order = $request->get('order') ?? 'asc';
 
     $units = Unit::query()
-      ->with(['customer:id,name', 'cluster:id,name'])
+      ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
       ->orderBy($sort, $order)
       ->when($key, fn ($query, $key) => $query->where('name', 'like', '%' . $key . '%'))
       ->paginate();
