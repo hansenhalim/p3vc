@@ -16,6 +16,7 @@
         "laravel/framework": "^8.0",
         "laravel/tinker": "^2.3.0",
         "laravel/ui": "^3.0",
+        "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-medialibrary": "^8.7.2",
         "spatie/laravel-permission": "^3.17"
     },
