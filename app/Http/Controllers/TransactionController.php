@@ -27,7 +27,7 @@ class TransactionController extends Controller
       ->withoutGlobalScope(ApprovedScope::class)
       ->with(['unit:id,name,customer_id'])
       ->withSum('payments', 'payment_transaction.amount')
-      ->latest()
+      ->latest('id')
       ->paginate();
 
     // echo json_encode($transactions); exit();
