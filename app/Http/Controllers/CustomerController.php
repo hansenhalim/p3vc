@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Payment;
+use App\Scopes\ApprovedScope;
 use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
@@ -21,7 +22,7 @@ class CustomerController extends Controller
     $query->orderBy($sort, $order);
 
     $query->when($key, function ($query, $key) {
-      if(substr($key,0,1) === '#') return $query->where('id', substr($key,1));
+      if (substr($key, 0, 1) === '#') return $query->where('id', substr($key, 1));
       return $query->where('name', 'like', '%' . $key . '%');
     });
 
@@ -53,13 +54,15 @@ class CustomerController extends Controller
   {
     $customer = Customer::find($id);
     $units = $customer->units()
-      ->with(['cluster.prices', 'transactions.payments'])
+      ->with(['cluster.prices', 'transactions.payments', 'transactions' => function ($query) {
+        $query->withoutGlobalScopes([ApprovedScope::class]);
+      }])
       ->get();
 
     foreach ($units as $unit) {
       $unit['balance'] = 0;
       $unit['debt'] = 0;
-      
+
       foreach ($unit->transactions as $transaction) {
         foreach ($transaction->payments as $payment) {
           switch ($payment->id) {
@@ -85,12 +88,12 @@ class CustomerController extends Controller
       $diffInMonthsReal = $startMonth->diffInMonths(now()->firstOfMonth());
       $months = [];
 
-      for ($i=0; $i < $diffInMonths; $i++) {
+      for ($i = 0; $i < $diffInMonths; $i++) {
         $period = $unit->created_at->addMonths($i);
 
-        if($unit->transactions->first()){
+        if ($unit->transactions->first()) {
           foreach ($unit->transactions as $key => $transaction) {
-            if(!$period->diffInMonths($transaction->period)){
+            if (!$period->diffInMonths($transaction->period)) {
               $unit->transactions->forget($key);
               continue 2;
             }
@@ -98,7 +101,7 @@ class CustomerController extends Controller
         }
 
         $price = $unit->cluster->prices->last();
-        
+
         $months[] = [
           'period' => $period,
           'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
@@ -109,10 +112,10 @@ class CustomerController extends Controller
       $unit['months'] = $months;
     }
 
-    $payments = Payment::get(['id', 'name'])->only([4,5,6,7,8,9,10]);
+    $payments = Payment::get(['id', 'name'])->only([4, 5, 6, 7, 8, 9, 10]);
 
     // echo json_encode($units);exit();
-    
+
     return view('customer.show', compact('customer', 'units', 'payments'));
   }
 
