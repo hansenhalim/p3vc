@@ -137,8 +137,11 @@ class UnitController extends Controller
   {
     $customer = Customer::find($id);
     $units = $customer->units()
-      ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
+      ->with(['customer:id,name', 'cluster:id,name', 'transactions.payments', 'transactions' => function ($query) {
+        $query->withoutGlobalScopes([ApprovedScope::class]);
+      }])
       ->get();
+      
     foreach ($units as $unit) {
       $debt = 0;
       foreach ($unit->transactions as $transaction) {
