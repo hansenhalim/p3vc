@@ -63,7 +63,7 @@
                 </tbody>
               </table>
             </div>
-              @if(Auth::user()->hasRole('supervisor') && !$transaction->approved_at)
+              @if(!$transaction->approved_at)
                 <form action="{{ route('transactions.approve', ['transaction' => $transaction->id]) }}" method="POST">
                   @csrf
                   <div class="card-footer d-flex justify-content-between">
