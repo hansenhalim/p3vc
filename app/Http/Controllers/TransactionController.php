@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use NumberFormatter;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use stdClass;
 
 class TransactionController extends Controller
@@ -147,18 +148,32 @@ class TransactionController extends Controller
   public function print($id)
   {
     $transaction = Transaction::findOrFail($id);
-    $transaction->periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
-    $spellout = new NumberFormatter("id", NumberFormatter::SPELLOUT);
-    $transaction->balance = $transaction->payments->firstWhere('id', 3);
-    $transaction->amount = $transaction->payments->sum('pivot.amount')/2;
-    $transaction->amountSpellout = $spellout->format($transaction->amount);
-    unset($this->credits[2]);
-    $transaction->credits = $transaction->payments->whereIn('id', $this->credits);
-    $transaction->debits = $transaction->payments->whereIn('id', $this->debits);
-    // echo json_encode($transaction->balance); exit;
-    $pdf = PDF::loadView('pdf.invoice', compact('transaction'));
+    $payments = $transaction->payments;
+    
+    $transaction->credits = $payments->whereIn('id', [1, 2, 9, 11]);
+    $transaction->debits = $payments->whereIn('id', [4, 5, 6, 7, 10]);
+    
+    $transaction->credits_sum_amount = $transaction->credits->sum('pivot.amount');
+    $transaction->debits_sum_amount = $transaction->debits->sum('pivot.amount');
+    
+    $spellout = new NumberFormatter('id_ID', NumberFormatter::SPELLOUT);
+    $transaction->debits_sum_amount_spelled = $spellout->format($transaction->debits_sum_amount);
+    
+    $transaction->balance = $payments->firstWhere('id', 3)->pivot->amount ?? null;
+    $transaction->debt = $payments->firstWhere('id', 8)->pivot->amount ?? null;
 
-    // return view('pdf.invoice', compact('transaction'));
+    $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
+    $transaction->invoiceNumber = 'P3VC/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->setTimezone('Asia/Jakarta')->year;
+
+    $qrcodeRaw = base64_encode(json_encode(array($transaction->id)));
+
+    $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
+    $qrcode->raw = $qrcodeRaw;
+    
+    // echo json_encode($transaction); exit;
+    // return view('pdf.invoicee', compact('transaction', 'qrcode'));
+
+    $pdf = PDF::loadView('pdf.invoice', compact('transaction', 'qrcode'));
     return $pdf->stream('invoice.pdf');
   }
 
