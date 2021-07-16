@@ -149,9 +149,10 @@
     }
 
     .shadow {
+      width: 100%;
       position: absolute;
       bottom: 0;
-      width: 100%;
+      transform: translateY(-100%);
     }
 
     .bottom {
@@ -164,7 +165,7 @@
 
 <body>
   <img src="data:image/svg+xml;base64, {!! base64_encode(file_get_contents('svg/P3VC_watermark.svg')) !!}" class="watermark">
-  <div class="shadow"></div>
+  <img src="data:image/png;base64, {!! base64_encode(file_get_contents('img/blue_shadow.png')) !!}" class="shadow">
   <table>
     <tr>
       <td class="cell-1">&nbsp;</td>
@@ -178,7 +179,7 @@
       <td class="space">&nbsp;</td>
       <td colspan="3" class="header">
         <div class="title">invoice</div>
-        <div class="subtitle">IURAN KEBERSIHAN DAN KEAMANAN P3VC</div>
+        <div class="subtitle">IURAN KEAMANAN DAN KEBERSIHAN P3VC</div>
       </td>
       <td class="logo header"><img src="data:image/svg+xml;base64, {!! base64_encode(file_get_contents('svg/P3VC.svg')) !!}" style="width: 2.6cm"></td>
       <td></td>
@@ -202,17 +203,18 @@
       <td class="space">&nbsp;</td>
       <th></th>
       <td colspan="2">{{ $transaction->unit->area_sqm }} m&#178;</td>
-      <td colspan="2">{{ $transaction->period->formatLocalized('%B %Y') }}</td>
+      <td colspan="2">
+        {{ $transaction->period->formatLocalized('%B %Y') === 'Januari 1970' ? '' : $transaction->period->formatLocalized('%B %Y') }}
+      </td>
     </tr>
 
     <x-table-empty-space></x-table-empty-space>
-    <x-table-empty-space></x-table-empty-space>
 
-    <x-payment-detail :payments="$transaction->credits" name="Tagihan" :total="$transaction->credits_sum_amount"></x-payment-detail>
+    <x-payment-detail :payments="$transaction->credits" name="Tagihan" :total="$transaction->credits_sum_amount">
+    </x-payment-detail>
 
-    <x-table-empty-space></x-table-empty-space>
-
-    <x-payment-detail :payments="$transaction->debits" name="Pembayaran" :total="$transaction->debits_sum_amount"></x-payment-detail>
+    <x-payment-detail :payments="$transaction->debits" name="Pembayaran" :total="$transaction->debits_sum_amount">
+    </x-payment-detail>
 
     @isset($transaction->balance)
       <x-payment-total name="Sisa" :amount="$transaction->balance"></x-payment-total>
@@ -235,7 +237,6 @@
     <tr>
       <td>&nbsp;</td>
       <td class="bottom">
-        <p class="small" style="margin-bottom: 5px; color: #888">{{ $qrcode->raw }}</p>
         <img style="border: 2.5px solid black" src="data:image/svg+xml;base64, {!! base64_encode($qrcode) !!} ">
       </td>
       <td colspan="3" class="bottom">

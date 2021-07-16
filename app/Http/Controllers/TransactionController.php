@@ -168,7 +168,6 @@ class TransactionController extends Controller
     $qrcodeRaw = base64_encode(json_encode(array($transaction->id)));
 
     $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
-    $qrcode->raw = $qrcodeRaw;
     
     // echo json_encode($transaction); exit;
     // return view('pdf.invoicee', compact('transaction', 'qrcode'));
