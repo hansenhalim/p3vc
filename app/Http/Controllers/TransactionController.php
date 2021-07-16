@@ -152,16 +152,17 @@ class TransactionController extends Controller
     
     $transaction->credits = $payments->whereIn('id', [1, 2, 9, 11]);
     $transaction->debits = $payments->whereIn('id', [4, 5, 6, 7, 10]);
+
+    $transaction->balance = $payments->firstWhere('id', 3)->pivot->amount ?? null;
+    $transaction->debt = $payments->firstWhere('id', 8)->pivot->amount ?? null;
+    $transaction->discount = $payments->firstWhere('id', 9)->pivot->amount ?? null;
     
-    $transaction->credits_sum_amount = $transaction->credits->sum('pivot.amount');
+    $transaction->credits_sum_amount = $transaction->credits->sum('pivot.amount') - $transaction->discount * 2;
     $transaction->debits_sum_amount = $transaction->debits->sum('pivot.amount');
     
     $spellout = new NumberFormatter('id_ID', NumberFormatter::SPELLOUT);
     $transaction->debits_sum_amount_spelled = $spellout->format($transaction->debits_sum_amount);
     
-    $transaction->balance = $payments->firstWhere('id', 3)->pivot->amount ?? null;
-    $transaction->debt = $payments->firstWhere('id', 8)->pivot->amount ?? null;
-
     $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
     $transaction->invoiceNumber = 'P3VC/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->setTimezone('Asia/Jakarta')->year;
 
@@ -170,7 +171,7 @@ class TransactionController extends Controller
     $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
     
     // echo json_encode($transaction); exit;
-    // return view('pdf.invoicee', compact('transaction', 'qrcode'));
+    // return view('pdf.invoice', compact('transaction', 'qrcode'));
 
     $pdf = PDF::loadView('pdf.invoice', compact('transaction', 'qrcode'));
     return $pdf->stream('invoice.pdf');
