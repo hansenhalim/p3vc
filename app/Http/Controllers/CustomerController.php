@@ -67,10 +67,10 @@ class CustomerController extends Controller
         foreach ($transaction->payments as $payment) {
           switch ($payment->id) {
             case 11:
-              $unit['debt'] += $payment->pivot->amount;
+              $unit['debt'] -= $payment->pivot->amount;
               break;
             case 8:
-              $unit['debt'] -= $payment->pivot->amount;
+              $unit['debt'] += $payment->pivot->amount;
               break;
             case 3:
               $unit['balance'] += $payment->pivot->amount;
