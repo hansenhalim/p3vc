@@ -26,6 +26,7 @@ class TransactionController extends Controller
   {
     $transactions = Transaction::query()
       ->withoutGlobalScope(ApprovedScope::class)
+      ->whereBetween('created_at', [now()->subMonth(), now()])
       ->with(['unit:id,name,customer_id'])
       ->withSum('payments', 'payment_transaction.amount')
       ->latest('id')
@@ -178,7 +179,7 @@ class TransactionController extends Controller
     $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
 
     $transaction->title = $transaction->unit->name;
-    $transaction->title .= ' ' . ($transaction->created_at->formatLocalized('%b %y') != 'Jan 70' ? $transaction->created_at->formatLocalized('%b %y') : '');
+    $transaction->title .= ' ' . ($transaction->period->formatLocalized('%b %y') != 'Jan 70' ? $transaction->period->formatLocalized('%b %y') : '');
     $transaction->title .= ' ' . $transaction->unit->customer->name;
 
     $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $transaction->title);

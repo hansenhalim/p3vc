@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-7">
+        <div class="col-xl-8">
           <div class="card">
             <div class="card-header">Transaction List</div>
             <div class="card-body">
