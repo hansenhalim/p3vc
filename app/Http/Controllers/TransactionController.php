@@ -43,33 +43,40 @@ class TransactionController extends Controller
 
   public function store(Request $request)
   {
+    // echo json_encode($request->all()); exit;
+
     foreach ($request->units as $item) {
-      $unit = Unit::find($item['unit_id']);
+      if (!isset($item['months'])) continue;
 
-      if (isset($item['months'])) {
+      $unit = Unit::with(['transactions' => function ($query) {
+        $query->withoutGlobalScope(ApprovedScope::class);
+      }])->findOrFail($item['unit_id']);
 
-        foreach ($item['months'] as $month) {
-          $balance = 0;
+      foreach ($item['months'] as $month) {
+        // echo json_encode($unit->transactions->pluck('period')->toArray()); exit;
 
-          foreach ($month['payments'] as $payment) {
-            if (in_array($payment['payment_id'], $this->credits)) $balance -= $payment['amount'];
-            else $balance += $payment['amount'];
-          }
+        if (in_array(Carbon::parse($month['period']), $unit->transactions->pluck('period')->toArray()) && $month['period'] != '1970-01-01') continue;
 
-          if ($balance < 0) continue;
+        $balance = 0;
 
-          $transaction = $unit->transactions()->create([
-            'period' => $month['period'],
-            'updated_by' => Auth::id()
-          ]);
-
-          foreach ($month['payments'] as $payment) {
-            if (!$payment['amount']) continue;
-            $transaction->payments()->attach($payment['payment_id'], ['amount' => $payment['amount']]);
-          }
-
-          if ($balance > 0) $transaction->payments()->attach(3, ['amount' => $balance]);
+        foreach ($month['payments'] as $payment) {
+          if (in_array($payment['payment_id'], $this->credits)) $balance -= $payment['amount'];
+          else $balance += $payment['amount'];
         }
+
+        if ($balance < 0) continue;
+
+        $transaction = $unit->transactions()->create([
+          'period' => $month['period'],
+          'updated_by' => Auth::id()
+        ]);
+
+        foreach ($month['payments'] as $payment) {
+          if (!$payment['amount']) continue;
+          $transaction->payments()->attach($payment['payment_id'], ['amount' => $payment['amount']]);
+        }
+
+        if ($balance > 0) $transaction->payments()->attach(3, ['amount' => $balance]);
       }
     }
 
@@ -148,47 +155,56 @@ class TransactionController extends Controller
   public function print($id)
   {
     $transaction = Transaction::findOrFail($id);
+    $transaction->created_at->setTimezone('Asia/Jakarta');
     $payments = $transaction->payments;
-    
+
     $transaction->credits = $payments->whereIn('id', [1, 2, 9, 11]);
     $transaction->debits = $payments->whereIn('id', [4, 5, 6, 7, 10]);
 
     $transaction->balance = $payments->firstWhere('id', 3)->pivot->amount ?? null;
     $transaction->debt = $payments->firstWhere('id', 8)->pivot->amount ?? null;
     $transaction->discount = $payments->firstWhere('id', 9)->pivot->amount ?? null;
-    
+
     $transaction->credits_sum_amount = $transaction->credits->sum('pivot.amount') - $transaction->discount * 2;
     $transaction->debits_sum_amount = $transaction->debits->sum('pivot.amount');
-    
+
     $spellout = new NumberFormatter('id_ID', NumberFormatter::SPELLOUT);
     $transaction->debits_sum_amount_spelled = $spellout->format($transaction->debits_sum_amount);
-    
-    $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->setTimezone('Asia/Jakarta')->month);
-    $transaction->invoiceNumber = 'P3VC/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->setTimezone('Asia/Jakarta')->year;
+
+    $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->month);
+    $transaction->invoiceNumber = config('app.name') . '/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
 
     $qrcodeRaw = base64_encode(json_encode(array($transaction->id)));
-
     $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
-    
+
+    $transaction->title = $transaction->unit->name;
+    $transaction->title .= ' ' . ($transaction->created_at->formatLocalized('%b %y') != 'Jan 70' ? $transaction->created_at->formatLocalized('%b %y') : '');
+    $transaction->title .= ' ' . $transaction->unit->customer->name;
+
+    $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $transaction->title);
+    $file = mb_ereg_replace("([\.]{2,})", '', $file);
+
     // echo json_encode($transaction); exit;
     // return view('pdf.invoice', compact('transaction', 'qrcode'));
 
     $pdf = PDF::loadView('pdf.invoice', compact('transaction', 'qrcode'));
-    return $pdf->stream('invoice.pdf');
+    return $pdf->stream($file . '.pdf');
   }
 
   public function approve(Request $request, $id)
   {
     switch ($request->approval) {
       case 'true':
-        Transaction::query()
+        $updateStatus = Transaction::query()
           ->withoutGlobalScope(ApprovedScope::class)
           ->where('id', $id)
+          ->whereNull('approved_by')
+          ->whereNull('approved_at')
           ->update([
             'approved_by' => Auth::id(),
             'approved_at' => now()
           ]);
-        $request->session()->flash('status', 'Successfully approved transactions. Thankyou.');
+        $request->session()->flash('status', $updateStatus ? 'Successfully approved transactions. Thankyou.' : 'Transaction approval failed. Sorry.');
         break;
 
       default:

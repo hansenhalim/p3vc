@@ -32,7 +32,7 @@
                     <tr>
                       <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
                       <td class="align-middle">{{ $transaction->unit->name }}</td>
-                      <td class="align-middle">{{ $transaction->period->formatLocalized('%B %Y') }}</td>
+                      <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
                       <td class="align-middle">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge bg-danger text-white">None</span>' !!}</td>
                       <td class="align-middle text-right">{{ number_format($transaction->payments_sum_payment_transactionamount / 2) }}</td>
                       <td class="align-middle">
@@ -43,7 +43,7 @@
                             <a class="dropdown-item"
                               href="{{ route('transactions.show', ['transaction' => $transaction->id]) }}"><i
                                 class="cil-info"></i>&nbsp;Show</a>
-                            @if (Auth::user()->hasRole('operator') && $transaction->approved_at)
+                            @if ($transaction->approved_at)
                               <a class="dropdown-item" href="{{ route('transactions.print', ['transaction' => $transaction->id]) }}" target="_blank"
                                 rel="noopener noreferrer"><i class="cil-print"></i>&nbsp;Print</a>
                             @endif
