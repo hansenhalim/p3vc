@@ -30,3 +30,4 @@ coreui.zip
 database/seeders/DatabaseSeeder.php
 public/error_log
 public/development
+scripts
