@@ -237,7 +237,7 @@
     <tr>
       <td>&nbsp;</td>
       <td class="bottom">
-        <img style="border: 2.5px solid black" src="data:image/svg+xml;base64, {!! base64_encode($qrcode) !!} ">
+        <img style="border: 2.5px solid black" src="data:image/svg+xml;base64, {{ $qrcode }} ">
       </td>
       <td colspan="3" class="bottom">
         <p class="info">Pembayaran dapat dilakukan melalui:</p>
