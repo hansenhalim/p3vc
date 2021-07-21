@@ -51,7 +51,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Then Pau An',
       'email' => 'tpauan@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$aNEfD.0xcN1ZRD4VZivuEeVnWslHOONVme22Ei9b.2AQfV.CkJp7O', // password
+      'password' => '$2a$10$R1YEcFv9qqgRIf0KSJ0jXORU22st6BF4vteXsPWNvMKK8312wp/A.', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'master,supervisor,operator'
     ]);
@@ -63,7 +63,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Operator 1',
       'email' => 'opr1@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$09XQHRT.AtmmhnOE3ajd7.1.jO..B4MAvs4spT7EgeuZChm0hkRHq', // password
+      'password' => '$2a$10$.CA.6Lk79deK88RcP2sw/eLRenn7dLb.8TX/m4N3RNA7jgLXRBdPa', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'operator'
     ]);
@@ -73,7 +73,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Operator 2',
       'email' => 'opr2@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$09XQHRT.AtmmhnOE3ajd7.1.jO..B4MAvs4spT7EgeuZChm0hkRHq', // password
+      'password' => '$2a$10$.CA.6Lk79deK88RcP2sw/eLRenn7dLb.8TX/m4N3RNA7jgLXRBdPa', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'operator'
     ]);
@@ -83,7 +83,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Supervisor 1',
       'email' => 'spv1@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$09XQHRT.AtmmhnOE3ajd7.1.jO..B4MAvs4spT7EgeuZChm0hkRHq', // password
+      'password' => '$2a$10$.CA.6Lk79deK88RcP2sw/eLRenn7dLb.8TX/m4N3RNA7jgLXRBdPa', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'supervisor'
     ]);
@@ -93,7 +93,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Supervisor 2',
       'email' => 'spv2@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$09XQHRT.AtmmhnOE3ajd7.1.jO..B4MAvs4spT7EgeuZChm0hkRHq', // password
+      'password' => '$2a$10$.CA.6Lk79deK88RcP2sw/eLRenn7dLb.8TX/m4N3RNA7jgLXRBdPa', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'supervisor'
     ]);
