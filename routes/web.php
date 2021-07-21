@@ -79,8 +79,3 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
     });
   });
 });
-
-Route::get('/phpinfo', function ()
-{
-  echo phpinfo();
-});
