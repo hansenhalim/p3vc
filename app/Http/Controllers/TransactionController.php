@@ -175,8 +175,9 @@ class TransactionController extends Controller
     $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->month);
     $transaction->invoiceNumber = config('app.name') . '/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
 
-    $qrcodeRaw = base64_encode(json_encode(array($transaction->id)));
-    $qrcode = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeRaw);
+    $qrcodeContent = base64_encode(json_encode(array($transaction->id)));
+    $qrcodeRaw = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeContent);
+    $qrcode = str_replace('Cww', 'C4w', base64_encode($qrcodeRaw));
 
     $transaction->title = $transaction->unit->name;
     $transaction->title .= ' ' . ($transaction->period->formatLocalized('%b %y') != 'Jan 70' ? $transaction->period->formatLocalized('%b %y') : '');
