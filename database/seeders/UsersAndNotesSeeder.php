@@ -39,7 +39,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Hansen Halim',
       'email' => 'fpsecond.hh@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2y$15$FrYifT9HrAvGb3516NHlCOA7aL9UQsXoj09ytM6gNxzXvigUWaxHa', // password
+      'password' => '$2a$10$rrmgjnqHk28lkl3mlZ/JxeMEJmiAtzgt3P521J687z0izx/IWFp/m', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'master,supervisor,operator'
     ]);
