@@ -51,7 +51,7 @@ class UsersAndNotesSeeder extends Seeder
       'name' => 'Then Pau An',
       'email' => 'tpauan@p3villacitra.com',
       'email_verified_at' => now(),
-      'password' => '$2a$10$R1YEcFv9qqgRIf0KSJ0jXORU22st6BF4vteXsPWNvMKK8312wp/A.', // password
+      'password' => '$2a$10$aNEfD.0xcN1ZRD4VZivuEeVnWslHOONVme22Ei9b.2AQfV.CkJp7O', // password
       'remember_token' => Str::random(10),
       'menuroles' => 'master,supervisor,operator'
     ]);
