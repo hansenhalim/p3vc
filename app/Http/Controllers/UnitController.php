@@ -18,39 +18,66 @@ class UnitController extends Controller
     $order = $request->get('order') ?? 'asc';
 
     $units = Unit::query()
-      ->with(['customer:id,name', 'cluster:id,name', 'transactions'])
+      ->with(['customer:id,name', 'cluster:id,name', 'cluster.prices', 'transactions.payments'])
       ->orderBy($sort, $order)
       ->when($key, fn ($query, $key) => $query->where('name', 'like', '%' . $key . '%'))
       ->paginate();
 
     foreach ($units as $unit) {
+      $transactions = $unit->transactions;
+      
+      $unit['balance'] = 0;
+      $unit['debt'] = 0;
+
+      foreach ($unit->transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 11:
+              $unit['debt'] -= $payment->pivot->amount;
+              break;
+            case 8:
+              $unit['debt'] += $payment->pivot->amount;
+              break;
+            case 3:
+              $unit['balance'] += $payment->pivot->amount;
+              break;
+            case 10:
+              $unit['balance'] -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+      
       $startMonth = $unit->created_at->firstOfMonth();
       $endMonth = now()->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
-      $months = [];
+      $months = collect();
 
       for ($i = 0; $i < $diffInMonths; $i++) {
         $period = $unit->created_at->addMonths($i);
 
-        if ($unit->transactions->first()) {
-          foreach ($unit->transactions as $key => $transaction) {
+        if ($transactions->first()) {
+          foreach ($transactions as $key => $transaction) {
             if (!$period->diffInMonths($transaction->period)) {
-              $unit->transactions->forget($key);
+              $transactions->forget($key);
               continue 2;
             }
           }
         }
 
+        // okay, this needs to be fixed in the future
         $price = $unit->cluster->prices->last();
 
-        $months[] = [
+        $months->push([
           'period' => $period,
           'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
           'fine' => 2000 * ($diffInMonths - $i - 1)
-        ];
+        ]);
       }
 
-      $unit['months'] = $months;
+      // $unit['months'] = $months;
+      $unit['months_count'] = $months->count();
+      $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
     }
 
     // echo json_encode($units); exit;

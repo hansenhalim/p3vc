@@ -47,10 +47,11 @@
                     <th>Name</th>
                     {{-- <th>Cluster</th> --}}
                     {{-- <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th> --}}
-                    {{-- <th class="text-right">Balance</th> --}}
-                    {{-- <th class="text-right">Credit</th> --}}
-                    <th class="text-right">Total tunggakan</th>
-                    <th class="text-right">Total periode</th>
+                    <th class="text-right">Balance</th>
+                    <th class="text-right">Debt</th>
+                    <th class="text-right">Credit</th>
+                    <th class="text-right">Tunggakan</th>
+                    <th class="text-right">Jumlah</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -61,10 +62,12 @@
                       <td>{{ $unit->customer->name }}</td>
                       {{-- <td>{{ $unit->cluster->name }}</td> --}}
                       {{-- <td class="text-right">{{ number_format($unit->area_sqm) }}</td> --}}
-                      {{-- <td class="text-right">{{ number_format($unit->balance) }}</td> --}}
+                      <td class="text-right">{{ number_format($unit->balance) }}</td>
+                      <td class="text-right">{{ number_format($unit->debt) }}</td>
                       <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                      <td class="text-right">{{ number_format($unit->months_total) }}</td>
                       {{-- <td class="text-right">{{ number_format(0) }}</td> --}}
-                      <td class="text-right">{{ 0 }}</td>
+                      <td class="text-right">{{ $unit->months_count }}</td>
                     </tr>
                   @empty
                     <tr>
