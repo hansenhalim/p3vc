@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Models\Unit;
 use App\Scopes\ApprovedScope;
-use Barryvdh\DomPDF\Facade as PDF;
+use Barryvdh\DomPDF\Facade as DomPDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -147,7 +147,7 @@ class TransactionController extends Controller
 
     // echo json_encode($transactions); exit();
 
-    $pdf = PDF::loadView('pdf.report', compact('transactions'))
+    $pdf = DomPDF::loadView('pdf.report', compact('transactions'))
       ->setPaper('a4', 'landscape');
 
     return $pdf->stream('report.pdf');
@@ -189,7 +189,7 @@ class TransactionController extends Controller
     // echo json_encode($transaction); exit;
     // return view('pdf.invoice', compact('transaction', 'qrcode'));
 
-    $pdf = PDF::loadView('pdf.invoice', compact('transaction', 'qrcode'));
+    $pdf = DomPDF::loadView('pdf.invoice', compact('transaction', 'qrcode'));
     return $pdf->stream($file . '.pdf');
   }
 
