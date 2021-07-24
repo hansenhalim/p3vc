@@ -60,6 +60,8 @@ class CustomerController extends Controller
       ->get();
 
     foreach ($units as $unit) {
+      $transactions = $unit->transactions;
+
       $unit['balance'] = 0;
       $unit['debt'] = 0;
 
@@ -86,27 +88,28 @@ class CustomerController extends Controller
       $endMonth = now()->addMonths(request('add-month', 0))->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
       $diffInMonthsReal = $startMonth->diffInMonths(now()->firstOfMonth());
-      $months = [];
+      $months = collect();
 
       for ($i = 0; $i < $diffInMonths; $i++) {
         $period = $unit->created_at->addMonths($i);
 
-        if ($unit->transactions->first()) {
-          foreach ($unit->transactions as $key => $transaction) {
+        if ($transactions->first()) {
+          foreach ($transactions as $key => $transaction) {
             if (!$period->diffInMonths($transaction->period)) {
-              $unit->transactions->forget($key);
+              $transactions->forget($key);
               continue 2;
             }
           }
         }
 
+        // okay, this needs to be fixed in the future
         $price = $unit->cluster->prices->last();
 
-        $months[] = [
+        $months->push([
           'period' => $period,
           'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
           'fine' => 2000 * max($diffInMonthsReal - $i - 1, 0)
-        ];
+        ]);
       }
 
       $unit['months'] = $months;
