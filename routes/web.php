@@ -30,10 +30,13 @@ Route::view('/', 'welcome');
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
 
+  Route::get('/units/report/print', [UnitController::class, 'printReport'])->name('units.report.print');
+
   Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
   Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
-  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
   Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
+
+  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
   Route::group(['middleware' => ['role:operator']], function () {
 

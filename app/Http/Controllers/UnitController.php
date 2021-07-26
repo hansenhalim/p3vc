@@ -21,7 +21,7 @@ class UnitController extends Controller
       ->with(['customer:id,name', 'cluster:id,name', 'cluster.prices', 'transactions.payments'])
       ->orderBy($sort, $order)
       ->when($key, fn ($query, $key) => $query->where('name', 'like', '%' . $key . '%'))
-      ->paginate();
+      ->get();
 
     foreach ($units as $unit) {
       $transactions = $unit->transactions;
@@ -80,6 +80,7 @@ class UnitController extends Controller
       $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
     }
 
+    $units = $units->where('balance', '!=' , 0);
     // echo json_encode($units); exit;
 
     return view('unit.list', compact('units'));

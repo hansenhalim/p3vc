@@ -38,7 +38,7 @@
                     </div>
                   </div>
                   <div class="col-xl-2 col-md-2 col-2 mb-2">
-                    <a class="btn btn-outline-primary" href="#" target="_blank" rel="noopener noreferrer"><i class="cil-cloud-download align-text-bottom"></i></a>
+                    <a class="btn btn-outline-primary" href="{{ route('units.report.print', request()->input()) }}" target="_blank" rel="noopener noreferrer"><i class="cil-cloud-download align-text-bottom"></i></a>
                   </div>
                 </div>
               </form>
@@ -78,17 +78,21 @@
                   @endforelse
                 </tbody>
               </table>
-              <div class="d-flex justify-content-center">
-                {{ $units->appends(request()->input())->links() }}
-              </div>
+              @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                <div class="d-flex justify-content-center">
+                  {{ $units->appends(request()->input())->links() }}
+                </div>
+              @endif
             </div>
-            <div class="card-footer">
-              <div class="row">
-                <div class="col-12 text-left">
-                  Showing {{ $units->count() }} of {{ $units->total() }}
+            @if ($units instanceof \Illuminate\Pagination\LengthAwarePaginator)
+              <div class="card-footer">
+                <div class="row">
+                  <div class="col-12 text-left">
+                    Showing {{ $units->count() }} of {{ $units->total() }}
+                  </div>
                 </div>
               </div>
-            </div>
+            @endif
           </div>
         </div>
       </div>
