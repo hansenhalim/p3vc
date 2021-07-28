@@ -39,9 +39,9 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
   Route::group(['middleware' => ['role:operator']], function () {
-
-    Route::resource('units', UnitController::class);
     Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
+    Route::post('/units/sync', [UnitController::class, 'syncShadow'])->name('units.sync');
+    Route::resource('units', UnitController::class);
     Route::resource('clusters', ClusterController::class);
     Route::resource('customers', CustomerController::class)->except(['index', 'show']);
     Route::resource('payments', PaymentController::class);
