@@ -14,11 +14,11 @@ class CreateUnitShadowsTable extends Migration
   public function up()
   {
     Schema::create('unit_shadows', function (Blueprint $table) {
+      $table->id();
       $table->unsignedBigInteger('customer_id');
-      $table->string('name'); 
-      $table->string('customer_name');
-      $table->string('cluster_name');
+      $table->string('name');
       $table->float('area_sqm', 6, 2);
+      $table->string('idlink')->nullable();
       $table->integer('balance');
       $table->integer('debt');
       $table->unsignedInteger('months_count');
