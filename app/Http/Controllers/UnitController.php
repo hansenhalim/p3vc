@@ -16,13 +16,14 @@ class UnitController extends Controller
   public function index(Request $request)
   {
     $search = $request->search;
-    $sort = $request->get('sort') ?? '';
-    $order = $request->get('order') ?? 'asc';
+    $sortBy = $request->sortBy ?? 'id';
+    $sortDirection = $request->sortDirection ?? 'asc';
+    $perPage = $request->page == 'all' ? 2000 : 15;
 
     $units = DB::table('unit_shadows')
-      ->when($sort, fn ($query) => $query->orderBy($sort, $order))
-      ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
-      ->paginate(1213);
+      ->when($search, fn ($query) => $query->where('name', $search))
+      ->orderBy($sortBy, $sortDirection)
+      ->paginate($perPage);
 
     $unitsLastSync = Carbon::parse(DB::table('configs')->where('key', 'units_last_sync')->pluck('value')->first());
 
@@ -190,29 +191,23 @@ class UnitController extends Controller
 
   public function syncShadow()
   {
-    DB::table('unit_shadows')->truncate();
-
-    $units = Unit::query()
+    Unit::query()
       ->select([
         'id',
         'customer_id',
         'cluster_id',
         'name',
         'area_sqm',
+        'idlink',
         'created_at'
       ])
       ->with([
-        'customer:id,name',
-        'cluster:id,name',
         'cluster.prices:cluster_id,cost,per',
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
-      ->chunk(50, function ($units) {
+      ->chunk(100, function ($units) {
         foreach ($units as $unit) {
-          $unit['customer_name'] = $unit->customer->name;
-          $unit['cluster_name'] = $unit->cluster->name;
-
           $transactions = $unit->transactions;
           $latest_price = $unit->cluster->prices->last();
 
@@ -270,10 +265,10 @@ class UnitController extends Controller
           $unit['credit'] = $latest_price->cost * ($latest_price->per == 'sqm' ? $unit->area_sqm : 1);
 
           $unitShadows[] = $unit->only([
+            'id',
             'customer_id',
             'name',
-            'customer_name',
-            'cluster_name',
+            'idlink',
             'area_sqm',
             'balance',
             'debt',
@@ -284,9 +279,9 @@ class UnitController extends Controller
         }
 
         DB::table('configs')->where('key', 'units_last_sync')->update(['value' => now()]);
-        DB::table('unit_shadows')->insert($unitShadows);
+        DB::table('unit_shadows')->upsert($unitShadows, 'id');
       });
 
-    // return route('units.index');
+    return env('APP_DEBUG', false) ?? redirect()->route('units.index');
   }
 }
