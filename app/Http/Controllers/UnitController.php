@@ -20,18 +20,30 @@ class UnitController extends Controller
     $search = $request->search;
     $sortBy = $request->sortBy ?? 'id';
     $sortDirection = $request->sortDirection ?? 'asc';
-    $perPage = $request->page == 'all' ? 2000 : 15;
+    $perPage = $request->page == 'all' ? 2000 : 10;
 
     $units = DB::table('unit_shadows')
       ->when($search, fn ($query) => $query->where('name', $search))
       ->orderBy($sortBy, $sortDirection)
       ->paginate($perPage);
 
-    $unitsLastSync = Carbon::parse(DB::table('configs')->where('key', 'units_last_sync')->pluck('value')->first());
+    $totals = DB::table('unit_shadows')
+      ->first(DB::raw('
+        SUM(balance) as balance, 
+        SUM(debt) as debt, 
+        SUM(months_count) as months_count, 
+        SUM(months_total) as months_total, 
+        SUM(credit) as credit
+      '));
 
-    // echo json_encode($units); exit;
+    $unitsLastSync = Carbon::parse(DB::table('configs')
+      ->where('key', 'units_last_sync')
+      ->pluck('value')
+      ->first());
 
-    return view('unit.list', compact('units', 'unitsLastSync'));
+    // echo json_encode($totals); exit;
+
+    return view('unit.list', compact('units', 'totals', 'unitsLastSync'));
   }
 
   /**
@@ -288,11 +300,23 @@ class UnitController extends Controller
         DB::table('unit_shadows')->upsert($unitShadows, 'id');
       });
 
-    return env('APP_DEBUG', false) ?? redirect()->route('units.index');
+    return redirect()->route('units.index');
   }
 
-  public function export()
+  public function export($type)
   {
-    return Excel::download(new UnitsExport, 'units.xlsx');
+    switch ($type) {
+      case 'linkaja':
+        return Excel::download(new UnitsExport, 'linkaja.xlsx');
+        break;
+
+      case 'rekapitulasi':
+        return Excel::download(new UnitsExport, 'rekapitulasi.xlsx');
+        break;
+
+      default:
+        return Excel::download(new UnitsExport, 'units.xlsx');
+        break;
+    }
   }
 }
