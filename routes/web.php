@@ -30,27 +30,27 @@ Route::view('/', 'welcome');
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
 
+  Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
+  Route::post('/units/sync', [UnitController::class, 'syncShadow'])->name('units.sync');
   Route::get('/units/report/print', [UnitController::class, 'printReport'])->name('units.report.print');
-
-  Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
-  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
-  Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
-
-  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
+  Route::get('/units/export', [UnitController::class, 'export'])->name('units.export');
+  Route::resource('units', UnitController::class);
 
   Route::group(['middleware' => ['role:operator']], function () {
-    Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
-    Route::post('/units/sync', [UnitController::class, 'syncShadow'])->name('units.sync');
-    Route::resource('units', UnitController::class);
     Route::resource('clusters', ClusterController::class);
     Route::resource('customers', CustomerController::class)->except(['index', 'show']);
     Route::resource('payments', PaymentController::class);
   });
-
+  
+  Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
+  Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
+  
   Route::group(['middleware' => ['role:supervisor']], function () {
     Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
 
+  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
   Route::resource('transactions', TransactionController::class);
 
   Route::group(['middleware' => ['role:master']], function () {

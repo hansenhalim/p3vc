@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UnitsExport;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Cluster;
@@ -9,6 +10,7 @@ use App\Models\Customer;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UnitController extends Controller
 {
@@ -202,14 +204,17 @@ class UnitController extends Controller
         'created_at'
       ])
       ->with([
+        'customer:id,name',
         'cluster.prices:cluster_id,cost,per',
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
-      ->chunk(100, function ($units) {
+      ->chunk(50, function ($units) {
         foreach ($units as $unit) {
           $transactions = $unit->transactions;
           $latest_price = $unit->cluster->prices->last();
+
+          $unit['customer_name'] = $unit->customer->name;
 
           $unit['balance'] = 0;
           $unit['debt'] = 0;
@@ -268,6 +273,7 @@ class UnitController extends Controller
             'id',
             'customer_id',
             'name',
+            'customer_name',
             'idlink',
             'area_sqm',
             'balance',
@@ -283,5 +289,10 @@ class UnitController extends Controller
       });
 
     return env('APP_DEBUG', false) ?? redirect()->route('units.index');
+  }
+
+  public function export()
+  {
+    return Excel::download(new UnitsExport, 'units.xlsx');
   }
 }

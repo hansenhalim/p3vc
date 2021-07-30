@@ -17,6 +17,7 @@ class CreateUnitShadowsTable extends Migration
       $table->id();
       $table->unsignedBigInteger('customer_id');
       $table->string('name');
+      $table->string('customer_name');
       $table->float('area_sqm', 6, 2);
       $table->string('idlink')->nullable();
       $table->integer('balance');
