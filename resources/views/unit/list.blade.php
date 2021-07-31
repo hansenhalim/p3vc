@@ -107,7 +107,7 @@
                     </tr>
                   @endforelse
                 </tbody>
-                @if ($units->onFirstPage())
+                @if ($units->onFirstPage() && $units->first())
                   <thead>
                     <tr>
                       <th colspan="5">Totals</th>
