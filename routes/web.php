@@ -36,9 +36,8 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::resource('transactions', TransactionController::class);
 
   Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
-  Route::post('/units/sync', [UnitController::class, 'syncShadow']);
-  Route::get('/units/report/print', [UnitController::class, 'printReport']);
-  Route::get('/units/export/{type}', [UnitController::class, 'export']);
+  Route::post('/units/sync', [UnitController::class, 'sync'])->name('units.sync');
+  Route::get('/units/export/{type}', [UnitController::class, 'export'])->name('units.export');
   Route::resource('units', UnitController::class);
 
 

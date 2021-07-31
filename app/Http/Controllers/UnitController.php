@@ -203,7 +203,7 @@ class UnitController extends Controller
     return view('unit.debt', compact('customer', 'units', 'payments'));
   }
 
-  public function syncShadow()
+  public function sync()
   {
     Unit::query()
       ->select([
@@ -310,7 +310,7 @@ class UnitController extends Controller
         return Excel::download(new UnitsExport, 'linkaja.xlsx');
         break;
 
-      case 'rekapitulasi':
+      case 'recapitulation':
         return Excel::download(new UnitsExport, 'rekapitulasi.xlsx');
         break;
 

@@ -60,10 +60,10 @@
                         <i class="cil-data-transfer-down align-text-bottom"></i>&nbsp;Export
                       </button>
                       <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" href="export/linkaja">Report LinkAja (.xlsx)</a>
-                        <a class="dropdown-item" href="export/report">Report Unit (.xlsx)</a>
+                        <a class="dropdown-item" href="{{ route('units.export', 'linkaja') }}">Report LinkAja (.xlsx)</a>
+                        <a class="dropdown-item" href="{{ route('units.export', 'report') }}">Report Unit (.xlsx)</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="export/rekapitulasi">Rekapitulasi (.pdf)</a>
+                        <a class="dropdown-item" href="{{ route('units.export', 'recapitulation') }}">Rekapitulasi (.pdf)</a>
                       </div>
                     </div>
                   </div>
