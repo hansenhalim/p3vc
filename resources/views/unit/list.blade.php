@@ -9,7 +9,7 @@
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 text-nowrap">Unit List</div>
               <div class="d-flex align-items-center">
-                <div title="{{ $unitsLastSync->toDateTimeString() }}">{{ $unitsLastSync->diffForHumans() }}</div>
+                <div title="{{ $unitsLastSync->setTimezone('Asia/Jakarta')->toDateTimeString() }}">{{ $unitsLastSync->diffForHumans() }}</div>
                 <button form="sync" onclick="this.previousElementSibling.innerHTML='loading&hellip;';this.disabled=true; this.form.submit();" style="color: #3c4b64" class="btn btn-link px-0 ml-2">
                   <i class="cil-sync align-text-top"></i>
                 </button>
@@ -23,7 +23,7 @@
               @endif
               {{-- <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a> --}}
               <form id="filter" action="{{ route('units.index') }}" method="get"></form>
-              <form id="sync" action="units/sync" method="post">@csrf</form>
+              <form id="sync" action="{{ route('units.sync') }}" method="post">@csrf</form>
 
               <div class="d-flex flex-column-reverse flex-md-row justify-content-between">
                 <div class="input-group w-auto mb-3 rounded">
@@ -63,7 +63,7 @@
                         <a class="dropdown-item" href="{{ route('units.export', 'linkaja') }}">Report LinkAja (.xlsx)</a>
                         <a class="dropdown-item" href="{{ route('units.export', 'report') }}">Report Unit (.xlsx)</a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ route('units.export', 'recapitulation') }}">Rekapitulasi (.pdf)</a>
+                        <p class="dropdown-item" href="{{ route('units.export', 'recapitulation') }}">Rekapitulasi (.pdf)</p>
                       </div>
                     </div>
                   </div>

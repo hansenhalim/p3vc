@@ -296,7 +296,7 @@ class UnitController extends Controller
           ]);
         }
 
-        DB::table('configs')->where('key', 'units_last_sync')->update(['value' => now()]);
+        DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
         DB::table('unit_shadows')->upsert($unitShadows, 'id');
       });
 
