@@ -7,7 +7,7 @@ use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class UnitsExport implements FromQuery, WithHeadings, WithStrictNullComparison
+class UnitsLinkajaExport implements FromQuery, WithHeadings, WithStrictNullComparison
 {
   public function query()
   {
@@ -30,7 +30,7 @@ class UnitsExport implements FromQuery, WithHeadings, WithStrictNullComparison
   public function headings(): array
   {
     return [
-      'CIF',
+      'ID_PELANGGAN',
       'Blok',
       'Nama',
       'IdLink',
