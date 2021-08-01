@@ -12,43 +12,41 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
-
 Auth::routes();
-
 Route::view('/', 'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::view('/home',  'dashboard.homepage');
 
-  Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
-  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
-  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
-  Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
-
   Route::group(['middleware' => ['role:operator']], function () {
-
-    Route::resource('units', UnitController::class);
-    Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
     Route::resource('clusters', ClusterController::class);
     Route::resource('customers', CustomerController::class)->except(['index', 'show']);
     Route::resource('payments', PaymentController::class);
   });
-
+  
   Route::group(['middleware' => ['role:supervisor']], function () {
     Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
+  
+  Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
+  Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
+  Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
   Route::resource('transactions', TransactionController::class);
+
+  Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
+  Route::post('/units/sync', [UnitController::class, 'sync'])->name('units.sync');
+  Route::get('/units/export/{type}', [UnitController::class, 'export'])->name('units.export');
+  Route::resource('units', UnitController::class);
+
+
+
+
+
+
+
+// coreui
 
   Route::group(['middleware' => ['role:master']], function () {
     Route::resource('users',            UsersController::class)->except(['create', 'store']);
