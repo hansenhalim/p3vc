@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\UnitsExport;
+use App\Exports\UnitsLinkajaExport;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Cluster;
@@ -307,11 +308,15 @@ class UnitController extends Controller
   {
     switch ($type) {
       case 'linkaja':
-        return Excel::download(new UnitsExport, 'linkaja.xlsx');
+        $unitsLastSync = Carbon::parse(DB::table('configs')
+          ->where('key', 'units_last_sync')
+          ->pluck('value')
+          ->first());
+        return Excel::download(new UnitsLinkajaExport, 'IKK Villa Citra_' . $unitsLastSync->formatLocalized('%d %B %Y') . '.xlsx');
         break;
 
       case 'recapitulation':
-        return Excel::download(new UnitsExport, 'rekapitulasi.xlsx');
+        return Excel::download(new UnitsLinkajaExport, 'rekapitulasi.xlsx');
         break;
 
       default:
