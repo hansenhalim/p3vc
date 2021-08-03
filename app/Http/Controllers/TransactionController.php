@@ -92,12 +92,36 @@ class TransactionController extends Controller
   {
     $transaction = Transaction::query()
       ->withoutGlobalScope(ApprovedScope::class)
-      ->with(['unit.customer', 'payments'])
+      ->with(['unit.customer', 'payments', 'unit.transactions.payments'])
       ->findOrFail($id);
 
-    // echo json_encode($transaction); exit();
+    $unit = $transaction->unit;
 
-    return view('transaction.show', compact('transaction'));
+    $unit['balance'] = 0;
+    $unit['debt'] = 0;
+
+    foreach ($unit->transactions as $mytransaction) {
+      foreach ($mytransaction->payments as $payment) {
+        switch ($payment->id) {
+          case 11:
+            $unit['debt'] -= $payment->pivot->amount;
+            break;
+          case 8:
+            $unit['debt'] += $payment->pivot->amount;
+            break;
+          case 3:
+            $unit['balance'] += $payment->pivot->amount;
+            break;
+          case 10:
+            $unit['balance'] -= $payment->pivot->amount;
+            break;
+        }
+      }
+    }
+
+    // echo json_encode($unit); exit();
+
+    return view('transaction.show', compact('transaction', 'unit'));
   }
 
   public function edit($id)

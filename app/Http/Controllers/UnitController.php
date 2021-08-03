@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\UnitsExport;
+use App\Exports\UnitsLinkajaExport;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Cluster;
@@ -221,7 +222,7 @@ class UnitController extends Controller
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
-      ->chunk(50, function ($units) {
+      ->chunk(100, function ($units) {
         foreach ($units as $unit) {
           $transactions = $unit->transactions;
           $latest_price = $unit->cluster->prices->last();
@@ -305,17 +306,22 @@ class UnitController extends Controller
 
   public function export($type)
   {
+    $unitsLastSync = Carbon::parse(DB::table('configs')
+      ->where('key', 'units_last_sync')
+      ->pluck('value')
+      ->first());
+
     switch ($type) {
       case 'linkaja':
-        return Excel::download(new UnitsExport, 'linkaja.xlsx');
+        return Excel::download(new UnitsLinkajaExport, 'IKK Villa Citra_' . $unitsLastSync->formatLocalized('%d %B %Y') . '.xlsx');
         break;
 
       case 'recapitulation':
-        return Excel::download(new UnitsExport, 'rekapitulasi.xlsx');
+        return Excel::download(new UnitsLinkajaExport, 'rekapitulasi.xlsx');
         break;
 
       default:
-        return Excel::download(new UnitsExport, 'units.xlsx');
+        return Excel::download(new UnitsExport, 'Report Unit_' . $unitsLastSync->formatLocalized('%d %B %Y') . '.xlsx');
         break;
     }
   }
