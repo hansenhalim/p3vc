@@ -72,6 +72,8 @@
                       @if ($unit->balance >= $transaction->payments->firstWhere('id', 10)->pivot->amount)
                         <button value="true" name="approval" type="submit" class="btn btn-success"><i class="cil-thumb-up"></i>&nbsp;Approve</button>
                       @endif
+                    @else
+                      <button value="true" name="approval" type="submit" class="btn btn-success"><i class="cil-thumb-up"></i>&nbsp;Approve</button>
                     @endif
                   </div>
                 </form>
