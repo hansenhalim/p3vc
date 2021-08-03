@@ -12,18 +12,7 @@ class UnitsLinkajaExport implements FromQuery, WithHeadings, WithStrictNullCompa
   public function query()
   {
     return DB::table('unit_shadows')
-      ->select(
-        'customer_id',
-        'name',
-        'customer_name',
-        'idlink',
-        'area_sqm',
-        'balance',
-        'debt',
-        'months_count',
-        'months_total',
-        'credit'
-      )
+      ->select(DB::raw('idlink,customer_name,DATE_FORMAT(DATE_SUB((SELECT value from configs where `key`="units_last_sync"),INTERVAL 1 MONTH),"%Y%m"),DATE_FORMAT(LAST_DAY((SELECT value from configs where `key`="units_last_sync")),"%Y%m%d"),credit,2500,credit+2500'))
       ->orderBy('id');
   }
 
@@ -31,15 +20,12 @@ class UnitsLinkajaExport implements FromQuery, WithHeadings, WithStrictNullCompa
   {
     return [
       'ID_PELANGGAN',
-      'Blok',
-      'Nama',
-      'IdLink',
-      'Luas (m2)',
-      'Saldo',
-      'Hutang',
-      'Jml Bulan',
-      'Tunggakan',
-      'Iuran'
+      'NAMA',
+      'BULAN_TAGIHAN',
+      'TANGGAL_JATUH_TEMPO',
+      'NOMINAL_TAGIHAN',
+      'ADMIN',
+      'TOTAL'
     ];
   }
 }

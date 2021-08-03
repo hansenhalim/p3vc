@@ -25,12 +25,12 @@
                 <tbody>
                   <tr class="table-light">
                     <th class="text-center">1</th>
-                    <th>{{ $transaction->unit->name }}</th>
-                    <th>{{ $transaction->unit->customer->name }}</th>
-                    <th>{{ $transaction->unit->cluster->name }}</th>
-                    <td class="text-right">{{ number_format($transaction->unit->area_sqm) }}</td>
-                    <td class="text-right">{{ number_format($transaction->unit->balance) }}</td>
-                    <td class="text-right">{{ number_format($transaction->unit->cluster->prices->last()->cost * ($transaction->unit->cluster->prices->last()->per == 'sqm' ? $transaction->unit->area_sqm : 1)) }}</td>
+                    <th>{{ $unit->name }}</th>
+                    <th>{{ $unit->customer->name }}</th>
+                    <th>{{ $unit->cluster->name }}</th>
+                    <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                    <td class="text-right">{{ number_format($unit->balance) }}</td>
+                    <td class="text-right">{{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
                   </tr>
                   <thead class="thead-light">
                     <tr>
@@ -68,7 +68,13 @@
                   @csrf
                   <div class="card-footer d-flex justify-content-between">
                     <button value="false" name="approval" type="submit" class="btn btn-link text-danger"><i class="cil-thumb-down"></i>&nbsp;Reject</button>
-                    <button value="true" name="approval" type="submit" class="btn btn-success"><i class="cil-thumb-up"></i>&nbsp;Approve</button>
+                    @if ($transaction->payments->firstWhere('id', 10))
+                      @if ($unit->balance >= $transaction->payments->firstWhere('id', 10)->pivot->amount)
+                        <button value="true" name="approval" type="submit" class="btn btn-success"><i class="cil-thumb-up"></i>&nbsp;Approve</button>
+                      @endif
+                    @else
+                      <button value="true" name="approval" type="submit" class="btn btn-success"><i class="cil-thumb-up"></i>&nbsp;Approve</button>
+                    @endif
                   </div>
                 </form>
               @elseif($transaction->approved_at)
