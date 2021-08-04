@@ -313,7 +313,7 @@ class UnitController extends Controller
 
     switch ($type) {
       case 'linkaja':
-        return Excel::download(new UnitsLinkajaExport, 'IKK Villa Citra_' . $unitsLastSync->formatLocalized('%d %B %Y') . '.xlsx');
+        return Excel::download(new UnitsLinkajaExport, 'IKK Villa Citra_' . $unitsLastSync->formatLocalized('%d %B %Y %H%M') . '.xlsx');
         break;
 
       case 'recapitulation':
@@ -321,7 +321,7 @@ class UnitController extends Controller
         break;
 
       default:
-        return Excel::download(new UnitsExport, 'Report Unit_' . $unitsLastSync->formatLocalized('%d %B %Y') . '.xlsx');
+        return Excel::download(new UnitsExport, 'Report Unit_' . $unitsLastSync->formatLocalized('%d %B %Y %H%M') . '.xlsx');
         break;
     }
   }
