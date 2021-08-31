@@ -6,36 +6,62 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header">Transaction Report</div>
+            <div class="card-header">
+              <div class="h4 m-0 text-nowrap">Transaction Report</div>
+            </div>
             <div class="card-body">
               @if (session('status'))
                 <div class="alert alert-success alert-dismissible fade show">
                   {!! session('status') !!}
-                  <button type="button" class="close" data-dismiss="alert">
+                  <button
+                    type="button"
+                    class="close"
+                    data-dismiss="alert"
+                  >
                     <span>&times;</span>
                   </button>
                 </div>
               @endif
-              <form action="{{ route('transactions.report') }}" method="get">
+              <form
+                action="{{ route('transactions.report') }}"
+                method="get"
+              >
                 <div class="row">
                   <div class="col-md-6 col-xl-4 mb-2">
-                    <div id="reportrange" class="border rounded p-2" style="cursor: pointer">
-                      <i class="cil-calendar align-text-top"></i>&nbsp;<span></span>
-                      <input type="hidden" name="dateFrom">
-                      <input type="hidden" name="dateTo">
+                    <div
+                      id="reportrange"
+                      class="border-0 form-control mb-2"
+                      style="cursor: pointer; background-color: rgba(0,0,21,.05)"
+                    >
+                      <i class="cil-calendar align-text-top"></i>&nbsp;&nbsp;<span></span>
+                      <input
+                        type="hidden"
+                        name="dateFrom"
+                      >
+                      <input
+                        type="hidden"
+                        name="dateTo"
+                      >
                     </div>
                   </div>
-                  <div class="col mb-2">
-                    <button type="submit" class="btn btn-primary">Generate</button>
+                  <div class="col d-flex mb-3">
+                    <button
+                      type="submit"
+                      class="btn btn-warning flex-grow-1 flex-md-grow-0"
+                    ><i class="cil-chart-line align-text-top"></i>&nbsp;Generate</button>
                     @isset($transactions)
-                      <a class="btn btn-outline-primary" href="{{ route('transactions.report.print', request()->input()) }}" target="_blank" rel="noopener noreferrer"><i class="cil-cloud-download align-text-bottom"></i></a>
+                      <a
+                        href="{{ route('transactions.report.print', request()->input()) }}"
+                        class="btn btn-ghost-light ml-2"
+                        style="color: black"
+                      ><i class="cil-cloud-download align-text-bottom"></i></a>
                     @endisset
                   </div>
                 </div>
               </form>
               @isset($transactions)
-                <table class="table table-responsive table-striped table-bordered text-nowrap">
-                  <thead class="thead-dark">
+                <table class="table table-responsive table-striped table-borderless text-nowrap m-0">
+                  <thead class="border-bottom">
                     <tr>
                       <th>CIF</th>
                       <th>Unit</th>
@@ -69,32 +95,40 @@
                           <td class="align-middle text-right">{{ number_format($paymentDetail) }}</td>
                         @endforeach
                       </tr>
-                      @if ($loop->last)
-                        <tr class="bg-dark">
-                          <th class="align-middle text-right text-center" colspan="5">Total(s)</th>
-                          <th class="align-middle text-right">{{ number_format($transactions->paymentDetailsSumsSum) }}</th>
-                          @foreach ($transactions->paymentDetailsSums as $paymentDetailsSum)
-                            <th class="align-middle text-right">{{ number_format($paymentDetailsSum) }}</th>
-                          @endforeach
-                        </tr>
-                      @endif
                     @empty
                       <tr>
-                        <td colspan="17" class="text-center">Oops, nothing found here :(</td>
+                        <td
+                          colspan="17"
+                          class="text-center p-4"
+                        >Oops, nothing found here :(</td>
                       </tr>
                     @endforelse
                   </tbody>
+                  @if ($transactions->onFirstPage() && $transactions->first())
+                    <thead class="border-top">
+                      <tr>
+                        <th colspan="5">Totals</th>
+                        <th class="align-middle text-right">{{ number_format($transactions->paymentDetailsSumsSum) }}</th>
+                        @foreach ($transactions->paymentDetailsSums as $paymentDetailsSum)
+                          <th class="align-middle text-right">{{ number_format($paymentDetailsSum) }}</th>
+                        @endforeach
+                      </tr>
+                    </thead>
+                  @endif
                 </table>
-                <div class="d-flex justify-content-center">
+
+                <div class="d-flex justify-content-center mt-4 mb-0">
                   {{ $transactions->appends(request()->input())->links() }}
                 </div>
+
+                <small class="text-muted">
+                  Showing {{ $transactions->count() }} of <a
+                    href="{{ substr($transactions->url(1), 0, -1) . 'all' }}"
+                    class="text-muted"
+                  >{{ $transactions->total() }}</a>
+                </small>
               @endisset
             </div>
-            @isset($transactions)
-              <div class="card-footer">
-                Showing {{ $transactions->firstItem() }} to {{ $transactions->lastItem() }} of {{ $transactions->total() }} entries
-              </div>
-            @endisset
           </div>
         </div>
       </div>
@@ -126,6 +160,7 @@
       $('#reportrange').daterangepicker({
         startDate: start,
         endDate: end,
+        applyButtonClasses: "btn-warning",
         alwaysShowCalendars: true,
         ranges: {
           'Today': [moment(), moment()],
@@ -143,7 +178,6 @@
       cb(start, end)
 
     })
-
   </script>
 
 @endsection

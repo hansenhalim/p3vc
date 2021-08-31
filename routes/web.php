@@ -9,6 +9,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentController;
 
@@ -16,7 +17,7 @@ Auth::routes();
 Route::view('/', 'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
-  Route::view('/home',  'dashboard.homepage');
+  Route::view('home',  'dashboard.homepage');
 
   Route::group(['middleware' => ['role:operator']], function () {
     Route::resource('clusters', ClusterController::class);
@@ -25,22 +26,23 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   });
   
   Route::group(['middleware' => ['role:supervisor']], function () {
-    Route::post('/transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
+    Route::post('transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
   
   Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
-  Route::get('/transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
-  Route::get('/transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
-  Route::get('/transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
+  Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
+  Route::get('transactions/report/print', [TransactionController::class, 'printReport'])->name('transactions.report.print');
+  Route::get('transactions/{transaction}/print', [TransactionController::class, 'print'])->name('transactions.print');
   Route::resource('transactions', TransactionController::class);
 
-  Route::get('/units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
-  Route::post('/units/sync', [UnitController::class, 'sync'])->name('units.sync');
-  Route::get('/units/export/{type}', [UnitController::class, 'export'])->name('units.export');
+  Route::get('units/{unit}/debt', [UnitController::class, 'debt'])->name('units.debt');
+  Route::post('units/sync', [UnitController::class, 'sync'])->name('units.sync');
+  Route::get('units/export/{type}', [UnitController::class, 'export'])->name('units.export');
   Route::resource('units', UnitController::class);
 
-
+  Route::get('change-password', [PasswordController::class, 'edit'])->name('passwords.edit');
+  Route::post('change-password', [PasswordController::class, 'update'])->name('passwords.update');
 
 
 

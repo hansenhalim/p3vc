@@ -35,10 +35,8 @@
                   <input class="form-control" type="password" placeholder="{{ __('Password') }}" name="password"
                     required>
                 </div>
-                <div class="row">
-                  <div class="col-6">
-                    <button class="btn btn-primary px-4" type="submit">{{ __('Login') }}</button>
-                  </div>
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-warning px-4 flex-grow-1 flex-md-grow-0">Login</button>
                 </div>
               </form>
             </div>
