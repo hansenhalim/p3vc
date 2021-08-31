@@ -32,7 +32,7 @@
     </ul>
     <div class="c-subheader px-3">
       <ol class="breadcrumb border-0 m-0">
-        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/" class="text-warning font-weight-bold">Home</a></li>
         <?php $segments = ''; ?>
         @for ($i = 1; $i <= count(Request::segments()); $i++)
           <?php $segments .= '/' . Request::segment($i); ?>

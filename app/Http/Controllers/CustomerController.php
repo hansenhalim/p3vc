@@ -12,21 +12,17 @@ class CustomerController extends Controller
 {
   public function index(Request $request)
   {
-    $key = $request->key;
-    $sort = $request->sort ?? 'id';
-    $order = $request->order ?? 'desc';
+    $search = $request->search;
+    $sortBy = $request->sortBy ?? 'id';
+    $sortDirection = $request->sortDirection ?? 'asc';
+    $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $query = Customer::query();
-
-    $query->withCount(['units']);
-    $query->orderBy($sort, $order);
-
-    $query->when($key, function ($query, $key) {
-      if (substr($key, 0, 1) === '#') return $query->where('id', substr($key, 1));
-      return $query->where('name', 'like', '%' . $key . '%');
-    });
-
-    $customers = $query->paginate();
+    $customers = Customer::withCount(['units'])
+      ->when($search, fn ($query) => $query->where('id', $search)
+        ->orWhere('phone_number', $search)
+        ->orWhere('name', 'like', '%' . $search . '%'))
+      ->orderBy($sortBy, $sortDirection)
+      ->paginate($perPage);
 
     return view('customer.list', compact('customers'));
   }
