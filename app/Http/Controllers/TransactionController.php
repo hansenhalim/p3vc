@@ -7,6 +7,7 @@ use App\Models\Unit;
 use App\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade as DomPDF;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use NumberFormatter;
@@ -22,15 +23,27 @@ class TransactionController extends Controller
     $this->debits = [4, 5, 6, 7, 8, 9, 10];
   }
 
-  public function index()
+  public function index(Request $request)
   {
-    $transactions = Transaction::query()
-      ->withoutGlobalScope(ApprovedScope::class)
-      ->whereBetween('created_at', [now()->subMonth(), now()])
+    $search = $request->search;
+    $perPage = $request->page == 'all' ? 2000 : 10;
+
+    $transactions = Transaction::withoutGlobalScope(ApprovedScope::class)
+      ->when(
+        $search,
+        function ($query, $search) {
+          return $query->whereHas('unit', function ($query) use ($search) {
+            $query->where('name', $search);
+          });
+        },
+        function ($query) {
+          return $query->whereBetween('created_at', [now()->subMonth(), now()]);
+        }
+      )
       ->with(['unit:id,name,customer_id'])
       ->withSum('payments', 'payment_transaction.amount')
       ->latest('id')
-      ->paginate();
+      ->paginate($perPage);
 
     // echo json_encode($transactions); exit();
 
@@ -142,8 +155,8 @@ class TransactionController extends Controller
   public function printReport(Request $request)
   {
     $date = new stdClass;
-    $date->from = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
-    $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
+    $date->from = Carbon::parse($request->dateFrom);
+    $date->to = Carbon::parse($request->dateTo)->addDay()->subSecond();
 
     $transactions = Transaction::query()
       ->with(['payments:id', 'unit:id,name,customer_id'])
@@ -174,7 +187,10 @@ class TransactionController extends Controller
     $pdf = DomPDF::loadView('pdf.report', compact('transactions'))
       ->setPaper('a4', 'landscape');
 
-    return $pdf->stream('report.pdf');
+    $dateFrom = $date->from->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
+    $dateTo = $date->to->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
+
+    return $pdf->download('Report Transaksi_' . $dateFrom . '_' . $dateTo . '.pdf');
   }
 
   public function print($id)
@@ -245,6 +261,8 @@ class TransactionController extends Controller
 
   public function report(Request $request)
   {
+    $perPage = $request->page == 'all' ? 2000 : 10;
+
     if (!($request->dateFrom && $request->dateTo)) return view('transaction.report');
 
     $date = new stdClass;
@@ -254,7 +272,7 @@ class TransactionController extends Controller
     $transactions = Transaction::query()
       ->with(['payments:id', 'unit:id,name,customer_id'])
       ->whereBetween('created_at', [$date->from, $date->to])
-      ->paginate();
+      ->paginate($perPage);
 
     $allTransactions = Transaction::getTotals($date);
 

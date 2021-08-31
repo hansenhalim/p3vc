@@ -9,20 +9,15 @@ class ClusterController extends Controller
 {
   public function index(Request $request)
   {
-    $key = $request->key;
-    $sort = $request->get('sort') ?? 'id';
-    $order = $request->get('order') ?? 'asc';
+    $search = $request->search;
+    $sortBy = $request->sortBy ?? 'id';
+    $sortDirection = $request->sortDirection ?? 'asc';
+    $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $query = Cluster::query();
-
-    $query->with(['prices'])->withCount(['units']);
-    $query->orderBy($sort, $order);
-
-    $query->when($key, function ($query, $key) {
-      return $query->where('name', 'like', '%' . $key . '%');
-    });
-
-    $clusters = $query->paginate();
+    $clusters = Cluster::with(['prices'])->withCount(['units'])
+      ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
+      ->orderBy($sortBy, $sortDirection)
+      ->paginate($perPage);
 
     return view('cluster.list', compact('clusters'));
   }
