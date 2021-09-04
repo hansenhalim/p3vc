@@ -14,7 +14,7 @@ class AddCifToCustomersTable extends Migration
   public function up()
   {
     Schema::table('customers', function (Blueprint $table) {
-      $table->unsignedInteger('cif')->after('id');
+      $table->unsignedInteger('cif')->after('id')->nullable();
     });
   }
 

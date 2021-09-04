@@ -14,7 +14,7 @@ class AddPreviousIdToCustomersTable extends Migration
   public function up()
   {
     Schema::table('customers', function (Blueprint $table) {
-      $table->unsignedBigInteger('previous_id')->after('id');
+      $table->unsignedBigInteger('previous_id')->after('id')->nullable();
     });
   }
 

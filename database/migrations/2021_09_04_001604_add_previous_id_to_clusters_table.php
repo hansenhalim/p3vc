@@ -14,7 +14,7 @@ class AddPreviousIdToClustersTable extends Migration
   public function up()
   {
     Schema::table('clusters', function (Blueprint $table) {
-      $table->unsignedBigInteger('previous_id')->after('id');
+      $table->unsignedBigInteger('previous_id')->after('id')->nullable();
     });
   }
 

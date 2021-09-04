@@ -14,7 +14,7 @@ class AddPreviousIdToUnitsTable extends Migration
   public function up()
   {
     Schema::table('units', function (Blueprint $table) {
-      $table->unsignedBigInteger('previous_id')->after('id');
+      $table->unsignedBigInteger('previous_id')->after('id')->nullable();
     });
   }
 
