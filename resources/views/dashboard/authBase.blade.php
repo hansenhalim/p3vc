@@ -8,67 +8,188 @@
 -->
 
 <html lang="en">
-  <head>
-    <base href="./">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="description" content="P3VC - Paguyuban Pengelolaan Perumahan Villa Citra">
-    <meta name="author" content="Hansen Halim">
-    <meta name="keyword" content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard">
-    <title>{{ config('app.name', 'Laravel') }}</title>
-    <link rel="apple-touch-icon" sizes="57x57" href="assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="assets/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="assets/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-    <!-- Icons-->
-    <link href="{{ asset('css/free.min.css') }}" rel="stylesheet"> <!-- icons -->
-    <link href="{{ asset('css/brand.min.css') }}" rel="stylesheet"> <!-- icons -->
-    <link href="{{ asset('css/flag.min.css') }}" rel="stylesheet"> <!-- icons -->
-    <!-- Main styles for this application-->
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-    
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FY0HC3B1E6"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'G-FY0HC3B1E6');
-    </script>
+<head>
+  <base href="./">
+  <meta charset="utf-8">
+  <meta
+    http-equiv="X-UA-Compatible"
+    content="IE=edge"
+  >
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, shrink-to-fit=no"
+  >
+  <meta
+    name="description"
+    content="P3VC - Paguyuban Pengelolaan Perumahan Villa Citra"
+  >
+  <meta
+    name="author"
+    content="Hansen Halim"
+  >
+  <meta
+    name="keyword"
+    content="Bootstrap,Admin,Template,Open,Source,jQuery,CSS,HTML,RWD,Dashboard"
+  >
+  <title>{{ config('app.name', 'Laravel') }}</title>
+  <link
+    rel="apple-touch-icon"
+    sizes="57x57"
+    href="assets/favicon/apple-icon-57x57.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="60x60"
+    href="assets/favicon/apple-icon-60x60.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="72x72"
+    href="assets/favicon/apple-icon-72x72.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="76x76"
+    href="assets/favicon/apple-icon-76x76.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="114x114"
+    href="assets/favicon/apple-icon-114x114.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="120x120"
+    href="assets/favicon/apple-icon-120x120.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="144x144"
+    href="assets/favicon/apple-icon-144x144.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="152x152"
+    href="assets/favicon/apple-icon-152x152.png"
+  >
+  <link
+    rel="apple-touch-icon"
+    sizes="180x180"
+    href="assets/favicon/apple-icon-180x180.png"
+  >
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="192x192"
+    href="assets/favicon/android-icon-192x192.png"
+  >
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="32x32"
+    href="assets/favicon/favicon-32x32.png"
+  >
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="96x96"
+    href="assets/favicon/favicon-96x96.png"
+  >
+  <link
+    rel="icon"
+    type="image/png"
+    sizes="16x16"
+    href="assets/favicon/favicon-16x16.png"
+  >
+  <link
+    rel="manifest"
+    href="assets/favicon/manifest.json"
+  >
+  <meta
+    name="msapplication-TileColor"
+    content="#ffffff"
+  >
+  <meta
+    name="msapplication-TileImage"
+    content="assets/favicon/ms-icon-144x144.png"
+  >
+  <meta
+    name="theme-color"
+    content="#ffffff"
+  >
+  <!-- Icons-->
+  <link
+    href="{{ asset('css/free.min.css') }}"
+    rel="stylesheet"
+  > <!-- icons -->
+  <link
+    href="{{ asset('css/brand.min.css') }}"
+    rel="stylesheet"
+  > <!-- icons -->
+  <link
+    href="{{ asset('css/flag.min.css') }}"
+    rel="stylesheet"
+  > <!-- icons -->
+  <!-- Main styles for this application-->
+  <link
+    href="{{ asset('css/style.css') }}"
+    rel="stylesheet"
+  >
 
-    <link href="{{ asset('css/coreui-chartjs.css') }}" rel="stylesheet">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-FY0HC3B1E6"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-  </head>
-  <body class="c-app flex-row align-items-center">
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
 
-    @yield('content') 
+    gtag('config', 'G-FY0HC3B1E6');
+  </script>
 
-    <!-- CoreUI and necessary plugins-->
-    <script src="{{ asset('js/coreui.bundle.min.js') }}"></script>
+  <style>
+    .form-control:focus {
+      box-shadow: 0 0 0 0.2rem rgb(242 176 56 / 25%);
+    }
 
-    @yield('javascript')
+    .btn-warning,
+    .btn-warning:hover,
+    .btn-warning:active {
+      color: black !important;
+      font-weight: bold;
+    }
 
-    <script type="text/javascript"> //<![CDATA[
-      var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.trust-provider.com/" : "http://www.trustlogo.com/");
-      document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
-    //]]></script>
-    <script language="JavaScript" type="text/javascript">
-      TrustLogo("https://www.positivessl.com/images/seals/positivessl_trust_seal_sm_124x32.png", "POSDV", "none");
-    </script>
-  </body>
+  </style>
+
+</head>
+
+<body class="c-app flex-row align-items-center">
+
+  @yield('content')
+
+  <!-- CoreUI and necessary plugins-->
+  <script src="{{ asset('js/coreui.bundle.min.js') }}"></script>
+
+  @yield('javascript')
+
+  <script type="text/javascript">
+    //<![CDATA[
+    var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.trust-provider.com/" : "http://www.trustlogo.com/");
+    document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
+    //]]>
+  </script>
+  <script
+    language="JavaScript"
+    type="text/javascript"
+  >
+    TrustLogo("https://www.positivessl.com/images/seals/positivessl_trust_seal_sm_124x32.png", "POSDV", "none");
+  </script>
+</body>
+
 </html>
