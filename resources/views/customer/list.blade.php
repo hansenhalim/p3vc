@@ -6,8 +6,12 @@
       <div class="row">
         <div class="col-xl-6 col-lg-10">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex justify-content-between align-items-center">
               <div class="h4 m-0 my-1 text-nowrap">Customer List</div>
+              <a
+                href="{{ route('customers.create') }}"
+                class="btn btn-sm btn-light font-weight-bold"
+              ><i class="cil-user-plus align-text-top"></i>&nbsp;Create</a>
             </div>
             <div class="card-body pb-2">
               @if (session('status'))
@@ -22,8 +26,6 @@
                   </button>
                 </div>
               @endif
-
-              {{-- <a class="btn btn-primary mb-2" href="{{ route('customers.create') }}">Create Customer</a> --}}
 
               <form
                 id="filter"
@@ -46,9 +48,7 @@
                       type="submit"
                       class="btn btn-warning"
                       form="filter"
-                    ><i
-                        class="cil-search align-text-top"
-                      ></i></button>
+                    ><i class="cil-search align-text-top"></i></button>
                   </div>
                 </div>
 
@@ -108,7 +108,7 @@
                 <tbody>
                   @forelse ($customers as $customer)
                     <tr>
-                      <th class="align-middle">#{{ $customer->id }}</th>
+                      <th class="align-middle">#{{ $customer->previous_id }}</th>
                       <td class="align-middle">{{ $customer->name }}</td>
                       <td class="align-middle">{!! $customer->phone_number ?? '<span class="badge badge-dark">None</span>' !!}</td>
                       <td class="align-middle text-right">{{ $customer->units_count }}</td>
@@ -122,14 +122,14 @@
                           <div class="dropdown-menu">
                             <a
                               class="dropdown-item font-weight-bold"
-                              href="{{ route('customers.show', $customer->id) }}"
+                              href="{{ route('customers.show', $customer) }}"
                             ><i class="cil-description"></i>&nbsp;View</a>
                             <a
                               class="dropdown-item font-weight-bold"
-                              href="{{ route('customers.edit', $customer->id) }}"
+                              href="{{ route('customers.edit', $customer) }}"
                             ><i class="cil-pencil"></i>&nbsp;Edit</a>
                             <form
-                              action="{{ route('customers.destroy', $customer->id) }}"
+                              action="{{ route('customers.destroy', $customer) }}"
                               method="post"
                             >
                               @csrf
@@ -155,14 +155,14 @@
               </table>
 
               <div class="d-flex justify-content-center mt-4 mb-0">
-                {{ $customers->appends(request()->input())->links() }}
+                {{ $latestCustomers->appends(request()->input())->links() }}
               </div>
 
               <small class="text-muted">
-                Showing {{ $customers->count() }} of <a
-                  href="{{ substr($customers->url(1), 0, -1) . 'all' }}"
+                Showing {{ $latestCustomers->count() }} of <a
+                  href="{{ substr($latestCustomers->url(1), 0, -1) . 'all' }}"
                   class="text-muted"
-                >{{ $customers->total() }}</a>
+                >{{ $latestCustomers->total() }}</a>
               </small>
 
             </div>

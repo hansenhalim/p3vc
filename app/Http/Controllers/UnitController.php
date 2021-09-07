@@ -227,7 +227,13 @@ class UnitController extends Controller
           $transactions = $unit->transactions;
           $latest_price = $unit->cluster->prices->last();
 
-          $unit['customer_name'] = $unit->customer->name;
+          $unit['customer_name'] = '';
+          
+          if ($unit->customer()->exists()) {
+            $unit['customer_name'] = $unit->customer->name;
+          } else {
+            $unit['customer_id'] = 0;
+          }
 
           $unit['balance'] = 0;
           $unit['debt'] = 0;

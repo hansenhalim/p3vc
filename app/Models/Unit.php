@@ -9,6 +9,8 @@ class Unit extends Model
 {
   use SoftDeletes;
 
+  protected $fillable = [];
+
   public function customer()
   {
     return $this->belongsTo(Customer::class);
@@ -22,5 +24,10 @@ class Unit extends Model
   public function transactions()
   {
     return $this->hasMany(Transaction::class);
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
   }
 }

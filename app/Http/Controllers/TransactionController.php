@@ -7,7 +7,6 @@ use App\Models\Unit;
 use App\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade as DomPDF;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use NumberFormatter;

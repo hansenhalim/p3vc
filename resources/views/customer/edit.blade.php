@@ -4,53 +4,74 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-5 col-md-7">
-          <a class="btn btn-link mb-2" href="{{ route('customers.index') }}">&lt;&lt; Return</a>
+        <div class="col-xl-4 col-md-6">
+          <a
+            class="btn btn-sm btn-secondary font-weight-bold mb-2"
+            href="{{ route('customers.index') }}"
+          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
           <div class="card">
-            <div class="card-header">Customer Create</div>
-            <form class="form-horizontal" action="{{ route('customers.update', ['customer' => $customer->id]) }}" method="post">
+            <div class="card-header">
+              <div class="h4 m-0 my-1 text-nowrap">Edit Customer</div>
+            </div>
+            <form
+              class="form-horizontal"
+              action="{{ route('customers.update', $customer) }}"
+              method="post"
+            >
               @csrf
               @method('PUT')
               <div class="card-body">
                 @if (session('status'))
                   <div class="alert alert-success alert-dismissible fade show">
                     {!! session('status') !!}
-                    <button type="button" class="close" data-dismiss="alert">
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="alert"
+                    >
                       <span>&times;</span>
                     </button>
                   </div>
                 @endif
+
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Name <span class="text-danger">*</span></label>
+                  <label class="col-md-3 col-form-label">Name</label>
                   <div class="col">
-                    <input class="form-control @error('name') is-invalid @enderror" type="text" name="name"
-                      value="{{ old('name', $customer->name) }}">
+                    <input
+                      class="form-control border-0 @error('name') is-invalid @enderror"
+                      type="text"
+                      name="name"
+                      value="{{ old('name', $customer->name) }}"
+                      style="background-color: rgba(0,0,21,.05);"
+                    >
                     @error('name')
                       <div class="text-danger">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
+
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Phone <span class="text-danger">*</span></label>
+                  <label class="col-md-3 col-form-label">Phone</label>
                   <div class="col">
-                    <input class="form-control @error('phone_number') is-invalid @enderror" type="text"
-                      name="phone_number" value="{{ old('phone_number', $customer->phone_number) }}">
+                    <input
+                      class="form-control border-0 @error('phone_number') is-invalid @enderror"
+                      type="text"
+                      name="phone_number"
+                      value="{{ old('phone_number', $customer->phone_number) }}"
+                      style="background-color: rgba(0,0,21,.05);"
+                    >
                     @error('phone_number')
                       <div class="text-danger">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
-                <div class="form-group row">
-                  <div class="col-md-3"></div>
-                  <div class="col form-check">
-                    <input class="form-check-input ml-0" type="checkbox" id="stay" name="stay" @if (session('stay') || old('stay')) checked @endif>
-                    <label class="form-check-label ml-3" for="stay">Submit another</label>
-                  </div>
+
+                <div class="d-flex justify-content-end">
+                  <button
+                    type="submit"
+                    class="btn btn-warning"
+                  ><i class="cil-save align-text-top"></i> Save</button>
                 </div>
-              </div>
-              <div class="card-footer d-flex justify-content-end">
-                <button class="btn btn-link text-dark" type="reset">Reset</button>
-                <button class="btn btn-primary" type="submit">Submit</button>
               </div>
             </form>
           </div>

@@ -1,11 +1,14 @@
 @extends('dashboard.base')
 
 @section('content')
-
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-8">
+          <a
+            class="btn btn-sm btn-secondary font-weight-bold mb-2"
+            href="{{ route('home') }}"
+          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
           <div class="card">
             <div class="card-header">
               <div class="h4 m-0 my-1 text-nowrap">Change Password</div>
@@ -60,10 +63,12 @@
                     >
                   </div>
                 </div>
-                <div class="d-flex justify-content-end"><button
+                <div class="d-flex justify-content-end">
+                  <button
                     type="submit"
                     class="btn btn-warning"
-                  ><i class="cil-save align-text-top"></i>&nbsp;Save</button></div>
+                  ><i class="cil-save align-text-top"></i> Save</button>
+                </div>
               </form>
             </div>
           </div>

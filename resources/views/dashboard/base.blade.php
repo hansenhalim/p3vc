@@ -213,9 +213,23 @@
       background: #f9b115;
     }
 
-    .btn-warning, .btn-warning:hover, .btn-warning:active {
+    .btn-warning,
+    .btn-warning:hover,
+    .btn-warning:active {
       color: black !important;
       font-weight: bold;
+    }
+
+    .daterangepicker .ranges li.active {
+      background-color: #f2b038;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .daterangepicker td.active,
+    .daterangepicker td.active:hover {
+      background-color: #f2b038;
+      color: #000;
     }
 
     @media screen and (max-width: 576px) {

@@ -6,25 +6,33 @@ use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Payment;
 use App\Scopes\ApprovedScope;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CustomerController extends Controller
 {
   public function index(Request $request)
   {
     $search = $request->search;
-    $sortBy = $request->sortBy ?? 'id';
+    $sortBy = $request->sortBy ?? 'previous_id';
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $customers = Customer::withCount(['units'])
-      ->when($search, fn ($query) => $query->where('id', $search)
+    $latestCustomers = Customer::query()
+      ->when($search, fn ($query) => $query->where('previous_id', $search)
         ->orWhere('phone_number', $search)
         ->orWhere('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
       ->paginate($perPage);
 
-    return view('customer.list', compact('customers'));
+    $customers = Customer::query()
+      ->withCount('units')
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get();
+
+    return view('customer.list', compact('latestCustomers', 'customers'));
   }
 
   public function create()
@@ -32,23 +40,30 @@ class CustomerController extends Controller
     return view('customer.create');
   }
 
-  public function store(Request $request)
+  public function store(Request $request, Customer $customer)
   {
-    $customer = $request->validate([
+    $request->validate([
       'name' => 'required',
-      'phone_number' => 'required|max:16',
+      'phone_number' => 'required',
     ]);
 
-    $customer = Customer::create($customer);
+    $customer->name = $request->name;
+    $customer->phone_number = $request->phone_number;
+    $customer->updated_by = $request->user()->id;
 
-    $request->session()->flash('status', 'Successfully created <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '</a>.');
+    $customer->save();
 
-    return $request->stay ? redirect()->route('customers.create')->with('stay', true) : redirect()->route('customers.index');
+    $customer->previous_id = $customer->id;
+
+    $customer->save();
+
+    $request->session()->flash('status', 'Successfully created ' . $customer->name . '. Please wait for appoval.');
+
+    return redirect()->route('customers.index');
   }
 
-  public function show($id)
+  public function show(Customer $customer)
   {
-    $customer = Customer::find($id);
     $units = $customer->units()
       ->with(['cluster.prices', 'transactions.payments', 'transactions' => function ($query) {
         $query->withoutGlobalScopes([ApprovedScope::class]);
@@ -118,38 +133,43 @@ class CustomerController extends Controller
     return view('customer.show', compact('customer', 'units', 'payments'));
   }
 
-  public function edit($id)
+  public function edit(Customer $customer)
   {
-    $customer = Customer::find($id);
     return view('customer.edit', compact('customer'));
   }
 
-  public function update(Request $request, $id)
+  public function update(Request $request, Customer $customer)
   {
-    $customerNew = $request->validate([
+    $request->validate([
       'name' => 'required',
-      'phone_number' => 'required|max:16',
+      'phone_number' => 'required',
     ]);
 
-    $customer = Customer::find($id);
-    $customer->update($customerNew);
+    $customer->name = $request->name;
+    $customer->phone_number = $request->phone_number;
 
-    $request->session()->flash('status', 'Successfully updated <a href="' . route('customers.show', ['customer' => $customer->id]) . '" class="alert-link">' . $customer->name . '</a>.');
+    if ($customer->isClean()) return redirect()->route('customers.index');
 
-    return $request->stay ? redirect()->route('customers.create')->with('stay', true) : redirect()->route('customers.index');
+    $customer->approved_at = null;
+    $customer->approved_by = null;
+    $customer->updated_by = $request->user()->id;
+    $customer->replicate()->save();
+
+    $request->session()->flash('status', 'Successfully updated ' . $customer->name . '. Please wait for appoval.');
+
+    return redirect()->route('customers.index');
   }
 
-  public function destroy($id)
+  public function destroy(Request $request, Customer $customer)
   {
-    $customer = Customer::find($id);
-
-    $customer->update([
-      'updated_by' => Auth::id(),
-      'approved_at' => null,
-      'approved_by' => null,
-    ]);
-
+    $customer->approved_at = null;
+    $customer->approved_by = null;
+    $customer->updated_by = $request->user()->id;
+    $customer = $customer->replicate();
+    $customer->save();
     $customer->delete();
+
+    $request->session()->flash('status', 'Successfully deleted ' . $customer->name . '. Please wait for appoval.');
 
     return redirect()->route('customers.index');
   }

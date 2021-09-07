@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-6 col-lg-9">
+        <div class="col-xl-7 col-lg-10">
           <div class="card">
             <div class="card-header">
               <div class="h4 m-0 my-1 text-nowrap">Transaction List</div>
@@ -44,9 +44,7 @@
                       type="submit"
                       class="btn btn-warning"
                       form="filter"
-                    ><i
-                        class="cil-search align-text-top"
-                      ></i></button>
+                    ><i class="cil-search align-text-top"></i></button>
                   </div>
                 </div>
               </div>

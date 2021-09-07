@@ -7,15 +7,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cluster extends Model
 {
-    use SoftDeletes;
+  use SoftDeletes;
 
-    public function units()
-    {
-        return $this->hasMany(Unit::class);
-    }
+  protected $fillable = [];
 
-    public function prices()
-    {
-        return $this->hasMany(Price::class);
-    }
+  public function units()
+  {
+    return $this->hasMany(Unit::class);
+  }
+
+  public function prices()
+  {
+    return $this->hasMany(Price::class);
+  }
+
+  public function user()
+  {
+    return $this->belongsTo(User::class);
+  }
 }
