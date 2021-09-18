@@ -143,7 +143,7 @@ class ApprovalController extends Controller
 
     // echo json_encode($approval); exit;
 
-    return view('approval.' . 'customer' . '.show', compact('approval'));
+    return view('approval.' . $type . '.show', compact('approval'));
   }
 
   public function edit($id)
@@ -187,7 +187,7 @@ class ApprovalController extends Controller
       ->find($id);
 
     if ($request->approval === 'true') {
-      # if approved give only to approval
+      # if approved fill only approval
       if ($approval->approved_at || $approval->approved_by) {
         $request->session()->flash('status', 'Failed to approve approval. Sorry.');
         return redirect()->route('approvals.index');
@@ -197,7 +197,7 @@ class ApprovalController extends Controller
       $approval->approved_by = $request->user()->id;
       $approval->save();
 
-      # rebinding units to customer
+      # rebinding units to new customer
       if ($type == 'customer') {
         $customer = $approval->latest()
           ->firstWhere([
@@ -213,7 +213,7 @@ class ApprovalController extends Controller
 
       $request->session()->flash('status', 'Successfully approved approval. Thankyou.');
     } else {
-      # else rejected delete only approval
+      # else rejected delete only approval and approve too
       if ($approval->approved_at || $approval->approved_by) {
         $request->session()->flash('status', 'Failed to reject approval. Sorry.');
         return redirect()->route('approvals.index');

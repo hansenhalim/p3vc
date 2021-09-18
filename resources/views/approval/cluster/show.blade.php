@@ -52,11 +52,11 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-3 col-form-label">Phone</label>
+                        <label class="col-md-3 col-form-label">Price</label>
                         <div class="col">
                           <input
                             disabled
-                            value="{{ $approval->original->phone_number }}"
+                            value="{{ number_format($approval->original->cost) }} / {{ $approval->original->per }}"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
@@ -105,11 +105,11 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-3 col-form-label">Phone</label>
+                        <label class="col-md-3 col-form-label">Price</label>
                         <div class="col">
                           <input
                             disabled
-                            value="{{ $approval->phone_number }}"
+                            value="{{ number_format($approval->cost) }} / {{ $approval->per }}"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
@@ -120,7 +120,7 @@
               </div>
             </div>
             <form
-              action="#"
+              action="{{ route('approvals.approve', [$approval->type, $approval]) }}"
               method="POST"
             >
               @csrf
