@@ -6,8 +6,12 @@
       <div class="row">
         <div class="col-xl-6 col-lg-9">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 my-1 text-nowrap">Cluster List</div>
+              <a
+                  href="{{ route('clusters.create') }}"
+                  class="btn btn-sm btn-light font-weight-bold ml-2"
+                ><i class="cil-library-add align-text-top"></i>&nbsp;Create</a>
             </div>
             <div class="card-body pb-2">
               @if (session('status'))
@@ -15,8 +19,6 @@
                   {{ session('status') }}
                 </div>
               @endif
-
-              {{-- <a class="btn btn-primary mb-2" href="{{ route('clusters.create') }}">Create Cluster</a> --}}
 
               <form
                 id="filter"
@@ -100,7 +102,7 @@
                       <th class="align-middle">{{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}</th>
                       <td class="align-middle">{{ $cluster->name }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
-                      <td class="align-middle text-right">{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}</td>
+                      <td class="align-middle text-right">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
                           <button

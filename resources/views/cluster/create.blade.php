@@ -4,28 +4,32 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-5 col-md-7">
+        <div class="col-xl-4 col-md-6">
           <a
             class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('units.index') }}"
+            href="{{ route('clusters.index') }}"
           ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
           <div class="card">
             <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Unit Create</div>
+              <div class="h4 m-0 my-1 text-nowrap">Create Cluster</div>
             </div>
             <form
               class="form-horizontal"
-              action="{{ route('units.store') }}"
+              action="{{ route('clusters.store') }}"
               method="post"
             >
               @csrf
               <div class="card-body">
                 @if (session('status'))
-                  <div
-                    class="alert alert-success"
-                    role="alert"
-                  >
-                    {{ session('status') }}
+                  <div class="alert alert-success alert-dismissible fade show">
+                    {!! session('status') !!}
+                    <button
+                      type="button"
+                      class="close"
+                      data-dismiss="alert"
+                    >
+                      <span>&times;</span>
+                    </button>
                   </div>
                 @endif
 
@@ -46,62 +50,32 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Area</label>
+                  <label class="col-md-3 col-form-label">Price</label>
                   <div class="col">
                     <input
-                      class="form-control border-0 @error('area') is-invalid @enderror"
+                      class="form-control border-0 @error('cost') is-invalid @enderror"
                       type="text"
-                      name="area"
-                      value="{{ old('area') }}"
+                      name="cost"
+                      value="{{ old('cost') }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
-                    @error('area')
+                    @error('cost')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Cluster</label>
+                  <label class="col-md-3 col-form-label">Per</label>
                   <div class="col">
                     <select
-                      name="cluster_id"
+                      name="per"
                       class="custom-select"
                     >
-                      <option
-                        value=""
-                        hidden
-                      >- PLEASE SELECT -</option>
-                      @foreach ($clusters as $cluster)
-                        <option value="{{ $cluster->id }}">
-                          {{ $cluster->name }}&nbsp;({{ number_format($cluster->cost) }}/{{ $cluster->per }})
-                        </option>
-                      @endforeach
+                      <option value="sqm">Meter persegi</option>
+                      <option value="mth">Bulan</option>
                     </select>
-                    @error('cluster_id')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Customer</label>
-                  <div class="col">
-                    <select
-                      name="customer_id"
-                      class="custom-select"
-                    >
-                      <option value="">- PLEASE SELECT -</option>
-                      @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                          {{ $customer->name }}&nbsp;(
-                          @foreach ($customer->units as $unit)
-                            {{ $unit->name }} @if (!$loop->last)|@endif
-                          @endforeach)
-                        </option>
-                      @endforeach
-                    </select>
-                    @error('customer_id')
+                    @error('per')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
@@ -113,16 +87,17 @@
                     class="btn btn-warning"
                   ><i class="cil-paper-plane align-text-top"></i>&nbsp;Submit</button>
                 </div>
-
+                
               </div>
             </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-  @endsection
+@endsection
 
-  @section('javascript')
+@section('javascript')
 
-  @endsection
+@endsection

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Scopes\ApprovedScope;
+
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,18 +13,18 @@ class Cluster extends Model
 
   protected $fillable = [];
 
+  protected static function booted()
+  {
+    static::addGlobalScope(new ApprovedScope);
+  }
+
   public function units()
   {
     return $this->hasMany(Unit::class);
   }
 
-  public function prices()
-  {
-    return $this->hasMany(Price::class);
-  }
-
   public function user()
   {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'updated_by');
   }
 }

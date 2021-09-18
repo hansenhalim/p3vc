@@ -14,7 +14,7 @@ class ClusterController extends Controller
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $clusters = Cluster::with(['prices'])->withCount(['units'])
+    $clusters = Cluster::withCount(['units'])
       ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
       ->paginate($perPage);
@@ -29,7 +29,7 @@ class ClusterController extends Controller
    */
   public function create()
   {
-    //
+    return view('cluster.create');
   }
 
   /**
@@ -38,9 +38,30 @@ class ClusterController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Cluster $cluster)
   {
-    //
+    $request->validate([
+      'name' => 'required',
+      'cost' => 'required|integer',
+      'per' => 'required|in:sqm,mth'
+    ], [
+      'cost.integer' => 'Harga tidak valid'
+    ]);
+
+    $cluster->name = $request->name;
+    $cluster->cost = $request->cost;
+    $cluster->per = $request->per;
+    $cluster->updated_by = $request->user()->id;
+
+    $cluster->save();
+    
+    $cluster->previous_id = $cluster->id;
+
+    $cluster->save();
+
+    $request->session()->flash('status', 'Successfully created ' . $cluster->name . '. Please wait for appoval.');
+
+    return redirect()->route('clusters.index');
   }
 
   /**
@@ -49,9 +70,9 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show(Cluster $cluster)
   {
-    //
+    return view('cluster.show', compact('cluster'));
   }
 
   /**
@@ -60,9 +81,9 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Cluster $cluster)
   {
-    //
+    return view('cluster.edit', compact('cluster'));
   }
 
   /**

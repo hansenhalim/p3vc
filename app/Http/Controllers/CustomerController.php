@@ -65,7 +65,7 @@ class CustomerController extends Controller
   public function show(Customer $customer)
   {
     $units = $customer->units()
-      ->with(['cluster.prices', 'transactions.payments', 'transactions' => function ($query) {
+      ->with(['cluster', 'transactions.payments', 'transactions' => function ($query) {
         $query->withoutGlobalScopes([ApprovedScope::class]);
       }])
       ->get();
@@ -114,11 +114,10 @@ class CustomerController extends Controller
         }
 
         // okay, this needs to be fixed in the future
-        $price = $unit->cluster->prices->last();
 
         $months->push([
           'period' => $period,
-          'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
+          'credit' => $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1),
           'fine' => 2000 * max($diffInMonthsReal - $i - 1, 0)
         ]);
       }

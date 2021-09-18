@@ -54,8 +54,21 @@ class UnitController extends Controller
    */
   public function create()
   {
-    $clusters = Cluster::with(['prices'])->get();
-    $customers = Customer::all();
+    $clusters = Cluster::get(['id', 'name', 'cost', 'per']);
+
+    $latestCustomers = Customer::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $customers = Customer::query()
+      ->with('units:customer_id,name')
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name']);
+
+    // echo json_encode($customers); exit;
+
     return view('unit.create', compact('clusters', 'customers'));
   }
 
@@ -217,18 +230,17 @@ class UnitController extends Controller
         'created_at'
       ])
       ->with([
+        'cluster',
         'customer:id,name',
-        'cluster.prices:cluster_id,cost,per',
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
-      ->chunk(100, function ($units) {
+      ->chunk(50, function ($units) {
         foreach ($units as $unit) {
           $transactions = $unit->transactions;
-          $latest_price = $unit->cluster->prices->last();
 
           $unit['customer_name'] = '';
-          
+
           if ($unit->customer()->exists()) {
             $unit['customer_name'] = $unit->customer->name;
           } else {
@@ -275,18 +287,17 @@ class UnitController extends Controller
             }
 
             // okay, this needs to be fixed in the future
-            $price = $latest_price;
 
             $months->push([
               'period' => $period,
-              'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
+              'credit' => $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1),
               'fine' => 2000 * ($diffInMonths - $i - 1)
             ]);
           }
 
           $unit['months_count'] = $months->count();
           $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
-          $unit['credit'] = $latest_price->cost * ($latest_price->per == 'sqm' ? $unit->area_sqm : 1);
+          $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
 
           $unitShadows[] = $unit->only([
             'id',

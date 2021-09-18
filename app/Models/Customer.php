@@ -13,6 +13,11 @@ class Customer extends Model
 
   protected $fillable = [];
 
+  protected static function booted()
+  {
+    static::addGlobalScope(new ApprovedScope);
+  }
+
   public function units()
   {
     return $this->hasMany(Unit::class);
@@ -21,11 +26,6 @@ class Customer extends Model
   public function user()
   {
     return $this->belongsTo(User::class, 'updated_by');
-  }
-
-  protected static function booted()
-  {
-    static::addGlobalScope(new ApprovedScope);
   }
 
   public function getApprovedAtAttribute($value)

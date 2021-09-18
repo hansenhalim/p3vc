@@ -6,7 +6,7 @@
       <div class="row">
         <div class="col-xl-6 col-lg-10">
           <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 my-1 text-nowrap">Customer List</div>
               <a
                 href="{{ route('customers.create') }}"

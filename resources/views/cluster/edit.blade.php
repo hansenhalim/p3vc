@@ -11,14 +11,15 @@
           ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
           <div class="card">
             <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Create Customer</div>
+              <div class="h4 m-0 my-1 text-nowrap">Edit Customer</div>
             </div>
             <form
               class="form-horizontal"
-              action="{{ route('customers.store') }}"
+              action="{{ route('customers.update', $customer) }}"
               method="post"
             >
               @csrf
+              @method('PUT')
               <div class="card-body">
                 @if (session('status'))
                   <div class="alert alert-success alert-dismissible fade show">
@@ -40,11 +41,11 @@
                       class="form-control border-0 @error('name') is-invalid @enderror"
                       type="text"
                       name="name"
-                      value="{{ old('name') }}"
+                      value="{{ old('name', $customer->name) }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('name')
-                      <div class="invalid-feedback">{{ $message }}</div>
+                      <div class="text-danger">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
@@ -56,11 +57,11 @@
                       class="form-control border-0 @error('phone_number') is-invalid @enderror"
                       type="text"
                       name="phone_number"
-                      value="{{ old('phone_number') }}"
+                      value="{{ old('phone_number', $customer->phone_number) }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('phone_number')
-                      <div class="invalid-feedback">{{ $message }}</div>
+                      <div class="text-danger">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
@@ -69,7 +70,7 @@
                   <button
                     type="submit"
                     class="btn btn-warning"
-                  ><i class="cil-paper-plane align-text-top"></i>&nbsp;Submit</button>
+                  ><i class="cil-save align-text-top"></i> Save</button>
                 </div>
               </div>
             </form>

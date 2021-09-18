@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-10">
+        <div class="col-xl-11">
           <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 text-nowrap">Unit List</div>
@@ -18,6 +18,10 @@
                 >
                   <i class="cil-sync align-text-top"></i>
                 </button>
+                <a
+                  href="{{ route('units.create') }}"
+                  class="btn btn-sm btn-light font-weight-bold ml-2"
+                ><i class="cil-library-add align-text-top"></i>&nbsp;Create</a>
               </div>
             </div>
             <div class="card-body pb-2">
@@ -26,8 +30,6 @@
                   {{ session('status') }}
                 </div>
               @endif
-
-              {{-- <a class="btn btn-primary mb-2" href="{{ route('units.create') }}">Create Unit</a> --}}
 
               <form
                 id="filter"
@@ -56,9 +58,7 @@
                       type="submit"
                       class="btn btn-warning"
                       form="filter"
-                    ><i
-                        class="cil-search align-text-top"
-                      ></i></button>
+                    ><i class="cil-search align-text-top"></i></button>
                   </div>
                 </div>
 
@@ -172,6 +172,7 @@
                     <th class="text-right">Jml Bulan</th>
                     <th class="text-right">Tunggakan</th>
                     <th class="text-right">Iuran</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,11 +188,41 @@
                       <td class="text-right">{{ $unit->months_count }}</td>
                       <td class="text-right">{{ number_format($unit->months_total) }}</td>
                       <td class="text-right">{{ number_format($unit->credit) }}</td>
+                      <td class="align-middle text-right">
+                        <div class="btn-group">
+                          <button
+                            class="btn btn-warning btn-sm dropdown-toggle"
+                            type="button"
+                            data-toggle="dropdown"
+                          >Action</button>
+                          <div class="dropdown-menu">
+                            <a
+                              class="dropdown-item font-weight-bold"
+                              href="{{ route('units.show', $unit->id) }}"
+                            ><i class="cil-description"></i>&nbsp;View</a>
+                            <a
+                              class="dropdown-item font-weight-bold"
+                              href="{{ route('units.edit', $unit->id) }}"
+                            ><i class="cil-pencil"></i>&nbsp;Edit</a>
+                            <form
+                              action="{{ route('units.destroy', $unit->id) }}"
+                              method="post"
+                            >
+                              @csrf
+                              @method('DELETE')
+                              <button
+                                type="submit"
+                                class="dropdown-item font-weight-bold text-danger"
+                              ><i class="cil-trash"></i>&nbsp;Delete</button>
+                            </form>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                   @empty
                     <tr>
                       <td
-                        colspan="42"
+                        colspan="11"
                         class="text-center p-4"
                       >Oops, nothing found here :(</td>
                     </tr>

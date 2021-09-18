@@ -25,8 +25,36 @@ class ApprovalController extends Controller
       ->whereNull('approved_at')
       ->get();
 
-    $approvals = $customers;
-    $approvals = $approvals->sortDesc();
+    $clusters = Cluster::query()
+      ->withoutGlobalScopes([ApprovedScope::class])
+      ->withTrashed()
+      ->select([
+        '*',
+        DB::raw('"cluster" AS type'),
+        DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
+      ])
+      ->with('user:id,name')
+      ->whereNull('approved_at')
+      ->get();
+
+    $units = Unit::query()
+      ->withoutGlobalScopes([ApprovedScope::class])
+      ->withTrashed()
+      ->select([
+        '*',
+        DB::raw('"unit" AS type'),
+        DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
+      ])
+      ->with('user:id,name')
+      ->whereNull('approved_at')
+      ->get();
+
+    $approvals = collect();
+    $approvals = $approvals
+      ->merge($customers)
+      ->merge($clusters)
+      ->merge($units)
+      ->sortDesc();
 
     // echo json_encode($approvals); exit;
 
@@ -135,30 +163,31 @@ class ApprovalController extends Controller
 
   public function approve(Request $request, $type, $id)
   {
-    if ($request->approval) {
-      switch ($type) {
-        case 'customer':
-          $approval = new Customer;
-          break;
+    switch ($type) {
+      case 'customer':
+        $approval = new Customer;
+        break;
 
-        case 'cluster':
-          $approval = new Cluster;
-          break;
+      case 'cluster':
+        $approval = new Cluster;
+        break;
 
-        default:
-          $approval = new Unit;
-          break;
-      }
+      default:
+        $approval = new Unit;
+        break;
+    }
 
-      $approval = $approval->query()
-        ->select([
-          '*',
-          DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
-        ])
-        ->withoutGlobalScopes([ApprovedScope::class])
-        ->withTrashed()
-        ->find($id);
+    $approval = $approval->query()
+      ->select([
+        '*',
+        DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
+      ])
+      ->withoutGlobalScopes([ApprovedScope::class])
+      ->withTrashed()
+      ->find($id);
 
+    if ($request->approval === 'true') {
+      # if approved give only to approval
       if ($approval->approved_at || $approval->approved_by) {
         $request->session()->flash('status', 'Failed to approve approval. Sorry.');
         return redirect()->route('approvals.index');
@@ -168,35 +197,35 @@ class ApprovalController extends Controller
       $approval->approved_by = $request->user()->id;
       $approval->save();
 
+      # rebinding units to customer
       if ($type == 'customer') {
-        $approval->latest()
+        $customer = $approval->latest()
           ->firstWhere([
             ['previous_id', '=', $approval->previous_id],
             ['id', '<>', $approval->id]
-          ])
-          ->units()->update([
-            'customer_id' => $id
           ]);
+
+        if (isset($customer)) $customer->units()->update(['customer_id' => $id]);
       }
 
+      # if deleted then also delete all same prev_id
       if ($approval->operation == 'DEL') $approval->where('previous_id', $approval->previous_id)->delete();
 
       $request->session()->flash('status', 'Successfully approved approval. Thankyou.');
     } else {
-      # if rejected delete only approval
-      switch ($type) {
-        case 'customer':
-          $approval = new Customer;
-          break;
-
-        case 'cluster':
-          $approval = new Cluster;
-          break;
-
-        default:
-          $approval = new Unit;
-          break;
+      # else rejected delete only approval
+      if ($approval->approved_at || $approval->approved_by) {
+        $request->session()->flash('status', 'Failed to reject approval. Sorry.');
+        return redirect()->route('approvals.index');
       }
+
+      $approval->approved_at = now();
+      $approval->approved_by = $request->user()->id;
+      $approval->save();
+
+      $approval->delete();
+
+      $request->session()->flash('status', 'Successfully rejected approval. Thankyou.');
     }
 
     return redirect()->route('approvals.index');

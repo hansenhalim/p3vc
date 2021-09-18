@@ -68,7 +68,9 @@
       <div class="row">
         <div class="col-xl-4 col-md-6">
           <div class="card">
-            <div class="card-header">Customer Show</div>
+            <div class="card-header">
+              <div class="h4 m-0 my-1 text-nowrap">Customer Show</div>
+            </div>
             <div class="card-body">
               @if (session('status'))
                 <div class="alert alert-success">
@@ -115,7 +117,7 @@
       <div class="row">
         <div class="col-xl-9">
           <div class="card">
-            <div class="card-header">Unit List</div>
+            <div class="card-header"><div class="h4 m-0 my-1 text-nowrap">Unit List</div></div>
             <div class="d-flex justify-content-end mt-4 mx-4">
               <form>
                 <label for="add-month">Add</label>
@@ -176,7 +178,7 @@
                         </td>
                         <td class="text-right">{{ number_format($unit->balance) }}</td>
                         <td class="text-right">
-                          {{ number_format($unit->cluster->prices->last()->cost * ($unit->cluster->prices->last()->per == 'sqm' ? $unit->area_sqm : 1)) }}
+                          {{ number_format($unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1)) }}
                         </td>
                         <input
                           type="hidden"
