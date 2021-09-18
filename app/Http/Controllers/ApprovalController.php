@@ -189,7 +189,7 @@ class ApprovalController extends Controller
     if ($request->approval === 'true') {
       # if approved fill only approval
       if ($approval->approved_at || $approval->approved_by) {
-        $request->session()->flash('status', 'Failed to approve approval. Sorry.');
+        $request->session()->flash('status', 'Failed to approve ' . $approval->name  . '. Sorry.');
         return redirect()->route('approvals.index');
       }
 
@@ -211,7 +211,7 @@ class ApprovalController extends Controller
       # if deleted then also delete all same prev_id
       if ($approval->operation == 'DEL') $approval->where('previous_id', $approval->previous_id)->delete();
 
-      $request->session()->flash('status', 'Successfully approved approval. Thankyou.');
+      $request->session()->flash('status', 'Successfully approved ' . $approval->name  . '. Thankyou.');
     } else {
       # else rejected delete only approval and approve too
       if ($approval->approved_at || $approval->approved_by) {
@@ -225,7 +225,7 @@ class ApprovalController extends Controller
 
       $approval->delete();
 
-      $request->session()->flash('status', 'Successfully rejected approval. Thankyou.');
+      $request->session()->flash('status', 'Successfully rejected ' . $approval->name  . '. Thankyou.');
     }
 
     return redirect()->route('approvals.index');

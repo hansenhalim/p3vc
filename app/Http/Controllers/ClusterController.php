@@ -54,7 +54,7 @@ class ClusterController extends Controller
     $cluster->updated_by = $request->user()->id;
 
     $cluster->save();
-    
+
     $cluster->previous_id = $cluster->id;
 
     $cluster->save();
@@ -93,9 +93,19 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, Cluster $cluster)
   {
-    //
+    $request->validate([
+      'name' => 'required',
+      'cost' => 'required|integer',
+      'per' => 'required|in:sqm,mth'
+    ], [
+      'cost.integer' => 'Harga tidak valid'
+    ]);
+
+    $request->session()->flash('status', 'Successfully updated ' . $cluster->name . '. Please wait for appoval.');
+
+    return redirect()->route('clusters.index');
   }
 
   /**

@@ -68,15 +68,9 @@
       <div class="row">
         <div class="col-xl-4 col-md-6">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Customer Show</div>
-            </div>
+            <x-card-header>Customer Show</x-card-header>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {!! session('status') !!}
-                </div>
-              @endif
+              <x-alert></x-alert>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">CIF</label>
                 <div class="col">
@@ -117,7 +111,7 @@
       <div class="row">
         <div class="col-xl-9">
           <div class="card">
-            <div class="card-header"><div class="h4 m-0 my-1 text-nowrap">Unit List</div></div>
+            <x-card-header>Unit List</x-card-header>
             <div class="d-flex justify-content-end mt-4 mx-4">
               <form>
                 <label for="add-month">Add</label>

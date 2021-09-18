@@ -232,6 +232,11 @@
       color: #000;
     }
 
+    .form-control.is-invalid,
+    .was-validated .form-control:invalid {
+      border: 1px solid #e55353 !important;
+    }
+
     @media screen and (max-width: 576px) {
       li.page-item {
         display: none;

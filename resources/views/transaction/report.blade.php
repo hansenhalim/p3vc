@@ -6,22 +6,9 @@
       <div class="row">
         <div class="col-12">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 text-nowrap">Transaction Report</div>
-            </div>
+            <x-card-header>Transaction Report</x-card-header>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success alert-dismissible fade show">
-                  {!! session('status') !!}
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="alert"
-                  >
-                    <span>&times;</span>
-                  </button>
-                </div>
-              @endif
+              <x-alert></x-alert>
               <form
                 action="{{ route('transactions.report') }}"
                 method="get"

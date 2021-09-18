@@ -6,29 +6,15 @@
       <div class="row">
         <div class="col-xl-8">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Approval List</div>
-            </div>
+            <x-card-header>Approval List</x-card-header>
             <div class="card-body pb-2">
-              @if (session('status'))
-                <div class="alert alert-success alert-dismissible fade show">
-                  {!! session('status') !!}
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="alert"
-                  >
-                    <span>&times;</span>
-                  </button>
-                </div>
-              @endif
-
+              <x-alert></x-alert>
               <table class="table table-responsive-md table-striped table-borderless text-nowrap m-0">
                 <thead class="border-bottom">
                   <tr>
                     <th>Type</th>
                     <th>Operation</th>
-                    <th>Description</th>
+                    <th>Name</th>
                     <th>Created</th>
                     <th>Requester</th>
                     <th></th>

@@ -14,12 +14,8 @@
                 ><i class="cil-library-add align-text-top"></i>&nbsp;Create</a>
             </div>
             <div class="card-body pb-2">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {{ session('status') }}
-                </div>
-              @endif
-
+              <x-alert></x-alert>
+              
               <form
                 id="filter"
                 action="{{ route('clusters.index') }}"
@@ -91,8 +87,8 @@
                   <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th class="text-right">Units</th>
                     <th class="text-right">Price</th>
+                    <th class="text-right">Units</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -101,8 +97,8 @@
                     <tr>
                       <th class="align-middle">{{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}</th>
                       <td class="align-middle">{{ $cluster->name }}</td>
-                      <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
+                      <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
                           <button

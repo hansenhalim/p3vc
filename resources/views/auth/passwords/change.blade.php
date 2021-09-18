@@ -5,25 +5,17 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-8">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('home') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('home') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Change Password</div>
-            </div>
+            <x-card-header>Change Password</x-card-header>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {!! session('status') !!}
-                </div>
-              @endif
+              <x-alert></x-alert>
               <form
                 action="{{ route('passwords.update') }}"
                 method="post"
               >
                 @csrf
+                <input class="d-none" type="email" name="email">
                 <div class="form-group row">
                   <label class="col-md-4 col-form-label">Current Password</label>
                   <div class="col">

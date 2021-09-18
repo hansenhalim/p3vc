@@ -25,12 +25,8 @@
               </div>
             </div>
             <div class="card-body pb-2">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {{ session('status') }}
-                </div>
-              @endif
-
+              <x-alert></x-alert>
+              
               <form
                 id="filter"
                 action="{{ route('units.index') }}"

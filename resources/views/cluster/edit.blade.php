@@ -5,14 +5,9 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-4 col-md-6">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('clusters.index') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('clusters.index') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Edit Cluster</div>
-            </div>
+            <x-card-header>Edit Cluster</x-card-header>
             <form
               class="form-horizontal"
               action="{{ route('clusters.update', $cluster) }}"
@@ -21,21 +16,10 @@
               @csrf
               @method('PUT')
               <div class="card-body">
-                @if (session('status'))
-                  <div class="alert alert-success alert-dismissible fade show">
-                    {!! session('status') !!}
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="alert"
-                    >
-                      <span>&times;</span>
-                    </button>
-                  </div>
-                @endif
+                <x-alert></x-alert>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Name</label>
+                  <label class="col-md-3 col-form-label">Nama</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('name') is-invalid @enderror"
@@ -45,13 +29,13 @@
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('name')
-                      <div class="text-danger">{{ $message }}</div>
+                      <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Price</label>
+                  <label class="col-md-3 col-form-label">Harga</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('cost') is-invalid @enderror"
@@ -71,7 +55,7 @@
                   <div class="col">
                     <select
                       name="per"
-                      class="custom-select"
+                      class="custom-select @error('per') is-invalid @enderror"
                     >
                       <option
                         value="sqm"

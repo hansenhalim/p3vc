@@ -6,9 +6,7 @@
       <div class="row">
         <div class="col-xl-8">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Approval Details</div>
-            </div>
+            <x-card-header>Approval Details</x-card-header>
             <div class="card-body pb-2">
               <div class="row">
                 @switch($approval->operation)

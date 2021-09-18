@@ -5,14 +5,9 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-4 col-md-6">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('customers.index') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('customers.index') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Create Customer</div>
-            </div>
+            <x-card-header>Create Customer</x-card-header>
             <form
               class="form-horizontal"
               action="{{ route('customers.store') }}"
@@ -20,19 +15,6 @@
             >
               @csrf
               <div class="card-body">
-                @if (session('status'))
-                  <div class="alert alert-success alert-dismissible fade show">
-                    {!! session('status') !!}
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="alert"
-                    >
-                      <span>&times;</span>
-                    </button>
-                  </div>
-                @endif
-
                 <div class="form-group row">
                   <label class="col-md-3 col-form-label">Name</label>
                   <div class="col">

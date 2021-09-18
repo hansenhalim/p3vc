@@ -3,16 +3,11 @@
 @section('content')
   <div class="container-fluid">
     <div class="fade-in">
-      <a
-        class="btn btn-sm btn-secondary font-weight-bold mb-2"
-        href="{{ route('approvals.index') }}"
-      ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+      <x-return-button href="{{ route('approvals.index') }}"></x-return-button>
       <div class="row">
         <div class="col-xl-8">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Approval Details</div>
-            </div>
+            <x-card-header>Approval Details</x-card-header>
             <div class="card-body pb-3">
               <div class="row">
                 @switch($approval->operation)

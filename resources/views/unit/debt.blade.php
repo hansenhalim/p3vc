@@ -61,20 +61,13 @@
   </div>
   <div class="container-fluid">
     <div class="fade-in">
-      <a
-        class="btn btn-sm btn-secondary font-weight-bold mb-2"
-        href="{{ route('customers.index') }}"
-      ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+      <x-return-button href="{{ route('customers.index') }}"></x-return-button>
       <div class="row">
         <div class="col-xl-4 col-md-6">
           <div class="card">
-            <div class="card-header">Customer Show</div>
+            <x-card-header>Customer Show</x-card-header>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {!! session('status') !!}
-                </div>
-              @endif
+              <x-alert></x-alert>
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">CIF</label>
                 <div class="col">
@@ -120,7 +113,7 @@
               method="post"
             >
               @csrf
-              <div class="card-header">Unit List</div>
+              <x-card-header>Unit List</x-card-header>
               <div class="card-body">
                 <table class="table table-responsive-md">
                   @forelse ($units as $unit)

@@ -5,14 +5,9 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-7">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('units.index') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('units.index') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Unit Create</div>
-            </div>
+            <x-card-header>Unit Create</x-card-header>
             <form
               class="form-horizontal"
               action="{{ route('units.store') }}"

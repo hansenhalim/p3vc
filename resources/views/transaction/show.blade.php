@@ -5,14 +5,9 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-8">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('transactions.index') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('transactions.index') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Transaction Detail</div>
-            </div>
+            <x-card-header>Transaction Detail</x-card-header>
             <div class="card-body">
               <table class="table table-responsive-md table-striped table-borderless text-nowrap">
                 <thead class="border-bottom">

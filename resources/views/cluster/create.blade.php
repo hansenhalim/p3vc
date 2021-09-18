@@ -5,14 +5,9 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-4 col-md-6">
-          <a
-            class="btn btn-sm btn-secondary font-weight-bold mb-2"
-            href="{{ route('clusters.index') }}"
-          ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
+          <x-return-button href="{{ route('clusters.index') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Create Cluster</div>
-            </div>
+            <x-card-header>Create Cluster</x-card-header>
             <form
               class="form-horizontal"
               action="{{ route('clusters.store') }}"
@@ -20,19 +15,6 @@
             >
               @csrf
               <div class="card-body">
-                @if (session('status'))
-                  <div class="alert alert-success alert-dismissible fade show">
-                    {!! session('status') !!}
-                    <button
-                      type="button"
-                      class="close"
-                      data-dismiss="alert"
-                    >
-                      <span>&times;</span>
-                    </button>
-                  </div>
-                @endif
-
                 <div class="form-group row">
                   <label class="col-md-3 col-form-label">Name</label>
                   <div class="col">
@@ -70,10 +52,16 @@
                   <div class="col">
                     <select
                       name="per"
-                      class="custom-select"
+                      class="custom-select @error('per') is-invalid @enderror"
                     >
-                      <option value="sqm">Meter persegi</option>
-                      <option value="mth">Bulan</option>
+                      <option
+                        value="sqm"
+                        @if (old('per') === 'sqm') selected @endif
+                      >Meter persegi</option>
+                      <option
+                        value="mth"
+                        @if (old('per') === 'mth') selected @endif
+                      >Bulan</option>
                     </select>
                     @error('per')
                       <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +75,7 @@
                     class="btn btn-warning"
                   ><i class="cil-paper-plane align-text-top"></i>&nbsp;Submit</button>
                 </div>
-                
+
               </div>
             </form>
           </div>
