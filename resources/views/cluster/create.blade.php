@@ -16,7 +16,7 @@
               @csrf
               <div class="card-body">
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Name</label>
+                  <label class="col-md-3 col-form-label">Nama</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('name') is-invalid @enderror"
@@ -32,11 +32,11 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Price</label>
+                  <label class="col-md-3 col-form-label">Harga</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('cost') is-invalid @enderror"
-                      type="text"
+                      type="number"
                       name="cost"
                       value="{{ old('cost') }}"
                       style="background-color: rgba(0,0,21,.05);"

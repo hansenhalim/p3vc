@@ -24,11 +24,33 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-3 col-form-label">Phone</label>
+                        <label class="col-md-3 col-form-label">Area</label>
                         <div class="col">
                           <input
                             disabled
-                            value="{{ $approval->phone_number }}"
+                            value="{{ $approval->area_sqm }}"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cluster</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->cluster->name }} ({{ number_format($approval->cluster->cost) }}/{{ $approval->cluster->per }})"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cust.</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->customer->name }} ( @foreach ($approval->customer->units as $unit){{ $unit->name }}@if (!$loop->last) |@endif @endforeach)"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
@@ -50,11 +72,33 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-3 col-form-label">Phone</label>
+                        <label class="col-md-3 col-form-label">Area</label>
                         <div class="col">
                           <input
                             disabled
-                            value="{{ $approval->original->phone_number }}"
+                            value="{{ $approval->original->area_sqm }}"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cluster</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->original->cluster->name }} ({{ number_format($approval->original->cluster->cost) }}/{{ $approval->original->cluster->per }})"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cust.</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->original->customer->name }} ( @foreach ($approval->original->customer->units as $unit){{ $unit->name }}@if (!$loop->last) |@endif @endforeach)"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
@@ -103,11 +147,33 @@
                         </div>
                       </div>
                       <div class="form-group row">
-                        <label class="col-md-3 col-form-label">Phone</label>
+                        <label class="col-md-3 col-form-label">Area</label>
                         <div class="col">
                           <input
                             disabled
-                            value="{{ $approval->phone_number }}"
+                            value="{{ $approval->area_sqm }}"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cluster</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->cluster->name }} ({{ number_format($approval->cluster->cost) }}/{{ $approval->cluster->per }})"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Cust.</label>
+                        <div class="col">
+                          <input
+                            disabled
+                            value="{{ $approval->customer->name }} ( @foreach ($approval->customer->units as $unit){{ $unit->name }}@if (!$loop->last) |@endif @endforeach)"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
@@ -118,7 +184,7 @@
               </div>
             </div>
             <form
-              action="#"
+              action="{{ route('approvals.approve', [$approval->type, $approval]) }}"
               method="POST"
             >
               @csrf
@@ -130,11 +196,11 @@
                   class="btn btn-link text-danger font-weight-bold"
                 ><i class="cil-thumb-down align-text-top"></i>&nbsp;Reject</button>
                 <button
-                    value="true"
-                    name="approval"
-                    type="submit"
-                    class="btn btn-warning font-weight-bold"
-                  ><i class="cil-thumb-up align-text-top"></i>&nbsp;Approve</button>
+                  value="true"
+                  name="approval"
+                  type="submit"
+                  class="btn btn-warning font-weight-bold"
+                ><i class="cil-thumb-up align-text-top"></i>&nbsp;Approve</button>
               </div>
             </form>
           </div>

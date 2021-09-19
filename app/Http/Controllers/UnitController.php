@@ -54,8 +54,6 @@ class UnitController extends Controller
    */
   public function create()
   {
-    $clusters = Cluster::get(['id', 'name', 'cost', 'per']);
-
     $latestCustomers = Customer::query()
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
@@ -67,7 +65,17 @@ class UnitController extends Controller
       ->oldest('previous_id')
       ->get(['id', 'previous_id', 'name']);
 
-    // echo json_encode($customers); exit;
+    $latestClusters = Cluster::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $clusters = Cluster::query()
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name', 'cost', 'per']);
+
+    // echo json_encode($clusters); exit;
 
     return view('unit.create', compact('clusters', 'customers'));
   }
@@ -78,16 +86,30 @@ class UnitController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Unit $unit)
   {
-    $unit = $request->validate([
-      'name'          => 'required|max:255',
-      'area_sqm'      => 'required|numeric|max:10',
+    $request->validate([
+      'name'          => 'required',
+      'area_sqm'      => 'required|numeric',
       'customer_id'   => 'required|exists:customers,id',
       'cluster_id'    => 'required|exists:clusters,id',
     ]);
 
-    return Unit::create($unit);
+    $unit->name = $request->name;
+    $unit->area_sqm = $request->area_sqm;
+    $unit->customer_id = $request->customer_id;
+    $unit->cluster_id = $request->cluster_id;
+    $unit->updated_by = $request->user()->id;
+
+    $unit->save();
+
+    $unit->previous_id = $unit->id;
+
+    $unit->save();
+
+    $request->session()->flash('status', 'Successfully created ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
   /**
@@ -130,9 +152,18 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request, Unit $unit)
   {
-    //
+    $unit->approved_at = null;
+    $unit->approved_by = null;
+    $unit->updated_by = $request->user()->id;
+    $unit = $unit->replicate();
+    $unit->save();
+    $unit->delete();
+
+    $request->session()->flash('status', 'Successfully deleted ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
   public function debt(Unit $unit)

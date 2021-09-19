@@ -83,7 +83,6 @@ class ApprovalController extends Controller
             DB::raw('"customer" AS type'),
             DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
           ])
-          ->with('user:id,name')
           ->find($id);
 
         if ($approval->operation == 'MOD') {
@@ -105,7 +104,6 @@ class ApprovalController extends Controller
             DB::raw('"cluster" AS type'),
             DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
           ])
-          ->with('user:id,name')
           ->find($id);
 
         if ($approval->operation == 'MOD') {
@@ -127,7 +125,6 @@ class ApprovalController extends Controller
             DB::raw('"unit" AS type'),
             DB::raw('IF(deleted_at IS NOT NULL,"DEL",IF(id = previous_id,"INS","MOD")) AS operation')
           ])
-          ->with('user:id,name')
           ->find($id);
 
         if ($approval->operation == 'MOD') {

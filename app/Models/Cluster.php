@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Scopes\ApprovedScope;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 

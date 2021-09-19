@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\ApprovedScope;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,11 @@ class Unit extends Model
   use SoftDeletes;
 
   protected $fillable = [];
+
+  protected static function booted()
+  {
+    static::addGlobalScope(new ApprovedScope);
+  }
 
   public function customer()
   {
@@ -28,6 +34,6 @@ class Unit extends Model
 
   public function user()
   {
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'updated_by');
   }
 }

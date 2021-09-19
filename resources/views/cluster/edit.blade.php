@@ -39,7 +39,7 @@
                   <div class="col">
                     <input
                       class="form-control border-0 @error('cost') is-invalid @enderror"
-                      type="text"
+                      type="number"
                       name="cost"
                       value="{{ old('cost', $cluster->cost) }}"
                       style="background-color: rgba(0,0,21,.05);"

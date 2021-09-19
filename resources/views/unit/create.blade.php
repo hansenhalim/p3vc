@@ -25,7 +25,7 @@
                 @endif
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Name</label>
+                  <label class="col-md-3 col-form-label">Nama</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('name') is-invalid @enderror"
@@ -41,16 +41,17 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Area</label>
+                  <label class="col-md-3 col-form-label">Luas&nbsp;(m<sup>2</sup>)</label>
                   <div class="col">
                     <input
-                      class="form-control border-0 @error('area') is-invalid @enderror"
-                      type="text"
-                      name="area"
-                      value="{{ old('area') }}"
+                      class="form-control border-0 @error('area_sqm') is-invalid @enderror"
+                      type="number"
+                      step="0.1"
+                      name="area_sqm"
+                      value="{{ old('area_sqm') }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
-                    @error('area')
+                    @error('area_sqm')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                   </div>
@@ -61,15 +62,18 @@
                   <div class="col">
                     <select
                       name="cluster_id"
-                      class="custom-select"
+                      class="custom-select @error('cluster_id') is-invalid @enderror"
                     >
                       <option
                         value=""
                         hidden
                       >- PLEASE SELECT -</option>
                       @foreach ($clusters as $cluster)
-                        <option value="{{ $cluster->id }}">
-                          {{ $cluster->name }}&nbsp;({{ number_format($cluster->cost) }}/{{ $cluster->per }})
+                        <option
+                          value="{{ $cluster->previous_id }}"
+                          @if (old('cluster_id') == $cluster->previous_id) selected @endif
+                        >
+                          {{ $cluster->name }} ({{ number_format($cluster->cost) }}/{{ $cluster->per }})
                         </option>
                       @endforeach
                     </select>
@@ -84,12 +88,18 @@
                   <div class="col">
                     <select
                       name="customer_id"
-                      class="custom-select"
+                      class="custom-select @error('customer_id') is-invalid @enderror"
                     >
-                      <option value="">- PLEASE SELECT -</option>
+                      <option
+                        value=""
+                        hidden
+                      >- PLEASE SELECT -</option>
                       @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                          {{ $customer->name }}&nbsp;(
+                        <option
+                          value="{{ $customer->previous_id }}"
+                          @if (old('customer_id') == $customer->previous_id) selected @endif
+                        >
+                          {{ $customer->name }} (
                           @foreach ($customer->units as $unit)
                             {{ $unit->name }} @if (!$loop->last)|@endif
                           @endforeach)
