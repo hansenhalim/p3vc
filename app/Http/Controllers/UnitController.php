@@ -286,6 +286,7 @@ class UnitController extends Controller
       $startMonth = $unit->created_at->firstOfMonth();
       $endMonth = now()->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
+      
       $months = collect();
 
       for ($i = 0; $i < $diffInMonths; $i++) {

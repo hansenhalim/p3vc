@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-6 col-lg-9">
+        <div class="col-xl-5 col-lg-9">
           <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 my-1 text-nowrap">Cluster List</div>
@@ -58,10 +58,10 @@
                       value="name"
                       {{ request('sortBy') == 'name' ? 'selected' : '' }}
                     >Name</option>
-                    <option
+                    {{-- <option
                       value="units_count"
                       {{ request('sortBy') == 'units_count' ? 'selected' : '' }}
-                    >Units</option>
+                    >Units</option> --}}
                   </select>
 
                   <select
@@ -87,7 +87,7 @@
                   <tr>
                     <th>#</th>
                     <th>Name</th>
-                    <th class="text-right">Price</th>
+                    <th>Price</th>
                     <th class="text-right">Units</th>
                     <th></th>
                   </tr>
@@ -97,7 +97,7 @@
                     <tr>
                       <th class="align-middle">{{ ($latestClusters->currentpage() - 1) * $latestClusters->perpage() + $loop->iteration }}</th>
                       <td class="align-middle">{{ $cluster->name }}</td>
-                      <td class="align-middle text-right">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
+                      <td class="align-middle">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
