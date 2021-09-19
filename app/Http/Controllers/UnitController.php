@@ -135,86 +135,54 @@ class UnitController extends Controller
     //
   }
 
-  public function debt($id)
+  public function debt(Unit $unit)
   {
-    $customer = Customer::find($id);
-    $units = $customer->units()
-      ->with(['customer:id,name', 'cluster:id,name', 'transactions.payments', 'transactions' => function ($query) {
-        $query->withoutGlobalScopes([ApprovedScope::class]);
-      }])
-      ->get();
-
-    foreach ($units as $unit) {
-      $debt = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 11:
-              $debt -= $payment->pivot->amount;
-              break;
-
-            case 8:
-              $debt += $payment->pivot->amount;
-              break;
-          }
+    $unit = Unit::query()
+      ->with([
+        'cluster:id,name,cost,per',
+        'customer:id,previous_id,name',
+        'transactions.payments:id',
+        'transactions' => function ($query) {
+          $query->withoutGlobalScopes([ApprovedScope::class]);
         }
-      }
-      $unit['debt'] = $debt;
+      ])
+      ->find($unit->id);
+
+    $transactions = $unit->transactions;
+
+    $unit['credit'] = 0;
+
+    if ($unit->cluster) {
+      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
     }
 
-    foreach ($units as $unit) {
-      $balance = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 3:
-              $balance += $payment->pivot->amount;
-              break;
+    $unit['balance'] = 0;
+    $unit['debt'] = 0;
 
-            case 10:
-              $balance -= $payment->pivot->amount;
-              break;
-          }
+    foreach ($transactions as $transaction) {
+      foreach ($transaction->payments as $payment) {
+        switch ($payment->id) {
+          case 11:
+            $unit['debt'] -= $payment->pivot->amount;
+            break;
+          case 8:
+            $unit['debt'] += $payment->pivot->amount;
+            break;
+          case 3:
+            $unit['balance'] += $payment->pivot->amount;
+            break;
+          case 10:
+            $unit['balance'] -= $payment->pivot->amount;
+            break;
         }
       }
-      $unit['balance'] = $balance;
-    }
-
-    foreach ($units as $unit) {
-      $startMonth = $unit->created_at->firstOfMonth();
-      $endMonth = now()->firstOfMonth();
-      $diffInMonths = $startMonth->diffInMonths($endMonth);
-      $months = [];
-
-      for ($i = 0; $i < $diffInMonths; $i++) {
-        $period = $unit->created_at->addMonths($i);
-
-        if ($unit->transactions->first()) {
-          foreach ($unit->transactions as $key => $transaction) {
-            if (!$period->diffInMonths($transaction->period)) {
-              $unit->transactions->forget($key);
-              continue 2;
-            }
-          }
-        }
-
-        $price = $unit->cluster->prices->last();
-
-        $months[] = [
-          'period' => $period,
-          'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
-          'fine' => 2000 * ($diffInMonths - $i - 1)
-        ];
-      }
-
-      $unit['months'] = $months;
     }
 
     $payments = Payment::get(['id', 'name'])->only([4, 5, 6, 7, 8, 9, 10]);
 
-    // echo json_encode($units);exit();
+    // echo json_encode($unit); exit();
 
-    return view('unit.debt', compact('customer', 'units', 'payments'));
+    return view('unit.debt', compact('unit', 'payments'));
   }
 
   public function sync()
@@ -286,7 +254,7 @@ class UnitController extends Controller
       $startMonth = $unit->created_at->firstOfMonth();
       $endMonth = now()->firstOfMonth();
       $diffInMonths = $startMonth->diffInMonths($endMonth);
-      
+
       $months = collect();
 
       for ($i = 0; $i < $diffInMonths; $i++) {
@@ -327,7 +295,7 @@ class UnitController extends Controller
         'credit'
       ]);
     }
-    
+
     // echo json_encode($unit); exit;
 
     DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');

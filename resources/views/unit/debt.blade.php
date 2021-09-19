@@ -61,197 +61,177 @@
   </div>
   <div class="container-fluid">
     <div class="fade-in">
-      <x-return-button href="{{ route('customers.index') }}"></x-return-button>
-      <div class="row">
-        <div class="col-xl-4 col-md-6">
-          <div class="card">
-            <x-card-header>Customer Show</x-card-header>
-            <div class="card-body">
-              <x-alert></x-alert>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">CIF</label>
-                <div class="col">
-                  <input
-                    class="form-control"
-                    type="text"
-                    value="{{ $customer->id }}"
-                    disabled
-                  >
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">Name</label>
-                <div class="col">
-                  <input
-                    class="form-control"
-                    type="text"
-                    value="{{ $customer->name }}"
-                    disabled
-                  >
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="col-md-3 col-form-label">Phone</label>
-                <div class="col">
-                  <input
-                    class="form-control"
-                    type="text"
-                    value="{{ $customer->phone_number }}"
-                    disabled
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <a
+        class="btn btn-sm btn-secondary font-weight-bold mb-2"
+        href="{{ route('customers.index') }}"
+      ><i class="cil-chevron-circle-left-alt align-text-top"></i> Return</a>
       <div class="row">
         <div class="col-xl-9">
           <div class="card">
+            <x-card-header>Unit List</x-card-header>
+            <div class="d-flex justify-content-end mt-4 mx-4">
+              <form>
+                <label for="add-month">Add</label>
+                <input
+                  onchange="submit()"
+                  type="number"
+                  name="add-month"
+                  id="add-month"
+                  min="0"
+                  max="99"
+                  value="{{ request('add-month', 0) }}"
+                >
+                <label for="add-month">month(s) from now</label>
+              </form>
+            </div>
             <form
               action="{{ route('transactions.store') }}"
               method="post"
             >
               @csrf
-              <x-card-header>Unit List</x-card-header>
               <div class="card-body">
                 <table class="table table-responsive-md">
-                  @forelse ($units as $unit)
-                    <thead class="thead-dark">
-                      <tr>
-                        <th class="text-center">#</th>
-                        <th>Name</th>
-                        <th>Customer</th>
-                        <th colspan="2">Cluster</th>
-                        <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                        <th class="text-right">Debt</th>
-                        <th class="text-right">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr class="table-light">
-                        <th class="text-center">1</th>
-                        <th>{{ $unit->name }}</th>
-                        <th>{{ $unit->customer->name }}</th>
-                        <th colspan="2">{{ $unit->cluster->name }}</th>
-                        <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
-                        <td class="text-right">
-                          @if ($unit->debt == 0)
-                            {{ number_format($unit->debt) }}
-                          @else
-                            <span style="color:red">{{ number_format($unit->debt) }}</span>
-                          @endif
-                        </td>
-                        <td class="text-right">{{ number_format($unit->balance) }}</td>
-                        <input
-                          type="hidden"
-                          name="units[{{ $loop->index }}][unit_id]"
-                          value="{{ $unit->id }}"
-                        >
-                      </tr>
-                      <thead class="thead-light">
-                        <tr>
-                          <th colspan="5"></th>
-                          <th class="text-center">#</th>
-                          <th>Period</th>
-                          <th class="text-right">Debt</th>
-                        </tr>
-                      </thead>
-                    <tbody>
-                      @if ($unit->debt == 0)
-                        <tr class="table-success">
-                          <td
-                            colspan="10"
-                            style="text-align: center"
-                          >No tunggak-tunggak club :)</td>
-                        </tr>
-                      @else
-                        <tr
-                          class="mth"
-                          id="{{ $unit->id . '0170' }}"
-                        >
-                          <th colspan="5">
-                            <input
-                              type="checkbox"
-                              class="mth-chck"
-                              @if (!Auth::user()->hasRole('operator'))disabled @endif
-                              checked
-                              hidden
-                            >
-                          </th>
-                          <th class="text-center">{{ $loop->iteration }}</th>
-                          <td>Jan 1970</td>
-                          <td class="text-right">{{ number_format($unit->debt) }}</td>
-                          <input
-                            type="hidden"
-                            class="mth-hdn"
-                            name="units[{{ $loop->index }}][months][0][period]"
-                            value="1970-01-01"
-                          >
-                          <input
-                            type="hidden"
-                            class="mth-hdn"
-                            name="units[{{ $loop->index }}][months][0][payments][11][payment_id]"
-                            value="11"
-                          >
-                          <input
-                            type="hidden"
-                            class="mth-hdn"
-                            name="units[{{ $loop->index }}][months][0][payments][11][amount]"
-                            value="{{ $unit->debt }}"
-                          >
-                        </tr>
-                        <tr
-                          class="table-secondary table-sm"
-                          data-month="{{ $unit->id . '0170' }}"
-                        >
-                          <th
-                            colspan="7"
-                            class="text-right"
-                          >TAGIHAN</th>
-                          <th class="text-right">{{ number_format($unit->debt) }}</th>
-                        </tr>
-                        <tr
-                          class="table-secondary table-borderless table-sm"
-                          data-month="{{ $unit->id . '0170' }}"
-                        >
-                          <th
-                            colspan="9"
-                            class="text-right"
-                          >
-                            <button
-                              data-toggle="modal"
-                              data-target="#paymentModal"
-                              data-payments="[@foreach ($payments as $payment){{ $payment->id }}@if (!$loop->last),@endif @endforeach]"
-                              type="button"
-                              class="btn btn-sm btn-square btn-outline-success"
-                            ><i class="cil-wallet"></i>&nbsp;Add Payments</button>
-                          </th>
-                        </tr>
-                        <tr
-                          class="table-secondary table-borderless table-sm"
-                          data-month="{{ $unit->id . '0170' }}"
-                          data-parent-index="0"
-                          data-index="0"
-                        >
-                          <th
-                            colspan="7"
-                            class="text-right"
-                          >Sisa</th>
-                          <th class="text-right text-success">{{ number_format($unit->debt) }}</th>
-                        </tr>
-                      @endif
 
-                    </tbody>
-                    </tbody>
-                  @empty
-                    <tr class="table-secondary">
-                      <td
-                        colspan="9"
-                        style="text-align: center"
-                      >Oops, nothing found here :(</td>
+                  <thead class="thead-dark">
+                    <tr>
+                      <th></th>
+                      <th class="text-center">#</th>
+                      <th>Name</th>
+                      <th>Customer</th>
+                      <th colspan="2">Cluster</th>
+                      <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
+                      <th class="text-right">Debt</th>
+                      <th class="text-right">Balance</th>
+                      <th class="text-right">Credit</th>
                     </tr>
-                  @endforelse
+                  </thead>
+                  <tbody>
+                    <tr class="table-light">
+                      <th class="text-right"><input
+                          type="checkbox"
+                          class="unt-chck"
+                          @if (!Auth::user()->hasRole('operator')) disabled @endif
+                        ></th>
+                      <th class="text-center">1</th>
+                      <th>{{ $unit->name }}</th>
+                      <th>{{ $unit->customer->name }}</th>
+                      <th colspan="2">{{ $unit->cluster->name }}</th>
+                      <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                      <td class="text-right">{{ number_format($unit->debt) }}</td>
+                      <td class="text-right">{{ number_format($unit->balance) }}</td>
+                      <td class="text-right">
+                        {{ number_format($unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1)) }}
+                      </td>
+                      <input
+                        type="hidden"
+                        name="units[0][unit_id]"
+                        value="{{ $unit->id }}"
+                      >
+                    </tr>
+                  </tbody>
+                  <thead class="thead-light">
+                    <tr>
+                      <th colspan="7"></th>
+                      <th class="text-center">#</th>
+                      <th>Period</th>
+                      <th class="text-right">Debt</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="mth"
+                      id="{{ $unit->id . '0170' }}"
+                    >
+                      <th colspan="6"></th>
+                      <th class="text-right">
+                        <input
+                          type="checkbox"
+                          class="mth-chck"
+                          @if (!Auth::user()->hasRole('operator')) disabled @endif
+                        >
+                      </th>
+                      <th class="text-center">1</th>
+                      <td>Januari 1970</td>
+                      <td class="text-right">{{ number_format($unit['debt']) }}</td>
+                      <input
+                        disabled
+                        type="hidden"
+                        class="mth-hdn"
+                        name="units[0][months][0][period]"
+                        value="1970-01-01"
+                      >
+                      <input
+                        disabled
+                        type="hidden"
+                        class="mth-hdn"
+                        name="units[0][months][0][payments][1][payment_id]"
+                        value="11"
+                      >
+                      <input
+                        disabled
+                        type="hidden"
+                        class="mth-hdn"
+                        name="units[0][months][0][payments][1][amount]"
+                        value="{{ $unit['debt'] }}"
+                      >
+                    </tr>
+                    <tr
+                      class="d-none table-secondary table-sm"
+                      data-month="{{ $unit->id . '0170' }}"
+                    >
+                      <th
+                        colspan="9"
+                        class="text-right"
+                      >BAYAR HUTANG</th>
+                      <th class="text-right">{{ number_format($unit['debt']) }}</th>
+                    </tr>
+                    {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                          <th colspan="9" class="text-right"><i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;OTHER</th>
+                          <th class="text-right">{{ number_format('250000') }}</th>
+                          <input 
+                            type="hidden"
+                            class="mth-hdn" 
+                            name="units[0][months][0][payments][2][payment_id]" 
+                            value="4"
+                          >
+                          <input 
+                            type="hidden"
+                            class="mth-hdn" 
+                            name="units[0][months][0][payments][2][amount]" 
+                            value="250000"
+                          >
+                        </tr> --}}
+                    <tr
+                      class="d-none table-secondary table-borderless table-sm"
+                      data-month="{{ $unit->id . '0170' }}"
+                    >
+                      <th
+                        colspan="10"
+                        class="text-right"
+                      >
+                        <button
+                          data-toggle="modal"
+                          data-target="#paymentModal"
+                          data-payments="[@foreach ($payments as $payment) {{ $payment->id }}      @if (!$loop->last), @endif @endforeach]"
+                          type="button"
+                          class="btn btn-sm btn-square btn-outline-success"
+                        ><i class="cil-wallet"></i>&nbsp;Add Payments</button>
+                      </th>
+                    </tr>
+                    <tr
+                      class="d-none table-secondary table-borderless table-sm"
+                      data-month="{{ $unit->id . '0170' }}"
+                      data-parent-index="0"
+                      data-index="0"
+                    >
+                      <th
+                        colspan="9"
+                        class="text-right"
+                      >Sisa</th>
+                      <th class="text-right text-success">{{ number_format($unit['debt']) }}
+                      </th>
+                    </tr>
+                  </tbody>
                 </table>
               </div>
               <div class="card-footer d-flex justify-content-end">
@@ -328,7 +308,7 @@
       tr.setAttribute('class', 'table-secondary table-borderless table-sm')
       tr.setAttribute('data-month', dataMonth)
       th = document.createElement('th')
-      th.setAttribute('colspan', '7')
+      th.setAttribute('colspan', '9')
       th.setAttribute('class', 'text-right')
       th.innerHTML = '<i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;'
       th.innerHTML += payments.filter(payment => payment.id === method)[0].name
@@ -340,13 +320,15 @@
       input = document.createElement('INPUT')
       input.setAttribute('type', 'hidden')
       input.setAttribute('class', 'mth-hdn')
-      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder.getAttribute('data-index') + '][payments][' + method + '][payment_id]')
+      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder
+        .getAttribute('data-index') + '][payments][' + method + '][payment_id]')
       input.setAttribute('value', method)
       tr.appendChild(input)
       input = document.createElement('INPUT')
       input.setAttribute('type', 'hidden')
       input.setAttribute('class', 'mth-hdn')
-      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder.getAttribute('data-index') + '][payments][' + method + '][amount]')
+      input.setAttribute('name', 'units[' + remainder.getAttribute('data-parent-index') + '][months][' + remainder
+        .getAttribute('data-index') + '][payments][' + method + '][amount]')
       input.setAttribute('value', amount)
       tr.appendChild(input)
       remainder.parentNode.insertBefore(tr, paymentButton)
@@ -391,10 +373,12 @@
           remainder = paymentDetails[paymentDetails.length - 1]
 
           for (paymentDetail of paymentDetails)
-            if (paymentDetail.getElementsByTagName('input').length) paid += parseInt(paymentDetail.getElementsByTagName('input')[0].parentNode.lastElementChild.value)
+            if (paymentDetail.getElementsByTagName('input').length) paid += parseInt(paymentDetail.getElementsByTagName(
+              'input')[0].parentNode.lastElementChild.value)
 
           remainder.lastElementChild.innerHTML = new Intl.NumberFormat().format(Math.abs(bill - paid))
-          bill <= paid ? remainder.lastElementChild.classList.remove('text-danger') : remainder.lastElementChild.classList.add('text-danger')
+          bill <= paid ? remainder.lastElementChild.classList.remove('text-danger') : remainder.lastElementChild.classList
+            .add('text-danger')
           billLessThanOrEqualToPaid += bill <= paid ? 0 : 1
         }
       }
@@ -415,7 +399,8 @@
         option.value = payments.filter(payment => payment.id === paymentId)[0].id
         paymentMethod.appendChild(option)
       }
-      event.target.querySelector('[onclick="addPayments(this)"]').setAttribute('data-month', event.relatedTarget.parentNode.parentNode.getAttribute('data-month'))
+      event.target.querySelector('[onclick="addPayments(this)"]').setAttribute('data-month', event.relatedTarget
+        .parentNode.parentNode.getAttribute('data-month'))
     })
 
     for (unitCheck of unitChecks) {
@@ -454,4 +439,5 @@
       })
     }
   </script>
+
 @endsection

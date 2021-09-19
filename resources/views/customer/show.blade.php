@@ -165,7 +165,7 @@
                             {{ number_format($unit->debt) }}
                           @else
                             <a
-                              href="{{ route('units.debt', $customer->id) }}"
+                              href="{{ route('units.debt', $unit) }}"
                               style="color:red;"
                             >{{ number_format($unit->debt) }}</a>
                           @endif

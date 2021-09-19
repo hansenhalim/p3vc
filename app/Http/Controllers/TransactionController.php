@@ -56,8 +56,6 @@ class TransactionController extends Controller
 
   public function store(Request $request)
   {
-    // echo json_encode($request->all()); exit;
-
     foreach ($request->units as $item) {
       if (!isset($item['months'])) continue;
 
@@ -97,7 +95,7 @@ class TransactionController extends Controller
 
     $request->session()->flash('status', 'Successfully created transactions. Thankyou.');
 
-    return back();
+    return redirect()->route('customers.index');
   }
 
   public function show($id)
