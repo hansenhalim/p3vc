@@ -248,18 +248,23 @@ class UnitController extends Controller
       $transactions = $unit->transactions;
 
       $unit['customer_name'] = '';
+      $unit['customer_id'] = 0;
 
-      if ($unit->customer()->exists()) {
+      if ($unit->customer) {
         $unit['customer_name'] = $unit->customer->name;
         $unit['customer_id'] = $unit->customer->previous_id;
-      } else {
-        $unit['customer_id'] = 0;
+      }
+
+      $unit['credit'] = 0;
+
+      if ($unit->cluster) {
+        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
       }
 
       $unit['balance'] = 0;
       $unit['debt'] = 0;
 
-      foreach ($unit->transactions as $transaction) {
+      foreach ($transactions as $transaction) {
         foreach ($transaction->payments as $payment) {
           switch ($payment->id) {
             case 11:
@@ -299,14 +304,13 @@ class UnitController extends Controller
 
         $months->push([
           'period' => $period,
-          'credit' => $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1),
+          'credit' => $unit['credit'],
           'fine' => 2000 * ($diffInMonths - $i - 1)
         ]);
       }
 
       $unit['months_count'] = $months->count();
       $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
-      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
 
       $unitShadows[] = $unit->only([
         'id',
@@ -322,6 +326,7 @@ class UnitController extends Controller
         'credit'
       ]);
     }
+    
     // echo json_encode($unit); exit;
 
     DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');

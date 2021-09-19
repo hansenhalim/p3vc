@@ -56,14 +56,14 @@
                       value="name"
                       {{ request('sortBy') == 'name' ? 'selected' : '' }}
                     >Name</option>
-                    <option
+                    {{-- <option
                       value="units_count"
                       {{ request('sortBy') == 'units_count' ? 'selected' : '' }}
-                    >Units</option>
-                    <option
+                    >Units</option> --}}
+                    {{-- <option
                       value="phone_number"
                       {{ request('sortBy') == 'phone_number' ? 'selected' : '' }}
-                    >Phone</option>
+                    >Phone</option> --}}
                   </select>
 
                   <select

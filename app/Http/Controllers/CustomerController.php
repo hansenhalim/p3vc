@@ -22,14 +22,14 @@ class CustomerController extends Controller
         ->orWhere('phone_number', $search)
         ->orWhere('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
-      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->select('previous_id', DB::raw('MAX(id) AS id, MAX(name) AS name'))
       ->groupBy('previous_id')
       ->paginate($perPage);
 
     $customers = Customer::query()
       ->withCount('units')
       ->whereIn('id', $latestCustomers->pluck('id'))
-      ->oldest('previous_id')
+      ->orderBy($sortBy, $sortDirection)
       ->get();
 
     return view('customer.list', compact('latestCustomers', 'customers'));

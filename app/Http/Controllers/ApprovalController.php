@@ -199,13 +199,24 @@ class ApprovalController extends Controller
 
       # rebinding units to new customer
       if ($type == 'customer') {
-        $customer = $approval->latest()
+        $approval->original = $approval->latest()
           ->firstWhere([
             ['previous_id', '=', $approval->previous_id],
             ['id', '<>', $approval->id]
           ]);
 
-        if (isset($customer)) $customer->units()->update(['customer_id' => $id]);
+        if (isset($approval->original)) $approval->original->units()->update(['customer_id' => $id]);
+      }
+
+      # rebinding units to new cluster
+      if ($type == 'cluster') {
+        $approval->original = $approval->latest()
+          ->firstWhere([
+            ['previous_id', '=', $approval->previous_id],
+            ['id', '<>', $approval->id]
+          ]);
+
+        if (isset($approval->original)) $approval->original->units()->update(['cluster_id' => $id]);
       }
 
       # if deleted then also delete all same prev_id
@@ -215,7 +226,7 @@ class ApprovalController extends Controller
     } else {
       # else rejected delete only approval and approve too
       if ($approval->approved_at || $approval->approved_by) {
-        $request->session()->flash('status', 'Failed to reject approval. Sorry.');
+        $request->session()->flash('status', 'Failed to reject ' . $approval->name  . '. Sorry.');
         return redirect()->route('approvals.index');
       }
 

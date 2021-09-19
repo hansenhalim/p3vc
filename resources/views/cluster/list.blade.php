@@ -95,7 +95,7 @@
                 <tbody>
                   @forelse ($clusters as $cluster)
                     <tr>
-                      <th class="align-middle">{{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}</th>
+                      <th class="align-middle">{{ ($latestClusters->currentpage() - 1) * $latestClusters->perpage() + $loop->iteration }}</th>
                       <td class="align-middle">{{ $cluster->name }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
@@ -142,14 +142,14 @@
               </table>
 
               <div class="d-flex justify-content-center mt-4 mb-0">
-                {{ $clusters->appends(request()->input())->links() }}
+                {{ $latestClusters->appends(request()->input())->links() }}
               </div>
 
               <small class="text-muted">
-                Showing {{ $clusters->count() }} of <a
-                  href="{{ substr($clusters->url(1), 0, -1) . 'all' }}"
+                Showing {{ $latestClusters->count() }} of <a
+                  href="{{ substr($latestClusters->url(1), 0, -1) . 'all' }}"
                   class="text-muted"
-                >{{ $clusters->total() }}</a>
+                >{{ $latestClusters->total() }}</a>
               </small>
             </div>
           </div>
