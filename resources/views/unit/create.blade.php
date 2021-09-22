@@ -25,7 +25,7 @@
                 @endif
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Nama</label>
+                  <label class="col-md-3 col-form-label">Blok</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('name') is-invalid @enderror"
@@ -41,12 +41,28 @@
                 </div>
 
                 <div class="form-group row">
+                  <label class="col-md-3 col-form-label">Idlink</label>
+                  <div class="col">
+                    <input
+                      class="form-control border-0 @error('idlink') is-invalid @enderror"
+                      type="text"
+                      name="idlink"
+                      value="{{ old('idlink') }}"
+                      style="background-color: rgba(0,0,21,.05);"
+                    >
+                    @error('idlink')
+                      <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                  </div>
+                </div>
+
+                <div class="form-group row">
                   <label class="col-md-3 col-form-label">Luas&nbsp;(m<sup>2</sup>)</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('area_sqm') is-invalid @enderror"
                       type="number"
-                      step="0.1"
+                      step="0.10"
                       name="area_sqm"
                       value="{{ old('area_sqm') }}"
                       style="background-color: rgba(0,0,21,.05);"

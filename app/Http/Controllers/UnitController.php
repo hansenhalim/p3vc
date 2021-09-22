@@ -54,7 +54,8 @@ class UnitController extends Controller
    */
   public function create()
   {
-    $latestCustomers = Customer::query()
+    $latestCustomers = DB::table('customers')
+      ->whereNotNull('approved_at')
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
@@ -65,17 +66,18 @@ class UnitController extends Controller
       ->oldest('previous_id')
       ->get(['id', 'previous_id', 'name']);
 
-    $latestClusters = Cluster::query()
+    $latestClusters = DB::table('clusters')
+      ->whereNotNull('approved_at')
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
 
     $clusters = Cluster::query()
-      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->whereIn('id', $latestClusters->pluck('id'))
       ->oldest('previous_id')
       ->get(['id', 'previous_id', 'name', 'cost', 'per']);
 
-    // echo json_encode($clusters); exit;
+    // echo json_encode($customers); exit;
 
     return view('unit.create', compact('clusters', 'customers'));
   }
@@ -90,12 +92,14 @@ class UnitController extends Controller
   {
     $request->validate([
       'name'          => 'required',
+      'idlink'        => 'required',
       'area_sqm'      => 'required|numeric',
       'customer_id'   => 'required|exists:customers,id',
       'cluster_id'    => 'required|exists:clusters,id',
     ]);
 
     $unit->name = $request->name;
+    $unit->idlink = $request->idlink;
     $unit->area_sqm = $request->area_sqm;
     $unit->customer_id = $request->customer_id;
     $unit->cluster_id = $request->cluster_id;
