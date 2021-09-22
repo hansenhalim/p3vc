@@ -68,22 +68,7 @@
       <div class="row">
         <div class="col-xl-9">
           <div class="card">
-            <x-card-header>Unit List</x-card-header>
-            <div class="d-flex justify-content-end mt-4 mx-4">
-              <form>
-                <label for="add-month">Add</label>
-                <input
-                  onchange="submit()"
-                  type="number"
-                  name="add-month"
-                  id="add-month"
-                  min="0"
-                  max="99"
-                  value="{{ request('add-month', 0) }}"
-                >
-                <label for="add-month">month(s) from now</label>
-              </form>
-            </div>
+            <x-card-header>Unit Debt</x-card-header>
             <form
               action="{{ route('transactions.store') }}"
               method="post"

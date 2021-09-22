@@ -133,9 +133,32 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Unit $unit)
   {
-    //
+    $latestCustomers = DB::table('customers')
+      ->whereNotNull('approved_at')
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $customers = Customer::query()
+      ->with('units:customer_id,name')
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name']);
+
+    $latestClusters = DB::table('clusters')
+      ->whereNotNull('approved_at')
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $clusters = Cluster::query()
+      ->whereIn('id', $latestClusters->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name', 'cost', 'per']);
+
+    return view('unit.edit', compact('unit', 'clusters', 'customers'));
   }
 
   /**
@@ -145,9 +168,32 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, Unit $unit)
   {
-    //
+    $request->validate([
+      'name'          => 'required',
+      'idlink'        => 'required',
+      'area_sqm'      => 'required|numeric',
+      'customer_id'   => 'required|exists:customers,id',
+      'cluster_id'    => 'required|exists:clusters,id',
+    ]);
+
+    $unit->name = $request->name;
+    $unit->idlink = $request->idlink;
+    $unit->area_sqm = $request->area_sqm;
+    $unit->customer_id = $request->customer_id;
+    $unit->cluster_id = $request->cluster_id;
+
+    if ($unit->isClean()) return redirect()->route('units.index');
+
+    $unit->approved_at = null;
+    $unit->approved_by = null;
+    $unit->updated_by = $request->user()->id;
+    $unit->replicate()->save();
+
+    $request->session()->flash('status', 'Successfully updated ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
   /**

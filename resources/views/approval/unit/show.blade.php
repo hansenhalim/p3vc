@@ -24,6 +24,17 @@
                         </div>
                       </div>
                       <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Id Link</label>
+                        <div class="col-md">
+                          <input
+                            disabled
+                            value="{{ $approval->idlink }}"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
                         <label class="col-md-3 col-form-label">Area</label>
                         <div class="col">
                           <input
@@ -66,6 +77,17 @@
                           <input
                             disabled
                             value="{{ $approval->original->name }}"
+                            class="form-control border-0"
+                            style="background-color: rgba(0,0,21,.05);"
+                          >
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-3 col-form-label">Id Link</label>
+                        <div class="col-md">
+                          <input
+                            disabled
+                            value="{{ $approval->original->idlink }}"
                             class="form-control border-0"
                             style="background-color: rgba(0,0,21,.05);"
                           >
