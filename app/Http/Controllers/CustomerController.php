@@ -17,7 +17,8 @@ class CustomerController extends Controller
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $latestCustomers = Customer::query()
+    $latestCustomers = DB::table('customers')
+      ->whereNotNull('approved_at')
       ->when($search, fn ($query) => $query->where('previous_id', $search)
         ->orWhere('phone_number', $search)
         ->orWhere('name', 'like', '%' . $search . '%'))
