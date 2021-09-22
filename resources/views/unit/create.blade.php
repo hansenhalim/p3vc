@@ -41,7 +41,7 @@
                 </div>
 
                 <div class="form-group row">
-                  <label class="col-md-3 col-form-label">Idlink</label>
+                  <label class="col-md-3 col-form-label">Id Link</label>
                   <div class="col">
                     <input
                       class="form-control border-0 @error('idlink') is-invalid @enderror"
