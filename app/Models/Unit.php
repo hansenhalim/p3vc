@@ -29,7 +29,7 @@ class Unit extends Model
 
   public function transactions()
   {
-    return $this->hasMany(Transaction::class);
+    return $this->hasMany(Transaction::class, 'unit_id', 'previous_id');
   }
 
   public function user()

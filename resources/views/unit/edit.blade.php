@@ -109,8 +109,8 @@
                           @if (old('customer_id', $unit->customer_id) == $customer->previous_id) selected @endif
                         >
                           {{ $customer->name }} (
-                          @foreach ($customer->units as $unit)
-                            {{ $unit->name }} @if (!$loop->last)|@endif
+                          @foreach ($customer->units as $item)
+                            {{ $item->name }} @if (!$loop->last)|@endif
                           @endforeach)
                         </option>
                       @endforeach

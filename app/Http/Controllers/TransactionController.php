@@ -56,6 +56,8 @@ class TransactionController extends Controller
 
   public function store(Request $request)
   {
+    echo json_encode($request->all()); exit;
+
     foreach ($request->units as $item) {
       if (!isset($item['months'])) continue;
 

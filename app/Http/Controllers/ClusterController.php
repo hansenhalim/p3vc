@@ -15,8 +15,7 @@ class ClusterController extends Controller
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $latestClusters = DB::table('clusters')
-      ->whereNotNull('approved_at')
+    $latestClusters = Cluster::query()
       ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
       ->select('previous_id', DB::raw('MAX(id) AS id, MAX(name) AS name'))

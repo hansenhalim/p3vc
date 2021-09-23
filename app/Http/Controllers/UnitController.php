@@ -54,8 +54,7 @@ class UnitController extends Controller
    */
   public function create()
   {
-    $latestCustomers = DB::table('customers')
-      ->whereNotNull('approved_at')
+    $latestCustomers = Customer::query()
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
@@ -66,8 +65,7 @@ class UnitController extends Controller
       ->oldest('previous_id')
       ->get(['id', 'previous_id', 'name']);
 
-    $latestClusters = DB::table('clusters')
-      ->whereNotNull('approved_at')
+    $latestClusters = Cluster::query()
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
@@ -122,9 +120,10 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show(Unit $unit)
   {
-    //
+    // echo json_encode($unit); exit;
+    return view('unit.show', compact('unit'));
   }
 
   /**
@@ -135,8 +134,7 @@ class UnitController extends Controller
    */
   public function edit(Unit $unit)
   {
-    $latestCustomers = DB::table('customers')
-      ->whereNotNull('approved_at')
+    $latestCustomers = Customer::query()
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
@@ -147,8 +145,7 @@ class UnitController extends Controller
       ->oldest('previous_id')
       ->get(['id', 'previous_id', 'name']);
 
-    $latestClusters = DB::table('clusters')
-      ->whereNotNull('approved_at')
+    $latestClusters = Cluster::query()
       ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->get();
@@ -189,7 +186,12 @@ class UnitController extends Controller
     $unit->approved_at = null;
     $unit->approved_by = null;
     $unit->updated_by = $request->user()->id;
-    $unit->replicate()->save();
+
+    $created_at = $unit->created_at;
+
+    $unit = $unit->replicate();
+    $unit->created_at = $created_at;
+    $unit->save();
 
     $request->session()->flash('status', 'Successfully updated ' . $unit->name . '. Please wait for appoval.');
 
@@ -268,9 +270,17 @@ class UnitController extends Controller
 
   public function sync()
   {
+    $latestUnits = Unit::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    DB::table('unit_shadows')->truncate();
+
     Unit::query()
       ->select([
         'id',
+        'previous_id',
         'customer_id',
         'cluster_id',
         'name',
@@ -284,6 +294,8 @@ class UnitController extends Controller
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
+      ->whereIn('id', $latestUnits->pluck('id'))
+      ->oldest('previous_id')
       ->chunk(100, function ($units) {
         $this->calculateExtraFieldsAndCastShadow($units);
       });

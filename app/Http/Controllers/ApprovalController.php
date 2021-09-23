@@ -87,7 +87,7 @@ class ApprovalController extends Controller
 
         if ($approval->operation == 'MOD') {
           $approval->original = Customer::query()
-            ->latest()
+            ->latest('id')
             ->firstWhere([
               ['previous_id', '=', $approval->previous_id],
               ['id', '<>', $approval->id]
@@ -108,7 +108,7 @@ class ApprovalController extends Controller
 
         if ($approval->operation == 'MOD') {
           $approval->original = Cluster::query()
-            ->latest()
+            ->latest('id')
             ->firstWhere([
               ['previous_id', '=', $approval->previous_id],
               ['id', '<>', $approval->id]
@@ -129,7 +129,7 @@ class ApprovalController extends Controller
 
         if ($approval->operation == 'MOD') {
           $approval->original = Unit::query()
-            ->latest()
+            ->latest('id')
             ->firstWhere([
               ['previous_id', '=', $approval->previous_id],
               ['id', '<>', $approval->id]

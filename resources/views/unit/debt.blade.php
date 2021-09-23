@@ -110,7 +110,7 @@
                       <input
                         type="hidden"
                         name="units[0][unit_id]"
-                        value="{{ $unit->id }}"
+                        value="{{ $unit->previous_id }}"
                       >
                     </tr>
                   </tbody>
@@ -125,7 +125,7 @@
                   <tbody>
                     <tr
                       class="mth"
-                      id="{{ $unit->id . '0170' }}"
+                      id="{{ $unit->previous_id . '0170' }}"
                     >
                       <th colspan="6"></th>
                       <th class="text-right">
@@ -162,7 +162,7 @@
                     </tr>
                     <tr
                       class="d-none table-secondary table-sm"
-                      data-month="{{ $unit->id . '0170' }}"
+                      data-month="{{ $unit->previous_id . '0170' }}"
                     >
                       <th
                         colspan="9"
@@ -170,7 +170,7 @@
                       >BAYAR HUTANG</th>
                       <th class="text-right">{{ number_format($unit['debt']) }}</th>
                     </tr>
-                    {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->id.$month['period']->format('my') }}">
+                    {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->previous_id.$month['period']->format('my') }}">
                           <th colspan="9" class="text-right"><i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;OTHER</th>
                           <th class="text-right">{{ number_format('250000') }}</th>
                           <input 
@@ -188,7 +188,7 @@
                         </tr> --}}
                     <tr
                       class="d-none table-secondary table-borderless table-sm"
-                      data-month="{{ $unit->id . '0170' }}"
+                      data-month="{{ $unit->previous_id . '0170' }}"
                     >
                       <th
                         colspan="10"
@@ -205,7 +205,7 @@
                     </tr>
                     <tr
                       class="d-none table-secondary table-borderless table-sm"
-                      data-month="{{ $unit->id . '0170' }}"
+                      data-month="{{ $unit->previous_id . '0170' }}"
                       data-parent-index="0"
                       data-index="0"
                     >

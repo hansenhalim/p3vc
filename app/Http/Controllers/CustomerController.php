@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\Payment;
+use App\Models\Unit;
 use App\Scopes\ApprovedScope;
 use Illuminate\Support\Facades\DB;
 
@@ -17,8 +18,7 @@ class CustomerController extends Controller
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $latestCustomers = DB::table('customers')
-      ->whereNotNull('approved_at')
+    $latestCustomers = Customer::query()
       ->when($search, fn ($query) => $query->where('previous_id', $search)
         ->orWhere('phone_number', $search)
         ->orWhere('name', 'like', '%' . $search . '%'))
@@ -65,11 +65,20 @@ class CustomerController extends Controller
 
   public function show(Customer $customer)
   {
-    $units = $customer->units()
+    $latestUnits = $customer->units()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $units = Unit::query()
       ->with(['cluster', 'transactions.payments', 'transactions' => function ($query) {
         $query->withoutGlobalScopes([ApprovedScope::class]);
       }])
+      ->whereIn('id', $latestUnits->pluck('id'))
+      ->oldest('previous_id')
       ->get();
+
+    // echo json_encode($units); exit;
 
     foreach ($units as $unit) {
       $transactions = $unit->transactions;

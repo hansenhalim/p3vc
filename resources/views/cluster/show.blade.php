@@ -9,7 +9,7 @@
           <div class="card">
             <x-card-header>Cluster Show</x-card-header>
             <div class="card-body">
-              <x-alert></x-alert>
+
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Name</label>
                 <div class="col">
@@ -21,6 +21,7 @@
                   >
                 </div>
               </div>
+
               <div class="form-group row">
                 <label class="col-md-3 col-form-label">Price</label>
                 <div class="col">
@@ -32,6 +33,7 @@
                   >
                 </div>
               </div>
+              
             </div>
           </div>
         </div>
