@@ -31,3 +31,4 @@ database/seeders/DatabaseSeeder.php
 public/error_log
 public/development
 /scripts
+.vscode/launch.json

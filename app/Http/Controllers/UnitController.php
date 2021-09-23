@@ -54,8 +54,29 @@ class UnitController extends Controller
    */
   public function create()
   {
-    $clusters = Cluster::with(['prices'])->get();
-    $customers = Customer::all();
+    $latestCustomers = Customer::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $customers = Customer::query()
+      ->with('units:customer_id,name')
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name']);
+
+    $latestClusters = Cluster::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $clusters = Cluster::query()
+      ->whereIn('id', $latestClusters->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name', 'cost', 'per']);
+
+    // echo json_encode($customers); exit;
+
     return view('unit.create', compact('clusters', 'customers'));
   }
 
@@ -65,16 +86,32 @@ class UnitController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Unit $unit)
   {
-    $unit = $request->validate([
-      'name'          => 'required|max:255',
-      'area_sqm'      => 'required|numeric|max:10',
+    $request->validate([
+      'name'          => 'required',
+      'idlink'        => 'required',
+      'area_sqm'      => 'required|numeric',
       'customer_id'   => 'required|exists:customers,id',
       'cluster_id'    => 'required|exists:clusters,id',
     ]);
 
-    return Unit::create($unit);
+    $unit->name = $request->name;
+    $unit->idlink = $request->idlink;
+    $unit->area_sqm = $request->area_sqm;
+    $unit->customer_id = $request->customer_id;
+    $unit->cluster_id = $request->cluster_id;
+    $unit->updated_by = $request->user()->id;
+
+    $unit->save();
+
+    $unit->previous_id = $unit->id;
+
+    $unit->save();
+
+    $request->session()->flash('status', 'Successfully created ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
   /**
@@ -83,9 +120,10 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show(Unit $unit)
   {
-    //
+    // echo json_encode($unit); exit;
+    return view('unit.show', compact('unit'));
   }
 
   /**
@@ -94,9 +132,30 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Unit $unit)
   {
-    //
+    $latestCustomers = Customer::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $customers = Customer::query()
+      ->with('units:customer_id,name')
+      ->whereIn('id', $latestCustomers->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name']);
+
+    $latestClusters = Cluster::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    $clusters = Cluster::query()
+      ->whereIn('id', $latestClusters->pluck('id'))
+      ->oldest('previous_id')
+      ->get(['id', 'previous_id', 'name', 'cost', 'per']);
+
+    return view('unit.edit', compact('unit', 'clusters', 'customers'));
   }
 
   /**
@@ -106,9 +165,37 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, Unit $unit)
   {
-    //
+    $request->validate([
+      'name'          => 'required',
+      'idlink'        => 'required',
+      'area_sqm'      => 'required|numeric',
+      'customer_id'   => 'required|exists:customers,id',
+      'cluster_id'    => 'required|exists:clusters,id',
+    ]);
+
+    $unit->name = $request->name;
+    $unit->idlink = $request->idlink;
+    $unit->area_sqm = $request->area_sqm;
+    $unit->customer_id = $request->customer_id;
+    $unit->cluster_id = $request->cluster_id;
+
+    if ($unit->isClean()) return redirect()->route('units.index');
+
+    $unit->approved_at = null;
+    $unit->approved_by = null;
+    $unit->updated_by = $request->user()->id;
+
+    $created_at = $unit->created_at;
+
+    $unit = $unit->replicate();
+    $unit->created_at = $created_at;
+    $unit->save();
+
+    $request->session()->flash('status', 'Successfully updated ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
   /**
@@ -117,98 +204,83 @@ class UnitController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request, Unit $unit)
   {
-    //
+    $unit->approved_at = null;
+    $unit->approved_by = null;
+    $unit->updated_by = $request->user()->id;
+    $unit = $unit->replicate();
+    $unit->save();
+    $unit->delete();
+
+    $request->session()->flash('status', 'Successfully deleted ' . $unit->name . '. Please wait for appoval.');
+
+    return redirect()->route('units.index');
   }
 
-  public function debt($id)
+  public function debt(Unit $unit)
   {
-    $customer = Customer::find($id);
-    $units = $customer->units()
-      ->with(['customer:id,name', 'cluster:id,name', 'transactions.payments', 'transactions' => function ($query) {
-        $query->withoutGlobalScopes([ApprovedScope::class]);
-      }])
-      ->get();
-
-    foreach ($units as $unit) {
-      $debt = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 11:
-              $debt -= $payment->pivot->amount;
-              break;
-
-            case 8:
-              $debt += $payment->pivot->amount;
-              break;
-          }
+    $unit = Unit::query()
+      ->with([
+        'cluster:id,name,cost,per',
+        'customer:id,previous_id,name',
+        'transactions.payments:id',
+        'transactions' => function ($query) {
+          $query->withoutGlobalScopes([ApprovedScope::class]);
         }
-      }
-      $unit['debt'] = $debt;
+      ])
+      ->find($unit->id);
+
+    $transactions = $unit->transactions;
+
+    $unit['credit'] = 0;
+
+    if ($unit->cluster) {
+      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
     }
 
-    foreach ($units as $unit) {
-      $balance = 0;
-      foreach ($unit->transactions as $transaction) {
-        foreach ($transaction->payments as $payment) {
-          switch ($payment->id) {
-            case 3:
-              $balance += $payment->pivot->amount;
-              break;
+    $unit['balance'] = 0;
+    $unit['debt'] = 0;
 
-            case 10:
-              $balance -= $payment->pivot->amount;
-              break;
-          }
+    foreach ($transactions as $transaction) {
+      foreach ($transaction->payments as $payment) {
+        switch ($payment->id) {
+          case 11:
+            $unit['debt'] -= $payment->pivot->amount;
+            break;
+          case 8:
+            $unit['debt'] += $payment->pivot->amount;
+            break;
+          case 3:
+            $unit['balance'] += $payment->pivot->amount;
+            break;
+          case 10:
+            $unit['balance'] -= $payment->pivot->amount;
+            break;
         }
       }
-      $unit['balance'] = $balance;
-    }
-
-    foreach ($units as $unit) {
-      $startMonth = $unit->created_at->firstOfMonth();
-      $endMonth = now()->firstOfMonth();
-      $diffInMonths = $startMonth->diffInMonths($endMonth);
-      $months = [];
-
-      for ($i = 0; $i < $diffInMonths; $i++) {
-        $period = $unit->created_at->addMonths($i);
-
-        if ($unit->transactions->first()) {
-          foreach ($unit->transactions as $key => $transaction) {
-            if (!$period->diffInMonths($transaction->period)) {
-              $unit->transactions->forget($key);
-              continue 2;
-            }
-          }
-        }
-
-        $price = $unit->cluster->prices->last();
-
-        $months[] = [
-          'period' => $period,
-          'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
-          'fine' => 2000 * ($diffInMonths - $i - 1)
-        ];
-      }
-
-      $unit['months'] = $months;
     }
 
     $payments = Payment::get(['id', 'name'])->only([4, 5, 6, 7, 8, 9, 10]);
 
-    // echo json_encode($units);exit();
+    // echo json_encode($unit); exit();
 
-    return view('unit.debt', compact('customer', 'units', 'payments'));
+    return view('unit.debt', compact('unit', 'payments'));
   }
 
   public function sync()
   {
+    $latestUnits = Unit::query()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->get();
+
+    DB::table('unit_shadows')->truncate();
+
     Unit::query()
       ->select([
         'id',
+        'previous_id',
         'customer_id',
         'cluster_id',
         'name',
@@ -217,91 +289,110 @@ class UnitController extends Controller
         'created_at'
       ])
       ->with([
-        'customer:id,name',
-        'cluster.prices:cluster_id,cost,per',
+        'cluster:id,cost,per',
+        'customer:id,previous_id,name',
         'transactions:id,unit_id,period',
         'transactions.payments:id'
       ])
+      ->whereIn('id', $latestUnits->pluck('id'))
+      ->oldest('previous_id')
       ->chunk(100, function ($units) {
-        foreach ($units as $unit) {
-          $transactions = $unit->transactions;
-          $latest_price = $unit->cluster->prices->last();
-
-          $unit['customer_name'] = $unit->customer->name;
-
-          $unit['balance'] = 0;
-          $unit['debt'] = 0;
-
-          foreach ($unit->transactions as $transaction) {
-            foreach ($transaction->payments as $payment) {
-              switch ($payment->id) {
-                case 11:
-                  $unit['debt'] -= $payment->pivot->amount;
-                  break;
-                case 8:
-                  $unit['debt'] += $payment->pivot->amount;
-                  break;
-                case 3:
-                  $unit['balance'] += $payment->pivot->amount;
-                  break;
-                case 10:
-                  $unit['balance'] -= $payment->pivot->amount;
-                  break;
-              }
-            }
-          }
-
-          $startMonth = $unit->created_at->firstOfMonth();
-          $endMonth = now()->firstOfMonth();
-          $diffInMonths = $startMonth->diffInMonths($endMonth);
-          $months = collect();
-
-          for ($i = 0; $i < $diffInMonths; $i++) {
-            $period = $unit->created_at->addMonths($i);
-
-            if ($transactions->first()) {
-              foreach ($transactions as $key => $transaction) {
-                if (!$period->diffInMonths($transaction->period)) {
-                  $transactions->forget($key);
-                  continue 2;
-                }
-              }
-            }
-
-            // okay, this needs to be fixed in the future
-            $price = $latest_price;
-
-            $months->push([
-              'period' => $period,
-              'credit' => $price->cost * ($price->per == 'sqm' ? $unit->area_sqm : 1),
-              'fine' => 2000 * ($diffInMonths - $i - 1)
-            ]);
-          }
-
-          $unit['months_count'] = $months->count();
-          $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
-          $unit['credit'] = $latest_price->cost * ($latest_price->per == 'sqm' ? $unit->area_sqm : 1);
-
-          $unitShadows[] = $unit->only([
-            'id',
-            'customer_id',
-            'name',
-            'customer_name',
-            'idlink',
-            'area_sqm',
-            'balance',
-            'debt',
-            'months_count',
-            'months_total',
-            'credit'
-          ]);
-        }
-
-        DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
-        DB::table('unit_shadows')->upsert($unitShadows, 'id');
+        $this->calculateExtraFieldsAndCastShadow($units);
       });
 
     return redirect()->route('units.index');
+  }
+
+  private function calculateExtraFieldsAndCastShadow($units)
+  {
+    foreach ($units as $unit) {
+      $transactions = $unit->transactions;
+
+      $unit['customer_name'] = '';
+      $unit['customer_id'] = 0;
+
+      if ($unit->customer) {
+        $unit['customer_name'] = $unit->customer->name;
+        $unit['customer_id'] = $unit->customer->previous_id;
+      }
+
+      $unit['credit'] = 0;
+
+      if ($unit->cluster) {
+        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1);
+      }
+
+      $unit['balance'] = 0;
+      $unit['debt'] = 0;
+
+      foreach ($transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 11:
+              $unit['debt'] -= $payment->pivot->amount;
+              break;
+            case 8:
+              $unit['debt'] += $payment->pivot->amount;
+              break;
+            case 3:
+              $unit['balance'] += $payment->pivot->amount;
+              break;
+            case 10:
+              $unit['balance'] -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+
+      $startMonth = $unit->created_at->firstOfMonth();
+      $endMonth = now()->firstOfMonth();
+      $diffInMonths = $startMonth->diffInMonths($endMonth);
+
+      $months = collect();
+
+      for ($i = 0; $i < $diffInMonths; $i++) {
+        $period = $unit->created_at->addMonths($i);
+
+        if ($transactions->first()) {
+          foreach ($transactions as $key => $transaction) {
+            if (!$period->diffInMonths($transaction->period)) {
+              $transactions->forget($key);
+              continue 2;
+            }
+          }
+        }
+
+        // okay, this needs to be fixed in the future
+
+        $months->push([
+          'period' => $period,
+          'credit' => $unit['credit'],
+          'fine' => 2000 * ($diffInMonths - $i - 1)
+        ]);
+      }
+
+      $unit['months_count'] = $months->count();
+      $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
+
+      $unitShadows[] = $unit->only([
+        'id',
+        'customer_id',
+        'name',
+        'customer_name',
+        'idlink',
+        'area_sqm',
+        'balance',
+        'debt',
+        'months_count',
+        'months_total',
+        'credit'
+      ]);
+    }
+
+    // echo json_encode($unit); exit;
+
+    DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
+    DB::table('unit_shadows')->upsert($unitShadows, 'id');
   }
 
   public function export($type)

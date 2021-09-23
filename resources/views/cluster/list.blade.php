@@ -4,20 +4,18 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-6 col-lg-9">
+        <div class="col-xl-5 col-lg-9">
           <div class="card">
-            <div class="card-header">
+            <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 my-1 text-nowrap">Cluster List</div>
+              <a
+                  href="{{ route('clusters.create') }}"
+                  class="btn btn-sm btn-light font-weight-bold ml-2"
+                ><i class="cil-library-add align-text-top"></i>&nbsp;Create</a>
             </div>
             <div class="card-body pb-2">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {{ session('status') }}
-                </div>
-              @endif
-
-              {{-- <a class="btn btn-primary mb-2" href="{{ route('clusters.create') }}">Create Cluster</a> --}}
-
+              <x-alert></x-alert>
+              
               <form
                 id="filter"
                 action="{{ route('clusters.index') }}"
@@ -60,10 +58,10 @@
                       value="name"
                       {{ request('sortBy') == 'name' ? 'selected' : '' }}
                     >Name</option>
-                    <option
+                    {{-- <option
                       value="units_count"
                       {{ request('sortBy') == 'units_count' ? 'selected' : '' }}
-                    >Units</option>
+                    >Units</option> --}}
                   </select>
 
                   <select
@@ -89,18 +87,18 @@
                   <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Price</th>
                     <th class="text-right">Units</th>
-                    <th class="text-right">Price</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   @forelse ($clusters as $cluster)
                     <tr>
-                      <th class="align-middle">{{ ($clusters->currentpage() - 1) * $clusters->perpage() + $loop->iteration }}</th>
+                      <th class="align-middle">{{ ($latestClusters->currentpage() - 1) * $latestClusters->perpage() + $loop->iteration }}</th>
                       <td class="align-middle">{{ $cluster->name }}</td>
+                      <td class="align-middle">{{ number_format($cluster->cost) }} / {{ $cluster->per }}</td>
                       <td class="align-middle text-right">{{ number_format($cluster->units_count) }}</td>
-                      <td class="align-middle text-right">{{ number_format($cluster->prices->last()->cost) }} / {{ $cluster->prices->last()->per }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
                           <button
@@ -144,14 +142,14 @@
               </table>
 
               <div class="d-flex justify-content-center mt-4 mb-0">
-                {{ $clusters->appends(request()->input())->links() }}
+                {{ $latestClusters->appends(request()->input())->links() }}
               </div>
 
               <small class="text-muted">
-                Showing {{ $clusters->count() }} of <a
-                  href="{{ substr($clusters->url(1), 0, -1) . 'all' }}"
+                Showing {{ $latestClusters->count() }} of <a
+                  href="{{ substr($latestClusters->url(1), 0, -1) . 'all' }}"
                   class="text-muted"
-                >{{ $clusters->total() }}</a>
+                >{{ $latestClusters->total() }}</a>
               </small>
             </div>
           </div>

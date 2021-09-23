@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddPreviousIdToCustomersTable extends Migration
@@ -14,8 +15,11 @@ class AddPreviousIdToCustomersTable extends Migration
   public function up()
   {
     Schema::table('customers', function (Blueprint $table) {
-      $table->unsignedBigInteger('previous_id')->after('id');
+      $table->unsignedBigInteger('previous_id')->after('id')->nullable();
     });
+
+    //hydrate newly created field
+    DB::statement('UPDATE `customers` SET `previous_id`=`id`');
   }
 
   /**

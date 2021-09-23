@@ -4,24 +4,11 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-6 col-lg-9">
+        <div class="col-xl-7 col-lg-10">
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Transaction List</div>
-            </div>
+            <x-card-header>Transaction List</x-card-header>
             <div class="card-body pb-2">
-              @if (session('status'))
-                <div class="alert alert-success alert-dismissible fade show">
-                  {!! session('status') !!}
-                  <button
-                    type="button"
-                    class="close"
-                    data-dismiss="alert"
-                  >
-                    <span>&times;</span>
-                  </button>
-                </div>
-              @endif
+              <x-alert></x-alert>
 
               <form
                 id="filter"
@@ -44,9 +31,7 @@
                       type="submit"
                       class="btn btn-warning"
                       form="filter"
-                    ><i
-                        class="cil-search align-text-top"
-                      ></i></button>
+                    ><i class="cil-search align-text-top"></i></button>
                   </div>
                 </div>
               </div>

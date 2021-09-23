@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApprovalController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\UsersController;
@@ -17,7 +18,7 @@ Auth::routes();
 Route::view('/', 'welcome');
 
 Route::group(['middleware' => ['get.menu', 'auth']], function () {
-  Route::view('home',  'dashboard.homepage');
+  Route::view('home', 'dashboard.homepage')->name('home');
 
   Route::group(['middleware' => ['role:operator']], function () {
     Route::resource('clusters', ClusterController::class);
@@ -26,6 +27,9 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   });
   
   Route::group(['middleware' => ['role:supervisor']], function () {
+    Route::get('approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
+    Route::post('approvals/{type}/{id}', [ApprovalController::class, 'approve'])->name('approvals.approve');
+    Route::get('approvals', [ApprovalController::class, 'index'])->name('approvals.index');
     Route::post('transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
   

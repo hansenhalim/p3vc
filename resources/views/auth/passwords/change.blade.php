@@ -1,26 +1,21 @@
 @extends('dashboard.base')
 
 @section('content')
-
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-8">
+          <x-return-button href="{{ route('home') }}"></x-return-button>
           <div class="card">
-            <div class="card-header">
-              <div class="h4 m-0 my-1 text-nowrap">Change Password</div>
-            </div>
+            <x-card-header>Change Password</x-card-header>
             <div class="card-body">
-              @if (session('status'))
-                <div class="alert alert-success">
-                  {!! session('status') !!}
-                </div>
-              @endif
+              <x-alert></x-alert>
               <form
                 action="{{ route('passwords.update') }}"
                 method="post"
               >
                 @csrf
+                <input class="d-none" type="email" name="email">
                 <div class="form-group row">
                   <label class="col-md-4 col-form-label">Current Password</label>
                   <div class="col">
@@ -60,10 +55,12 @@
                     >
                   </div>
                 </div>
-                <div class="d-flex justify-content-end"><button
+                <div class="d-flex justify-content-end">
+                  <button
                     type="submit"
                     class="btn btn-warning"
-                  ><i class="cil-save align-text-top"></i>&nbsp;Save</button></div>
+                  ><i class="cil-save align-text-top"></i> Save</button>
+                </div>
               </form>
             </div>
           </div>

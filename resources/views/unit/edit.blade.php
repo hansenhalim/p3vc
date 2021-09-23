@@ -7,13 +7,14 @@
         <div class="col-xl-5 col-md-7">
           <x-return-button href="{{ route('units.index') }}"></x-return-button>
           <div class="card">
-            <x-card-header>Create Unit</x-card-header>
+            <x-card-header>Edit Unit</x-card-header>
             <form
               class="form-horizontal"
-              action="{{ route('units.store') }}"
+              action="{{ route('units.update', $unit) }}"
               method="post"
             >
               @csrf
+              @method('PUT')
               <div class="card-body">
                 @if (session('status'))
                   <div
@@ -31,7 +32,7 @@
                       class="form-control border-0 @error('name') is-invalid @enderror"
                       type="text"
                       name="name"
-                      value="{{ old('name') }}"
+                      value="{{ old('name', $unit->name) }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('name')
@@ -47,7 +48,7 @@
                       class="form-control border-0 @error('idlink') is-invalid @enderror"
                       type="text"
                       name="idlink"
-                      value="{{ old('idlink') }}"
+                      value="{{ old('idlink', $unit->idlink) }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('idlink')
@@ -64,7 +65,7 @@
                       type="number"
                       step="0.10"
                       name="area_sqm"
-                      value="{{ old('area_sqm') }}"
+                      value="{{ old('area_sqm', $unit->area_sqm) }}"
                       style="background-color: rgba(0,0,21,.05);"
                     >
                     @error('area_sqm')
@@ -80,14 +81,10 @@
                       name="cluster_id"
                       class="custom-select @error('cluster_id') is-invalid @enderror"
                     >
-                      <option
-                        value=""
-                        hidden
-                      >- PLEASE SELECT -</option>
                       @foreach ($clusters as $cluster)
                         <option
                           value="{{ $cluster->previous_id }}"
-                          @if (old('cluster_id') == $cluster->previous_id) selected @endif
+                          @if (old('cluster_id', $unit->cluster_id) == $cluster->previous_id) selected @endif
                         >
                           {{ $cluster->name }} ({{ number_format($cluster->cost) }}/{{ $cluster->per }})
                         </option>
@@ -106,18 +103,14 @@
                       name="customer_id"
                       class="custom-select @error('customer_id') is-invalid @enderror"
                     >
-                      <option
-                        value=""
-                        hidden
-                      >- PLEASE SELECT -</option>
                       @foreach ($customers as $customer)
                         <option
                           value="{{ $customer->previous_id }}"
-                          @if (old('customer_id') == $customer->previous_id) selected @endif
+                          @if (old('customer_id', $unit->customer_id) == $customer->previous_id) selected @endif
                         >
                           {{ $customer->name }} (
-                          @foreach ($customer->units as $unit)
-                            {{ $unit->name }} @if (!$loop->last)|@endif
+                          @foreach ($customer->units as $item)
+                            {{ $item->name }} @if (!$loop->last)|@endif
                           @endforeach)
                         </option>
                       @endforeach
@@ -132,7 +125,7 @@
                   <button
                     type="submit"
                     class="btn btn-warning"
-                  ><i class="cil-paper-plane align-text-top"></i>&nbsp;Submit</button>
+                  ><i class="cil-save align-text-top"></i> Save</button>
                 </div>
 
               </div>

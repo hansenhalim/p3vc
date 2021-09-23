@@ -4,22 +4,33 @@ namespace App\Http\Controllers;
 
 use App\Models\Cluster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ClusterController extends Controller
 {
   public function index(Request $request)
   {
     $search = $request->search;
-    $sortBy = $request->sortBy ?? 'id';
+    $sortBy = $request->sortBy ?? 'previous_id';
     $sortDirection = $request->sortDirection ?? 'asc';
     $perPage = $request->page == 'all' ? 2000 : 10;
 
-    $clusters = Cluster::with(['prices'])->withCount(['units'])
+    $latestClusters = Cluster::query()
       ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
+      ->select('previous_id', DB::raw('MAX(id) AS id, MAX(name) AS name'))
+      ->groupBy('previous_id')
       ->paginate($perPage);
 
-    return view('cluster.list', compact('clusters'));
+    $clusters = Cluster::query()
+      ->withCount('units')
+      ->whereIn('id', $latestClusters->pluck('id'))
+      ->orderBy($sortBy, $sortDirection)
+      ->get();
+
+    // echo json_encode($latestClusters); exit;
+
+    return view('cluster.list', compact('latestClusters', 'clusters'));
   }
 
   /**
@@ -29,7 +40,7 @@ class ClusterController extends Controller
    */
   public function create()
   {
-    //
+    return view('cluster.create');
   }
 
   /**
@@ -38,9 +49,30 @@ class ClusterController extends Controller
    * @param  \Illuminate\Http\Request  $request
    * @return \Illuminate\Http\Response
    */
-  public function store(Request $request)
+  public function store(Request $request, Cluster $cluster)
   {
-    //
+    $request->validate([
+      'name' => 'required',
+      'cost' => 'required|integer',
+      'per' => 'required|in:sqm,mth'
+    ], [
+      'cost.integer' => 'Harga tidak valid'
+    ]);
+
+    $cluster->name = $request->name;
+    $cluster->cost = $request->cost;
+    $cluster->per = $request->per;
+    $cluster->updated_by = $request->user()->id;
+
+    $cluster->save();
+
+    $cluster->previous_id = $cluster->id;
+
+    $cluster->save();
+
+    $request->session()->flash('status', 'Successfully created ' . $cluster->name . '. Please wait for appoval.');
+
+    return redirect()->route('clusters.index');
   }
 
   /**
@@ -49,9 +81,9 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function show($id)
+  public function show(Cluster $cluster)
   {
-    //
+    return view('cluster.show', compact('cluster'));
   }
 
   /**
@@ -60,9 +92,9 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function edit($id)
+  public function edit(Cluster $cluster)
   {
-    //
+    return view('cluster.edit', compact('cluster'));
   }
 
   /**
@@ -72,9 +104,30 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, Cluster $cluster)
   {
-    //
+    $request->validate([
+      'name' => 'required',
+      'cost' => 'required|integer',
+      'per' => 'required|in:sqm,mth'
+    ], [
+      'cost.integer' => 'Harga tidak valid'
+    ]);
+
+    $cluster->name = $request->name;
+    $cluster->cost = $request->cost;
+    $cluster->per = $request->per;
+
+    if ($cluster->isClean()) return redirect()->route('clusters.index');
+
+    $cluster->approved_at = null;
+    $cluster->approved_by = null;
+    $cluster->updated_by = $request->user()->id;
+    $cluster->replicate()->save();
+
+    $request->session()->flash('status', 'Successfully updated ' . $cluster->name . '. Please wait for appoval.');
+
+    return redirect()->route('clusters.index');
   }
 
   /**
@@ -83,8 +136,17 @@ class ClusterController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request, Cluster $cluster)
   {
-    //
+    $cluster->approved_at = null;
+    $cluster->approved_by = null;
+    $cluster->updated_by = $request->user()->id;
+    $cluster = $cluster->replicate();
+    $cluster->save();
+    $cluster->delete();
+
+    $request->session()->flash('status', 'Successfully deleted ' . $cluster->name . '. Please wait for appoval.');
+
+    return redirect()->route('clusters.index');
   }
 }
