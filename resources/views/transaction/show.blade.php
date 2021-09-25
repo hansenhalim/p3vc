@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-8">
-          <x-return-button href="{{ route('transactions.index') }}"></x-return-button>
+          <x-return-button></x-return-button>
           <div class="card">
             <x-card-header>Transaction Detail</x-card-header>
             <div class="card-body">

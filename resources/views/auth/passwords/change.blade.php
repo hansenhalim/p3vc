@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-8">
-          <x-return-button href="{{ route('home') }}"></x-return-button>
+          <x-return-button></x-return-button>
           <div class="card">
             <x-card-header>Change Password</x-card-header>
             <div class="card-body">

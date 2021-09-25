@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cluster;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +24,14 @@ class ClusterController extends Controller
       ->paginate($perPage);
 
     $clusters = Cluster::query()
-      ->withCount('units')
+      ->withCount(['units' => function ($q) use ($latestClusters) {
+        $latestUnits = Unit::query()
+          ->select('previous_id', DB::raw('MAX(id) AS id'))
+          ->groupBy('previous_id')
+          ->whereIn('cluster_id', $latestClusters->pluck('id'))
+          ->get();
+        $q->whereIn('id', $latestUnits->pluck('id'));
+      }])
       ->whereIn('id', $latestClusters->pluck('id'))
       ->orderBy($sortBy, $sortDirection)
       ->get();

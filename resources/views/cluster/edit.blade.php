@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-4 col-md-6">
-          <x-return-button href="{{ route('clusters.index') }}"></x-return-button>
+          <x-return-button></x-return-button>
           <div class="card">
             <x-card-header>Edit Cluster</x-card-header>
             <form

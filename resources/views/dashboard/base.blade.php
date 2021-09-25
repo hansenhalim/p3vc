@@ -113,6 +113,11 @@
       box-shadow: 0 0 0 0.2rem rgb(242 176 56 / 25%);
     }
 
+    .c-switch-input:focus~.c-switch-slider {
+      border-color: #ffdb9c;
+      box-shadow: 0 0 0 0.2rem rgb(224 164 35 / 50%);
+    }
+
     .c-sidebar .c-sidebar-nav-dropdown-toggle:hover,
     .c-sidebar .c-sidebar-nav-link:hover {
       background: #f9b115;
