@@ -28,14 +28,7 @@ class CustomerController extends Controller
       ->paginate($perPage);
 
     $customers = Customer::query()
-      ->withCount(['units' => function ($q) use ($latestCustomers) {
-        $latestUnits = Unit::query()
-          ->select('previous_id', DB::raw('MAX(id) AS id'))
-          ->groupBy('previous_id')
-          ->whereIn('customer_id', $latestCustomers->pluck('id'))
-          ->get();
-        $q->whereIn('id', $latestUnits->pluck('id'));
-      }])
+      ->withCount('units')
       ->whereIn('id', $latestCustomers->pluck('id'))
       ->orderBy($sortBy, $sortDirection)
       ->get();

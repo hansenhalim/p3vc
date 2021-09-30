@@ -24,14 +24,7 @@ class ClusterController extends Controller
       ->paginate($perPage);
 
     $clusters = Cluster::query()
-      ->withCount(['units' => function ($q) use ($latestClusters) {
-        $latestUnits = Unit::query()
-          ->select('previous_id', DB::raw('MAX(id) AS id'))
-          ->groupBy('previous_id')
-          ->whereIn('cluster_id', $latestClusters->pluck('id'))
-          ->get();
-        $q->whereIn('id', $latestUnits->pluck('id'));
-      }])
+      ->withCount('units')
       ->whereIn('id', $latestClusters->pluck('id'))
       ->orderBy($sortBy, $sortDirection)
       ->get();

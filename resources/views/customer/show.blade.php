@@ -159,7 +159,7 @@
                         <th>{{ $unit->name }}</th>
                         <th>{{ $customer->name }}</th>
                         <th colspan="2">{{ $unit->cluster->name }}</th>
-                        <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                        <td class="text-right">{{ $unit->area_sqm }}</td>
                         <td class="text-right">
                           @if ($unit->debt == 0)
                             {{ number_format($unit->debt) }}

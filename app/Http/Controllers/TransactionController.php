@@ -50,7 +50,7 @@ class TransactionController extends Controller
     foreach ($request->units as $item) {
       if (!isset($item['months'])) continue;
 
-      $previousUnit = Unit::with(['transactions' => function ($query) {
+      $previousUnit = Unit::withTrashed()->with(['transactions' => function ($query) {
         $query->withoutGlobalScope(ApprovedScope::class);
       }])->findOrFail($item['unit_previous_id']);
 
@@ -105,7 +105,10 @@ class TransactionController extends Controller
       ->with(['payments', 'unit.transactions.payments'])
       ->findOrFail($id);
 
-    $unit = $transaction->unit;
+    $unit = $transaction->unit()
+      ->with('transactions.payments:id')
+      ->withTrashed()
+      ->first();
 
     $unit['balance'] = 0;
     $unit['debt'] = 0;
