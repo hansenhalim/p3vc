@@ -134,7 +134,7 @@ class CustomerController extends Controller
 
         $months->push([
           'period' => $period,
-          'credit' => $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1),
+          'credit' => $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm),
           'fine' => 2000 * max($diffInMonthsReal - $i - 1, 0)
         ]);
       }

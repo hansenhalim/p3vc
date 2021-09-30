@@ -8,7 +8,6 @@ use App\Scopes\ApprovedScope;
 use Barryvdh\DomPDF\Facade as DomPDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use NumberFormatter;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use stdClass;
@@ -31,15 +30,12 @@ class TransactionController extends Controller
       ->when(
         $search,
         function ($query, $search) {
-          return $query->whereHas('unit', function ($query) use ($search) {
-            $query->where('name', $search);
-          });
+          return $query->where('unit_name', $search);
         },
         function ($query) {
           return $query->whereBetween('created_at', [now()->subMonth(), now()]);
         }
       )
-      ->with(['unit:id,name,customer_id'])
       ->withSum('payments', 'payment_transaction.amount')
       ->latest('id')
       ->paginate($perPage);
@@ -49,26 +45,21 @@ class TransactionController extends Controller
     return view('transaction.list', compact('transactions'));
   }
 
-  public function create()
-  {
-    //
-  }
-
   public function store(Request $request)
   {
-    // echo json_encode($request->all()); exit;
-
     foreach ($request->units as $item) {
       if (!isset($item['months'])) continue;
 
-      $unit = Unit::with(['transactions' => function ($query) {
+      $previousUnit = Unit::with(['transactions' => function ($query) {
         $query->withoutGlobalScope(ApprovedScope::class);
-      }])->findOrFail($item['unit_id']);
+      }])->findOrFail($item['unit_previous_id']);
+
+      $unit = Unit::findOrFail($item['unit_id']);
+
+      $periods = $previousUnit->transactions->pluck('period')->toArray();
 
       foreach ($item['months'] as $month) {
-        // echo json_encode($unit->transactions->pluck('period')->toArray()); exit;
-
-        if (in_array(Carbon::parse($month['period']), $unit->transactions->pluck('period')->toArray()) && $month['period'] != '1970-01-01') continue;
+        if (in_array(Carbon::parse($month['period']), $periods) && $month['period'] != '1970-01-01') continue;
 
         $balance = 0;
 
@@ -79,9 +70,16 @@ class TransactionController extends Controller
 
         if ($balance < 0) continue;
 
-        $transaction = $unit->transactions()->create([
+        $transaction = $previousUnit->transactions()->create([
+          'customer_id' => $unit->customer_id,
+          'unit_name' => $unit->name,
+          'customer_name' => $unit->customer->name,
+          'cluster_name' => $unit->cluster->name,
+          'area_sqm' => $unit->area_sqm,
+          'cluster_cost' => $unit->cluster->cost,
+          'cluster_per' => $unit->cluster->per,
           'period' => $month['period'],
-          'updated_by' => Auth::id()
+          'updated_by' => $request->user()->id
         ]);
 
         foreach ($month['payments'] as $payment) {
@@ -93,7 +91,7 @@ class TransactionController extends Controller
       }
     }
 
-    // echo json_encode($request->all()); exit();
+    // echo json_encode($transaction); exit();
 
     $request->session()->flash('status', 'Successfully created transactions. Thankyou.');
 
@@ -104,7 +102,7 @@ class TransactionController extends Controller
   {
     $transaction = Transaction::query()
       ->withoutGlobalScope(ApprovedScope::class)
-      ->with(['unit.customer', 'payments', 'unit.transactions.payments'])
+      ->with(['payments', 'unit.transactions.payments'])
       ->findOrFail($id);
 
     $unit = $transaction->unit;
@@ -131,24 +129,9 @@ class TransactionController extends Controller
       }
     }
 
-    // echo json_encode($unit); exit();
+    // echo json_encode($transaction); exit();
 
     return view('transaction.show', compact('transaction', 'unit'));
-  }
-
-  public function edit($id)
-  {
-    //
-  }
-
-  public function update(Request $request, $id)
-  {
-    //
-  }
-
-  public function destroy($id)
-  {
-    //
   }
 
   public function printReport(Request $request)
@@ -242,7 +225,7 @@ class TransactionController extends Controller
           ->whereNull('approved_by')
           ->whereNull('approved_at')
           ->update([
-            'approved_by' => Auth::id(),
+            'approved_by' => $request->user()->id,
             'approved_at' => now()
           ]);
         $request->session()->flash('status', $updateStatus ? 'Successfully approved transactions. Thankyou.' : 'Transaction approval failed. Sorry.');

@@ -64,8 +64,8 @@
                 <tbody>
                   @forelse ($transactions as $transaction)
                     <tr>
-                      <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
-                      <td class="align-middle">{{ $transaction->unit->name }}</td>
+                      <th class="align-middle">#{{ $transaction->customer_id }}</th>
+                      <td class="align-middle">{{ $transaction->unit_name }}</td>
                       <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
                       <td class="align-middle carbon">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge badge-dark">None</span>' !!}</td>
                       <td class="align-middle carbon d-none">{!! $transaction->approved_at ? $transaction->approved_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') : '<span class="badge badge-dark">None</span>' !!}</td>

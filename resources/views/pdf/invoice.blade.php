@@ -190,19 +190,19 @@
     <tr>
       <td class="space">&nbsp;</td>
       <th>Invoice to:</th>
-      <td colspan="2">{{ $transaction->unit->customer->name }}</td>
+      <td colspan="2">{{ $transaction->customer_name }}</td>
       <td colspan="2">{{ $transaction->invoiceNumber }}</td>
     </tr>
     <tr>
       <td class="space">&nbsp;</td>
       <th></th>
-      <td colspan="2">{{ $transaction->unit->name }}</td>
+      <td colspan="2">{{ $transaction->unit_name }}</td>
       <td colspan="2">{{ $transaction->created_at->setTimezone('Asia/Jakarta')->format('d-m-Y') }}</td>
     </tr>
     <tr>
       <td class="space">&nbsp;</td>
       <th></th>
-      <td colspan="2">{{ $transaction->unit->area_sqm }} m&#178;</td>
+      <td colspan="2">{{ $transaction->area_sqm }} m&#178;</td>
       <td colspan="2">
         {{ $transaction->period->formatLocalized('%B %Y') === 'Januari 1970' ? '' : $transaction->period->formatLocalized('%B %Y') }}
       </td>

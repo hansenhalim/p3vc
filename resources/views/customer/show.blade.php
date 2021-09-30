@@ -172,11 +172,16 @@
                         </td>
                         <td class="text-right">{{ number_format($unit->balance) }}</td>
                         <td class="text-right">
-                          {{ number_format($unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1)) }}
+                          {{ number_format($unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm)) }}
                         </td>
                         <input
                           type="hidden"
                           name="units[{{ $loop->index }}][unit_id]"
+                          value="{{ $unit->id }}"
+                        >
+                        <input
+                          type="hidden"
+                          name="units[{{ $loop->index }}][unit_previous_id]"
                           value="{{ $unit->previous_id }}"
                         >
                       </tr>
