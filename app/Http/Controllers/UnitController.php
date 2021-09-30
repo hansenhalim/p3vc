@@ -236,7 +236,7 @@ class UnitController extends Controller
     $unit['credit'] = 0;
 
     if ($unit->cluster) {
-      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'sqm' ?: $unit->area_sqm);
+      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm);
     }
 
     $unit['balance'] = 0;
@@ -319,7 +319,7 @@ class UnitController extends Controller
       $unit['credit'] = 0;
 
       if ($unit->cluster) {
-        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'sqm' ?: $unit->area_sqm);
+        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm);
       }
 
       $unit['balance'] = 0;
