@@ -3,7 +3,7 @@
 @section('content')
   <div class="container-fluid">
     <div class="fade-in">
-      <x-return-button href="{{ route('approvals.index') }}"></x-return-button>
+      <x-return-button></x-return-button>
       <div class="row">
         <div class="col-xl-8">
           <div class="card">

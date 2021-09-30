@@ -32,8 +32,7 @@ if(!function_exists('renderDropdown')){
 
 
         <div class="c-sidebar-brand">
-            <img class="c-sidebar-brand-full" src="{{ url('/assets/brand/coreui-base-white.svg') }}" width="118" height="46" alt="CoreUI Logo">
-            <img class="c-sidebar-brand-minimized" src="{{ url('assets/brand/coreui-signet-white.svg') }}" width="118" height="46" alt="CoreUI Logo">
+            <img class="c-sidebar-brand-full" src="{{ url('/assets/brand/p3vc-base-white.svg') }}" width="90" height="35" alt="P3VC Logo">
         </div>
         <ul class="c-sidebar-nav">
         @if(isset($appMenus['sidebar menu']))

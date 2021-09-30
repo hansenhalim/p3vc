@@ -3,7 +3,7 @@
 @section('content')
   <div class="container-fluid">
     <div class="fade-in">
-      <x-return-button href="{{ route('units.index') }}"></x-return-button>
+      <x-return-button></x-return-button>
       <div class="row">
         <div class="col-xl-5 col-md-7">
           <div class="card">

@@ -6,7 +6,21 @@
       <div class="row">
         <div class="col-xl-7 col-lg-10">
           <div class="card">
-            <x-card-header>Transaction List</x-card-header>
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <div class="h4 m-0 text-nowrap">Transaction List</div>
+              <div class="d-flex align-items-center">
+                <label class="c-switch c-switch-pill c-switch-warning m-0">
+                  <input
+                    id="tm-chck"
+                    type="checkbox"
+                    class="c-switch-input"
+                    onchange="timeSwitchToggled()"
+                    checked
+                  >
+                  <span class="c-switch-slider"></span>
+                </label>
+              </div>
+            </div>
             <div class="card-body pb-2">
               <x-alert></x-alert>
 
@@ -50,10 +64,11 @@
                 <tbody>
                   @forelse ($transactions as $transaction)
                     <tr>
-                      <th class="align-middle">#{{ $transaction->unit->customer_id }}</th>
-                      <td class="align-middle">{{ $transaction->unit->name }}</td>
+                      <th class="align-middle">#{{ $transaction->customer_id }}</th>
+                      <td class="align-middle">{{ $transaction->unit_name }}</td>
                       <td class="align-middle">{{ $transaction->period->formatLocalized('%b %Y') }}</td>
-                      <td class="align-middle">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge badge-dark">None</span>' !!}</td>
+                      <td class="align-middle carbon">{!! $transaction->approved_at ? $transaction->approved_at->diffForHumans() : '<span class="badge badge-dark">None</span>' !!}</td>
+                      <td class="align-middle carbon d-none">{!! $transaction->approved_at ? $transaction->approved_at->setTimezone('Asia/Jakarta')->format('d/m/y H:i') : '<span class="badge badge-dark">None</span>' !!}</td>
                       <td class="align-middle text-right">{{ number_format($transaction->payments_sum_payment_transactionamount / 2) }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
@@ -111,5 +126,22 @@
 @endsection
 
 @section('javascript')
+
+  <script>
+    timeSwitchState = JSON.parse(localStorage.lastTimeSwitchState || true)
+    document.getElementById('tm-chck').checked = timeSwitchState
+
+    function toggleView() {
+      for (carbon of document.getElementsByClassName('carbon')) carbon.classList.toggle('d-none')
+    }
+
+    function timeSwitchToggled() {
+      toggleView()
+      timeSwitchState = !timeSwitchState
+      localStorage.lastTimeSwitchState = timeSwitchState
+    }
+
+    if (!timeSwitchState) toggleView()
+  </script>
 
 @endsection

@@ -105,7 +105,7 @@
                       <td class="text-right">{{ number_format($unit->debt) }}</td>
                       <td class="text-right">{{ number_format($unit->balance) }}</td>
                       <td class="text-right">
-                        {{ number_format($unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1)) }}
+                        {{ number_format($unit->cluster->cost * ($unit->cluster->per == 'mth' ?: $unit->area_sqm)) }}
                       </td>
                       <input
                         type="hidden"

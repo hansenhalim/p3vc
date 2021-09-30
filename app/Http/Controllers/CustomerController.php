@@ -28,7 +28,14 @@ class CustomerController extends Controller
       ->paginate($perPage);
 
     $customers = Customer::query()
-      ->withCount('units')
+      ->withCount(['units' => function ($q) use ($latestCustomers) {
+        $latestUnits = Unit::query()
+          ->select('previous_id', DB::raw('MAX(id) AS id'))
+          ->groupBy('previous_id')
+          ->whereIn('customer_id', $latestCustomers->pluck('id'))
+          ->get();
+        $q->whereIn('id', $latestUnits->pluck('id'));
+      }])
       ->whereIn('id', $latestCustomers->pluck('id'))
       ->orderBy($sortBy, $sortDirection)
       ->get();
@@ -127,7 +134,7 @@ class CustomerController extends Controller
 
         $months->push([
           'period' => $period,
-          'credit' => $unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1),
+          'credit' => $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm),
           'fine' => 2000 * max($diffInMonthsReal - $i - 1, 0)
         ]);
       }

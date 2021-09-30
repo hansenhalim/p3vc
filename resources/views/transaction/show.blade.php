@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-8">
-          <x-return-button href="{{ route('transactions.index') }}"></x-return-button>
+          <x-return-button></x-return-button>
           <div class="card">
             <x-card-header>Transaction Detail</x-card-header>
             <div class="card-body">
@@ -24,13 +24,13 @@
 
                 <tbody>
                   <tr>
-                    <th class="text-center">#1</th>
-                    <td>{{ $unit->name }}</td>
-                    <td>{{ $unit->customer->name }}</td>
-                    <td>{{ $unit->cluster->name }}</td>
-                    <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                    <th class="text-center">#{{ $transaction->customer_id }}</th>
+                    <td>{{ $transaction->unit_name }}</td>
+                    <td>{{ $transaction->customer_name }}</td>
+                    <td>{{ $transaction->cluster_name }}</td>
+                    <td class="text-right">{{ number_format($transaction->area_sqm) }}</td>
                     <td class="text-right">{{ number_format($unit->balance) }}</td>
-                    <td class="text-right">{{ number_format($unit->cluster->cost * ($unit->cluster->per == 'sqm' ? $unit->area_sqm : 1)) }}</td>
+                    <td class="text-right">{{ number_format($transaction->cluster_cost * ($transaction->cluster_per == 'mth' ?: $transaction->area_sqm)) }}</td>
                   </tr>
                 </tbody>
 

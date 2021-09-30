@@ -5,7 +5,7 @@
     <div class="fade-in">
       <div class="row">
         <div class="col-xl-5 col-md-7">
-          <x-return-button href="{{ route('units.index') }}"></x-return-button>
+          <x-return-button></x-return-button>
           <div class="card">
             <x-card-header>Create Unit</x-card-header>
             <form
