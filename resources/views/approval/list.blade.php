@@ -15,7 +15,7 @@
                     <th>Type</th>
                     <th>Operation</th>
                     <th>Name</th>
-                    <th>Created</th>
+                    <th>Modified</th>
                     <th>Requester</th>
                     <th></th>
                   </tr>
@@ -28,7 +28,7 @@
                         <span class="badge @switch($approval->operation) @case('INS') badge-success @break @case('MOD') badge-info @break @default badge-danger @endswitch">{{ $approval->operation }}</span>
                       </td>
                       <td class="align-middle">{{ $approval->name }}</td>
-                      <td class="align-middle">{{ $approval->created_at->diffForHumans() }}</td>
+                      <td class="align-middle">{{ $approval->updated_at->diffForHumans() }}</td>
                       <td class="align-middle">{{ $approval->user->name }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
