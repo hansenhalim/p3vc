@@ -23,7 +23,7 @@ class CustomerController extends Controller
         ->orWhere('phone_number', $search)
         ->orWhere('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
-      ->select('previous_id', DB::raw('MAX(id) AS id, MAX(name) AS name'))
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->paginate($perPage);
 
