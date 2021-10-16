@@ -137,47 +137,6 @@ class TransactionController extends Controller
     return view('transaction.show', compact('transaction', 'unit'));
   }
 
-  public function printReport(Request $request)
-  {
-    $date = new stdClass;
-    $date->from = Carbon::parse($request->dateFrom);
-    $date->to = Carbon::parse($request->dateTo)->addDay()->subSecond();
-
-    $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id'])
-      ->whereBetween('created_at', [$date->from, $date->to])
-      ->get();
-
-    $allTransactions = Transaction::getTotals($date);
-
-    $paymentDetails = [];
-    $paymentDetailsSums = [];
-
-    foreach ($transactions as $transaction) {
-      $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
-
-      foreach ($this->payment_ids as $key => $id) {
-        $paymentDetails[$key] = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
-        $paymentDetailsSums[$key] = (int) ($allTransactions->firstWhere('id', $id)->total ?? 0);
-      }
-
-      $transaction->paymentDetails = $paymentDetails;
-    }
-
-    $transactions->paymentDetailsSums = $paymentDetailsSums;
-    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum() / 2;
-
-    // echo json_encode($transactions); exit();
-
-    $pdf = DomPDF::loadView('pdf.report', compact('transactions'))
-      ->setPaper('a4', 'landscape');
-
-    $dateFrom = $date->from->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
-    $dateTo = $date->to->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
-
-    return $pdf->download('Report Transaksi_' . $dateFrom . '_' . $dateTo . '.pdf');
-  }
-
   public function print($id)
   {
     $transaction = Transaction::with(['unit' => function ($query) {
@@ -257,7 +216,12 @@ class TransactionController extends Controller
     $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
 
     $transactions = Transaction::query()
-      ->with(['payments:id', 'unit:id,name,customer_id'])
+      ->with([
+        'payments:id',
+        'unit' => function ($query) {
+          $query->withTrashed();
+        }
+      ])
       ->whereBetween('created_at', [$date->from, $date->to])
       ->paginate($perPage);
 
@@ -283,6 +247,52 @@ class TransactionController extends Controller
     // echo json_encode($transactions); exit();
 
     return view('transaction.report', compact('transactions'));
+  }
+
+  public function printReport(Request $request)
+  {
+    $date = new stdClass;
+    $date->from = Carbon::parse($request->dateFrom, 'Asia/Jakarta')->setTimezone('UTC');
+    $date->to = Carbon::parse($request->dateTo, 'Asia/Jakarta')->setTimezone('UTC')->addDay()->subSecond();
+
+    $transactions = Transaction::query()
+      ->with([
+        'payments:id',
+        'unit' => function ($query) {
+          $query->withTrashed();
+        }
+      ])
+      ->whereBetween('created_at', [$date->from, $date->to])
+      ->get();
+
+    $allTransactions = Transaction::getTotals($date);
+
+    $paymentDetails = [];
+    $paymentDetailsSums = [];
+
+    foreach ($transactions as $transaction) {
+      $transaction->amount = $transaction->payments->whereIn('id', $this->credits)->sum('pivot.amount');
+
+      foreach ($this->payment_ids as $key => $id) {
+        $paymentDetails[$key] = collect($transaction->payments->firstWhere('id', $id))->whenEmpty(fn () => 0, fn ($payment) => $payment['pivot']['amount']);
+        $paymentDetailsSums[$key] = (int) ($allTransactions->firstWhere('id', $id)->total ?? 0);
+      }
+
+      $transaction->paymentDetails = $paymentDetails;
+    }
+
+    $transactions->paymentDetailsSums = $paymentDetailsSums;
+    $transactions->paymentDetailsSumsSum = collect($paymentDetailsSums)->sum() / 2;
+
+    // echo json_encode($transactions); exit();
+
+    $pdf = DomPDF::loadView('pdf.report', compact('transactions'))
+      ->setPaper('a4', 'landscape');
+
+    $dateFrom = $date->from->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
+    $dateTo = $date->to->setTimezone('Asia/Jakarta')->formatLocalized('%d %B %Y');
+
+    return $pdf->download('Report Transaksi_' . $dateFrom . '_' . $dateTo . '.pdf');
   }
 
   private function numberToRomanRepresentation($number)
