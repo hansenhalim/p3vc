@@ -180,7 +180,9 @@ class TransactionController extends Controller
 
   public function print($id)
   {
-    $transaction = Transaction::findOrFail($id);
+    $transaction = Transaction::with(['unit' => function ($query) {
+      $query->withTrashed();
+    }])->findOrFail($id);
     $transaction->created_at->setTimezone('Asia/Jakarta');
     $payments = $transaction->payments;
 
