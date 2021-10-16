@@ -184,7 +184,7 @@ class ApprovalController extends Controller
       ->find($id);
 
     if ($request->approval === 'true') {
-      # if approved fill only approval
+      # if approved then fill only approval
       if ($approval->approved_at || $approval->approved_by) {
         $request->session()->flash('status', 'Failed to approve ' . $approval->name  . '. Sorry.');
         return redirect()->route('approvals.index');
@@ -214,6 +214,17 @@ class ApprovalController extends Controller
           ]);
 
         if (isset($approval->original)) $approval->original->units()->update(['cluster_id' => $id]);
+      }
+
+      #if unit then delete except this unit
+      if ($type == 'unit') {
+        $approval->original = $approval->latest()
+          ->firstWhere([
+            ['previous_id', '=', $approval->previous_id],
+            ['id', '<>', $approval->id]
+          ]);
+
+        if (isset($approval->original)) $approval->original->delete();
       }
 
       # if deleted then also delete all same prev_id

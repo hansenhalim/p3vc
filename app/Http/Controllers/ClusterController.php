@@ -19,19 +19,12 @@ class ClusterController extends Controller
     $latestClusters = Cluster::query()
       ->when($search, fn ($query) => $query->where('name', 'like', '%' . $search . '%'))
       ->orderBy($sortBy, $sortDirection)
-      ->select('previous_id', DB::raw('MAX(id) AS id, MAX(name) AS name'))
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
       ->groupBy('previous_id')
       ->paginate($perPage);
 
     $clusters = Cluster::query()
-      ->withCount(['units' => function ($q) use ($latestClusters) {
-        $latestUnits = Unit::query()
-          ->select('previous_id', DB::raw('MAX(id) AS id'))
-          ->groupBy('previous_id')
-          ->whereIn('cluster_id', $latestClusters->pluck('id'))
-          ->get();
-        $q->whereIn('id', $latestUnits->pluck('id'));
-      }])
+      ->withCount('units')
       ->whereIn('id', $latestClusters->pluck('id'))
       ->orderBy($sortBy, $sortDirection)
       ->get();
@@ -91,7 +84,48 @@ class ClusterController extends Controller
    */
   public function show(Cluster $cluster)
   {
-    return view('cluster.show', compact('cluster'));
+    $latestUnits = $cluster->units()
+      ->select('previous_id', DB::raw('MAX(id) AS id'))
+      ->groupBy('previous_id')
+      ->paginate(10);
+
+    $units = Unit::query()
+      ->with(['customer', 'transactions.payments', 'transactions' => function ($query) {
+        $query->withoutGlobalScopes([ApprovedScope::class]);
+      }])
+      ->whereIn('id', $latestUnits->pluck('id'))
+      ->oldest('previous_id')
+      ->get();
+
+    foreach ($units as $unit) {
+      $transactions = $unit->transactions;
+
+      $unit['balance'] = 0;
+      $unit['debt'] = 0;
+
+      foreach ($unit->transactions as $transaction) {
+        foreach ($transaction->payments as $payment) {
+          switch ($payment->id) {
+            case 11:
+              $unit['debt'] -= $payment->pivot->amount;
+              break;
+            case 8:
+              $unit['debt'] += $payment->pivot->amount;
+              break;
+            case 3:
+              $unit['balance'] += $payment->pivot->amount;
+              break;
+            case 10:
+              $unit['balance'] -= $payment->pivot->amount;
+              break;
+          }
+        }
+      }
+    }
+
+    // echo json_encode($units); exit;
+
+    return view('cluster.show', compact('latestUnits', 'cluster', 'units'));
   }
 
   /**

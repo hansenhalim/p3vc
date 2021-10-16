@@ -159,7 +159,7 @@
                         <th>{{ $unit->name }}</th>
                         <th>{{ $customer->name }}</th>
                         <th colspan="2">{{ $unit->cluster->name }}</th>
-                        <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                        <td class="text-right">{{ $unit->area_sqm }}</td>
                         <td class="text-right">
                           @if ($unit->debt == 0)
                             {{ number_format($unit->debt) }}
@@ -260,16 +260,16 @@
                         {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->previous_id.$month['period']->format('my') }}">
                             <th colspan="9" class="text-right"><i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;OTHER</th>
                             <th class="text-right">{{ number_format('250000') }}</th>
-                            <input 
+                            <input
                               type="hidden"
-                              class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][payment_id]" 
+                              class="mth-hdn"
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][payment_id]"
                               value="4"
                             >
-                            <input 
+                            <input
                               type="hidden"
-                              class="mth-hdn" 
-                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][amount]" 
+                              class="mth-hdn"
+                              name="units[{{ $loop->parent->index }}][months][{{ $loop->index }}][payments][2][amount]"
                               value="250000"
                             >
                           </tr> --}}

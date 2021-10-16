@@ -101,7 +101,7 @@
                       <th>{{ $unit->name }}</th>
                       <th>{{ $unit->customer->name }}</th>
                       <th colspan="2">{{ $unit->cluster->name }}</th>
-                      <td class="text-right">{{ number_format($unit->area_sqm) }}</td>
+                      <td class="text-right">{{ $unit->area_sqm }}</td>
                       <td class="text-right">{{ number_format($unit->debt) }}</td>
                       <td class="text-right">{{ number_format($unit->balance) }}</td>
                       <td class="text-right">

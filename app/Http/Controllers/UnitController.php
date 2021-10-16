@@ -30,10 +30,10 @@ class UnitController extends Controller
 
     $totals = DB::table('unit_shadows')
       ->first(DB::raw('
-        SUM(balance) as balance, 
-        SUM(debt) as debt, 
-        SUM(months_count) as months_count, 
-        SUM(months_total) as months_total, 
+        SUM(balance) as balance,
+        SUM(debt) as debt,
+        SUM(months_count) as months_count,
+        SUM(months_total) as months_total,
         SUM(credit) as credit
       '));
 
@@ -62,7 +62,7 @@ class UnitController extends Controller
     $customers = Customer::query()
       ->with('units:customer_id,name')
       ->whereIn('id', $latestCustomers->pluck('id'))
-      ->oldest('previous_id')
+      ->oldest('name')
       ->get(['id', 'previous_id', 'name']);
 
     $latestClusters = Cluster::query()
@@ -142,7 +142,7 @@ class UnitController extends Controller
     $customers = Customer::query()
       ->with('units:customer_id,name')
       ->whereIn('id', $latestCustomers->pluck('id'))
-      ->oldest('previous_id')
+      ->oldest('name')
       ->get(['id', 'previous_id', 'name']);
 
     $latestClusters = Cluster::query()
@@ -236,7 +236,7 @@ class UnitController extends Controller
     $unit['credit'] = 0;
 
     if ($unit->cluster) {
-      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'sqm' ?: $unit->area_sqm);
+      $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm);
     }
 
     $unit['balance'] = 0;
@@ -319,7 +319,7 @@ class UnitController extends Controller
       $unit['credit'] = 0;
 
       if ($unit->cluster) {
-        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'sqm' ?: $unit->area_sqm);
+        $unit['credit'] = $unit->cluster->cost * ($unit->cluster->per === 'mth' ?: $unit->area_sqm);
       }
 
       $unit['balance'] = 0;
