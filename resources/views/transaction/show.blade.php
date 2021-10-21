@@ -95,8 +95,13 @@
                 </div>
               </form>
             @elseif($transaction->approved_at)
-              <div class="card-footer d-flex justify-content-center table-success">Yes, it's been approved. Something is
-                wrong?&nbsp;<a href="{{ route('master.index', ['transaction_id' => $transaction]) }}">Unapprove</a>.</div>
+              <div class="card-footer d-flex justify-content-center table-success">
+                Yes, it's been approved.
+                @if (Auth::user()->hasRole('master'))
+                  Something is wrong?&nbsp;
+                  <a href="{{ route('master.index', ['transaction_id' => $transaction]) }}">Unapprove</a>.
+                @endif
+              </div>
             @else
               <div class="card-footer d-flex justify-content-center table-warning">Be patient, still waiting for approval
                 :/</div>
