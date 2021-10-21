@@ -17,8 +17,8 @@
                     <th>Nama</th>
                     <th>Cluster</th>
                     <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                    <th class="text-right">Balance</th>
-                    <th class="text-right">Credit</th>
+                    <th class="text-right">Saldo</th>
+                    <th class="text-right">Iuran</th>
                   </tr>
                 </thead>
 
@@ -39,8 +39,8 @@
                     <th colspan="3"></th>
                     <th class="text-right">#</th>
                     <th>Period</th>
-                    <th class="text-right">Credit</th>
-                    <th class="text-right">Fine</th>
+                    <th class="text-right">Iuran</th>
+                    <th class="text-right">Denda</th>
                   </tr>
                 </thead>
 

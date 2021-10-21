@@ -48,13 +48,13 @@
               <thead class="thead-dark">
                 <tr>
                   <th class="text-center">#</th>
-                  <th>Name</th>
+                  <th>Blok</th>
                   <th>Customer</th>
                   <th colspan="2">Cluster</th>
                   <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                  <th class="text-right">Debt</th>
-                  <th class="text-right">Balance</th>
-                  <th class="text-right">Credit</th>
+                  <th class="text-right">Hutang</th>
+                  <th class="text-right">Saldo</th>
+                  <th class="text-right">Iuran</th>
                 </tr>
               </thead>
               @foreach ($units as $unit)

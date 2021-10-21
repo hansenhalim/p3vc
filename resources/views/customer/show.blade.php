@@ -139,13 +139,13 @@
                       <tr>
                         <th></th>
                         <th class="text-center">#</th>
-                        <th>Name</th>
+                        <th>Blok</th>
                         <th>Customer</th>
                         <th colspan="2">Cluster</th>
                         <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                        <th class="text-right">Debt</th>
-                        <th class="text-right">Balance</th>
-                        <th class="text-right">Credit</th>
+                        <th class="text-right">Hutang</th>
+                        <th class="text-right">Saldo</th>
+                        <th class="text-right">Iuran</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -191,8 +191,8 @@
                         <th colspan="6"></th>
                         <th class="text-center">#</th>
                         <th>Period</th>
-                        <th class="text-right">Credit</th>
-                        <th class="text-right">Fine</th>
+                        <th class="text-right">Iuran</th>
+                        <th class="text-right">Denda</th>
                       </tr>
                     </thead>
                     <tbody>
