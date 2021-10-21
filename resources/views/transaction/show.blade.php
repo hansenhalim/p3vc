@@ -30,7 +30,9 @@
                     <td>{{ $transaction->cluster_name }}</td>
                     <td class="text-right">{{ number_format($transaction->area_sqm) }}</td>
                     <td class="text-right">{{ number_format($unit->balance) }}</td>
-                    <td class="text-right">{{ number_format($transaction->cluster_cost * ($transaction->cluster_per == 'mth' ?: $transaction->area_sqm)) }}</td>
+                    <td class="text-right">
+                      {{ number_format($transaction->cluster_cost * ($transaction->cluster_per == 'mth' ?: $transaction->area_sqm)) }}
+                    </td>
                   </tr>
                 </tbody>
 
@@ -49,8 +51,10 @@
                     <th colspan="3"></th>
                     <th class="text-right">1</th>
                     <td>{{ $transaction->period->formatLocalized('%B %Y') }}</td>
-                    <td class="text-right">{{ number_format($transaction->payments->where('id', 1)->first()->pivot->amount ?? 0) }}</td>
-                    <td class="text-right">{{ number_format($transaction->payments->where('id', 2)->first()->pivot->amount ?? 0) }}</td>
+                    <td class="text-right">
+                      {{ number_format($transaction->payments->where('id', 1)->first()->pivot->amount ?? 0) }}</td>
+                    <td class="text-right">
+                      {{ number_format($transaction->payments->where('id', 2)->first()->pivot->amount ?? 0) }}</td>
                   </tr>
                 </tbody>
 
@@ -91,9 +95,11 @@
                 </div>
               </form>
             @elseif($transaction->approved_at)
-              <div class="card-footer d-flex justify-content-center table-success">Yes, it is already approved :></div>
+              <div class="card-footer d-flex justify-content-center table-success">Yes, it's been approved. Something is
+                wrong?&nbsp;<a href="{{ route('master.index', ['transaction_id' => $transaction]) }}">Unapprove</a>.</div>
             @else
-              <div class="card-footer d-flex justify-content-center table-warning">Be patient, still waiting for approval :/</div>
+              <div class="card-footer d-flex justify-content-center table-warning">Be patient, still waiting for approval
+                :/</div>
             @endif
           </div>
         </div>

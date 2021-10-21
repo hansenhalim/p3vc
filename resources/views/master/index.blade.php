@@ -22,7 +22,7 @@
                 @csrf
                 @method('PUT')
                 <label>transaction_id</label>
-                <input type="text" name="transaction_id">
+                <input type="text" name="transaction_id" value="{{ request()->get('transaction_id') }}">
                 <input type="submit" value="send">
               </form>
             </div>
