@@ -10,6 +10,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ClusterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\MasterController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\PaymentController;
@@ -25,14 +26,14 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
     Route::resource('customers', CustomerController::class)->except(['index', 'show']);
     Route::resource('payments', PaymentController::class);
   });
-  
+
   Route::group(['middleware' => ['role:supervisor']], function () {
     Route::get('approvals/{type}/{id}', [ApprovalController::class, 'show'])->name('approvals.show');
     Route::post('approvals/{type}/{id}', [ApprovalController::class, 'approve'])->name('approvals.approve');
     Route::get('approvals', [ApprovalController::class, 'index'])->name('approvals.index');
     Route::post('transactions/{transaction}/approve', [TransactionController::class, 'approve'])->name('transactions.approve');
   });
-  
+
   Route::resource('customers', CustomerController::class)->only(['index', 'show']);
 
   Route::get('transactions/report', [TransactionController::class, 'report'])->name('transactions.report');
@@ -48,7 +49,10 @@ Route::group(['middleware' => ['get.menu', 'auth']], function () {
   Route::get('change-password', [PasswordController::class, 'edit'])->name('passwords.edit');
   Route::post('change-password', [PasswordController::class, 'update'])->name('passwords.update');
 
-
+  Route::group(['middleware' => ['role:master']], function () {
+    Route::get('master', [MasterController::class, 'index'])->name('master.index');
+    Route::put('unapprove', [MasterController::class, 'unapproveTrx'])->name('master.unapprove');
+  });
 
 
 

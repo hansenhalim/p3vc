@@ -68,7 +68,7 @@
       <div class="row">
         <div class="col-xl-9">
           <div class="card">
-            <x-card-header>Unit Debt</x-card-header>
+            <x-card-header>Hutang Unit</x-card-header>
             <form
               action="{{ route('transactions.store') }}"
               method="post"
@@ -81,13 +81,13 @@
                     <tr>
                       <th></th>
                       <th class="text-center">#</th>
-                      <th>Name</th>
+                      <th>Blok</th>
                       <th>Customer</th>
                       <th colspan="2">Cluster</th>
                       <th class="text-right">Area&nbsp;(m<sup>2</sup>)</th>
-                      <th class="text-right">Debt</th>
-                      <th class="text-right">Balance</th>
-                      <th class="text-right">Credit</th>
+                      <th class="text-right">Hutang</th>
+                      <th class="text-right">Saldo</th>
+                      <th class="text-right">Iuran</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -119,7 +119,7 @@
                       <th colspan="7"></th>
                       <th class="text-center">#</th>
                       <th>Period</th>
-                      <th class="text-right">Debt</th>
+                      <th class="text-right">Hutang</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -173,16 +173,16 @@
                     {{-- <tr class="table-secondary table-borderless table-sm" data-month="{{ $unit->previous_id.$month['period']->format('my') }}">
                           <th colspan="9" class="text-right"><i class="cil-trash text-danger" onclick="removePayment(this)" style="cursor: pointer;"></i>&nbsp;OTHER</th>
                           <th class="text-right">{{ number_format('250000') }}</th>
-                          <input 
+                          <input
                             type="hidden"
-                            class="mth-hdn" 
-                            name="units[0][months][0][payments][2][payment_id]" 
+                            class="mth-hdn"
+                            name="units[0][months][0][payments][2][payment_id]"
                             value="4"
                           >
-                          <input 
+                          <input
                             type="hidden"
-                            class="mth-hdn" 
-                            name="units[0][months][0][payments][2][amount]" 
+                            class="mth-hdn"
+                            name="units[0][months][0][payments][2][amount]"
                             value="250000"
                           >
                         </tr> --}}
