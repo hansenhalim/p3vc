@@ -24,7 +24,7 @@
 
                 <tbody>
                   <tr>
-                    <th class="text-center">#{{ $transaction->customer_id }}</th>
+                    <th class="text-center">#{{ $transaction->unit->customer->previous_id }}</th>
                     <td>{{ $transaction->unit_name }}</td>
                     <td>{{ $transaction->customer_name }}</td>
                     <td>{{ $transaction->cluster_name }}</td>

@@ -36,6 +36,7 @@ class TransactionController extends Controller
           return $query->whereBetween('created_at', [now()->subMonth(), now()]);
         }
       )
+      ->with('unit:id,customer_id', 'unit.customer:id,previous_id')
       ->withSum('payments', 'payment_transaction.amount')
       ->latest('id')
       ->paginate($perPage);
@@ -159,7 +160,7 @@ class TransactionController extends Controller
     $transaction->debits_sum_amount_spelled = $spellout->format($transaction->debits_sum_amount);
 
     $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->month);
-    $transaction->invoiceNumber = config('app.name') . '/' . $transaction->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
+    $transaction->invoiceNumber = config('app.name') . '/' . $transaction->unit->customer->previous_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
 
     $qrcodeContent = base64_encode(json_encode(array($transaction->id)));
     $qrcodeRaw = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeContent);
