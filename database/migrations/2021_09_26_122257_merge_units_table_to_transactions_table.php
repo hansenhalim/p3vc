@@ -24,7 +24,7 @@ class MergeUnitsTableToTransactionsTable extends Migration
       $table->unsignedBigInteger('customer_id')->after('unit_id');
     });
 
-    DB::statement('UPDATE `transactions`,`units` JOIN `customers` ON (`customers`.`id` = `units`.`customer_id`) JOIN `clusters` ON (`clusters`.`id` = `units`.`cluster_id`) SET `transactions`.`unit_name`=`units`.`name`,`transactions`.`customer_id`=`units`.`customer_id`,`transactions`.`customer_name`=`customers`.`name`,`transactions`.`cluster_name`=`clusters`.`name`,`transactions`.`area_sqm`=`units`.`area_sqm`,`transactions`.`cluster_cost`=`clusters`.`cost`,`transactions`.`cluster_per`=`clusters`.`per` WHERE `transactions`.`unit_id`=`units`.`id`');
+    DB::statement('UPDATE `transactions`,`units` JOIN `customers` ON (`customers`.`id` = `units`.`customer_id`) JOIN `clusters` ON (`clusters`.`id` = `units`.`cluster_id`) SET `transactions`.`unit_name`=`units`.`name`,`transactions`.`customer_id`=`customers`.`previous_id`,`transactions`.`customer_name`=`customers`.`name`,`transactions`.`cluster_name`=`clusters`.`name`,`transactions`.`area_sqm`=`units`.`area_sqm`,`transactions`.`cluster_cost`=`clusters`.`cost`,`transactions`.`cluster_per`=`clusters`.`per` WHERE `transactions`.`unit_id`=`units`.`id`');
   }
 
   /**
