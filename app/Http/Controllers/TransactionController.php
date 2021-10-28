@@ -159,15 +159,15 @@ class TransactionController extends Controller
     $transaction->debits_sum_amount_spelled = $spellout->format($transaction->debits_sum_amount);
 
     $periodInRoman = $this->numberToRomanRepresentation($transaction->created_at->month);
-    $transaction->invoiceNumber = config('app.name') . '/' . $transaction->unit->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
+    $transaction->invoiceNumber = config('app.name') . '/' . $transaction->customer_id . '/' . $periodInRoman . '/' . $transaction->created_at->year;
 
     $qrcodeContent = base64_encode(json_encode(array($transaction->id)));
     $qrcodeRaw = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeContent);
     $qrcode = str_replace('Cww', 'C4w', base64_encode($qrcodeRaw));
 
-    $transaction->title = $transaction->unit->name;
+    $transaction->title = $transaction->unit_name;
     $transaction->title .= ' ' . ($transaction->period->formatLocalized('%b %y') != 'Jan 70' ? $transaction->period->formatLocalized('%b %y') : '');
-    $transaction->title .= ' ' . $transaction->unit->customer->name;
+    $transaction->title .= ' ' . $transaction->customer_name;
 
     $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $transaction->title);
     $file = mb_ereg_replace("([\.]{2,})", '', $file);
