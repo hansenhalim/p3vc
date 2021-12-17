@@ -34,7 +34,9 @@ class UnitController extends Controller
         SUM(debt) as debt,
         SUM(months_count) as months_count,
         SUM(months_total) as months_total,
-        SUM(credit) as credit
+        SUM(credit) as credit,
+        SUM(paid_months_count) as paid_months_count,
+        SUM(paid_months_total) as paid_months_total
       '));
 
     $unitsLastSync = Carbon::parse(DB::table('configs')
@@ -374,6 +376,19 @@ class UnitController extends Controller
       $unit['months_count'] = $months->count();
       $unit['months_total'] = $months->sum('credit') + $months->sum('fine');
 
+      $unit['paid_months_count'] = 0;
+      $unit['paid_months_total'] = 0;
+
+      if ($transactions->first()) {
+        foreach ($transactions as $key => $transaction) {
+          $nullDate = Carbon::parse('1970-01-01');
+          if ($nullDate->diffInMonths($transaction->period)) {
+            $unit['paid_months_count'] += 1;
+            $unit['paid_months_total'] += $unit['credit'];
+          }
+        }
+      }
+
       $unitShadows[] = $unit->only([
         'id',
         'customer_id',
@@ -385,6 +400,8 @@ class UnitController extends Controller
         'debt',
         'months_count',
         'months_total',
+        'paid_months_count',
+        'paid_months_total',
         'credit'
       ]);
     }
