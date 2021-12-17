@@ -22,7 +22,9 @@ class UnitsExport implements FromQuery, WithHeadings, WithStrictNullComparison
         'debt',
         'months_count',
         'months_total',
-        'credit'
+        'credit',
+        'paid_months_count',
+        'paid_months_total',
       )
       ->orderBy('id');
   }
@@ -39,7 +41,9 @@ class UnitsExport implements FromQuery, WithHeadings, WithStrictNullComparison
       'Hutang',
       'Jml Bulan',
       'Tunggakan',
-      'Iuran'
+      'Iuran',
+      'month_count',
+      'month_total',
     ];
   }
 }

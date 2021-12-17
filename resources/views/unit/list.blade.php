@@ -4,7 +4,7 @@
   <div class="container-fluid">
     <div class="fade-in">
       <div class="row">
-        <div class="col-xl-11">
+        <div class="col">
           <div class="card">
             <div class="card-header d-flex align-items-center justify-content-between">
               <div class="h4 m-0 text-nowrap">Unit List</div>
@@ -26,7 +26,7 @@
             </div>
             <div class="card-body pb-2">
               <x-alert></x-alert>
-              
+
               <form
                 id="filter"
                 action="{{ route('units.index') }}"
@@ -155,7 +155,7 @@
                 </div>
               </div>
 
-              <table class="table table-responsive-xl table-striped table-borderless text-nowrap m-0">
+              <table class="table table-responsive table-striped table-borderless text-nowrap m-0">
                 <thead class="border-bottom">
                   <tr>
                     <th>CIF</th>
@@ -168,6 +168,8 @@
                     <th class="text-right">Jml Bulan</th>
                     <th class="text-right">Tunggakan</th>
                     <th class="text-right">Iuran</th>
+                    <th class="text-right">month_count</th>
+                    <th class="text-right">month_total</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -184,6 +186,8 @@
                       <td class="text-right">{{ $unit->months_count }}</td>
                       <td class="text-right">{{ number_format($unit->months_total) }}</td>
                       <td class="text-right">{{ number_format($unit->credit) }}</td>
+                      <td class="text-right">{{ $unit->paid_months_count }}</td>
+                      <td class="text-right">{{ number_format($unit->paid_months_total) }}</td>
                       <td class="align-middle text-right">
                         <div class="btn-group">
                           <button
@@ -233,6 +237,8 @@
                       <th class="text-right">{{ $totals->months_count }}</th>
                       <th class="text-right">{{ number_format($totals->months_total) }}</th>
                       <th class="text-right">{{ number_format($totals->credit) }}</th>
+                      <th class="text-right">{{ $totals->paid_months_count }}</th>
+                      <th class="text-right">{{ number_format($totals->paid_months_total) }}</th>
                     </tr>
                   </thead>
                 @endif
