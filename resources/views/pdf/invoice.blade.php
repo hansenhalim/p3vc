@@ -160,6 +160,10 @@
       padding-bottom: 25px;
     }
 
+    .bank {
+      padding: 0 0 0 0.4rem;
+    }
+
   </style>
 </head>
 
@@ -242,8 +246,24 @@
       <td colspan="3" class="bottom">
         <p class="info">Pembayaran dapat dilakukan melalui:</p>
         <ul class="small">
-          <li>Transfer BCA 020 175 3847 / Yok Silado or Dery Jaya</li>
-          <li>Transfer Bank Mandiri 114 003 388 8895 / Paguyuban Pengelola Perumahan Villa Citra</li>
+          <li>Transfer Bank atas nama Perkumpulan Pengelolaan Perumahan Villa Citra (P3VC)</li>
+          <table class="bank">
+            <tr>
+              <td>BCA</td>
+              <td>&nbsp;:&nbsp;</td>
+              <td>294 5200 888</td>
+            </tr>
+            <tr>
+              <td>Bank Mandiri</td>
+              <td>&nbsp;:&nbsp;</td>
+              <td>114 00 888 97 999</td>
+            </tr>
+            <tr>
+              <td>Bank Permata</td>
+              <td>&nbsp;:&nbsp;</td>
+              <td>4171828800</td>
+            </tr>
+          </table>
           <li>Aplikasi LinkAja</li>
           <li>Gerai Indomaret</li>
         </ul>
