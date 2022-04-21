@@ -298,10 +298,13 @@ class UnitController extends Controller
       ])
       ->whereIn('id', $latestUnits->pluck('id'))
       ->oldest('previous_id')
-      ->chunk(100, function ($units) {
+      ->chunk(50, function ($units) {
         $this->calculateExtraFieldsAndCastShadow($units);
       });
 
+    DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
+
+    return true;
     return redirect()->route('units.index');
   }
 
@@ -408,7 +411,6 @@ class UnitController extends Controller
 
     // echo json_encode($unit); exit;
 
-    DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
     DB::table('unit_shadows')->upsert($unitShadows, 'id');
   }
 
