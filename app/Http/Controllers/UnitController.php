@@ -302,6 +302,8 @@ class UnitController extends Controller
         $this->calculateExtraFieldsAndCastShadow($units);
       });
 
+    DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
+
     return redirect()->route('units.index');
   }
 
@@ -408,7 +410,6 @@ class UnitController extends Controller
 
     // echo json_encode($unit); exit;
 
-    DB::table('configs')->upsert(['key' => 'units_last_sync', 'value' => now()], 'key');
     DB::table('unit_shadows')->upsert($unitShadows, 'id');
   }
 
