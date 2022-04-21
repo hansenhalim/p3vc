@@ -298,7 +298,7 @@ class UnitController extends Controller
       ])
       ->whereIn('id', $latestUnits->pluck('id'))
       ->oldest('previous_id')
-      ->chunk(100, function ($units) {
+      ->chunk(50, function ($units) {
         $this->calculateExtraFieldsAndCastShadow($units);
       });
 
