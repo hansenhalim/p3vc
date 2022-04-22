@@ -5,13 +5,12 @@
 /public/storage
 /public/js
 /public/css
-/public/img
 /public/flags
 /public/fonts
 /public/webfonts
 /public/scss
 /public/assets
-/public/svg
+/public/svg/flag
 /public/icons
 /public/vendors
 /public/public
