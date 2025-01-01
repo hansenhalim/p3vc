@@ -112,7 +112,7 @@ class CustomerController extends Controller
       $months = collect();
 
       for ($i = 0; $i < $diffInMonths; $i++) {
-        $period = $unit->created_at->addMonths($i);
+        $period = $unit->created_at->firstOfMonth()->addMonths($i);
 
         if ($transactions->first()) {
           foreach ($transactions as $key => $transaction) {
