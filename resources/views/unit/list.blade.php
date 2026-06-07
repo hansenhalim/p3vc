@@ -200,6 +200,14 @@
                               class="dropdown-item font-weight-bold"
                               href="{{ route('units.show', $unit->id) }}"
                             ><i class="cil-description"></i>&nbsp;View</a>
+                            @if ($unit->months_total > 1)
+                              <a
+                                class="dropdown-item font-weight-bold d-flex align-items-center"
+                                href="{{ route('units.print', $unit->id) }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              ><i class="cil-print"></i>&nbsp;Print<span class="bg-danger rounded-circle ml-2" style="width: 8px; height: 8px;"></span></a>
+                            @endif
                             <a
                               class="dropdown-item font-weight-bold"
                               href="{{ route('units.edit', $unit->id) }}"
