@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\UnitsExport;
 use App\Exports\UnitsLinkajaExport;
+use Barryvdh\DomPDF\Facade as DomPDF;
 use Illuminate\Http\Request;
 use App\Models\Unit;
 use App\Models\Cluster;
@@ -12,6 +13,7 @@ use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UnitController extends Controller
 {
@@ -24,7 +26,7 @@ class UnitController extends Controller
     $perPage = $request->page == 'all' ? 2000 : 10;
 
     $units = DB::table('unit_shadows')
-      ->when($search, fn ($query) => $query->where('name', $search))
+      ->when($search, fn($query) => $query->where('name', $search))
       ->orderBy($sortBy, $sortDirection)
       ->paginate($perPage);
 
@@ -268,6 +270,37 @@ class UnitController extends Controller
     // echo json_encode($unit); exit();
 
     return view('unit.debt', compact('unit', 'payments'));
+  }
+
+  public function print($id)
+  {
+    $unit = DB::table('unit_shadows')->find($id);
+
+    abort_if(!$unit, 404);
+
+    if ($unit->months_total <= 1) {
+      return redirect()->route('units.index')
+        ->with('status', 'Unit ' . $unit->name . ' tidak memiliki tunggakan untuk ditagih.');
+    }
+
+    $today = now()->setTimezone('Asia/Jakarta');
+    $firstOfMonth = $today->copy()->startOfMonth();
+    $previousMonth = $firstOfMonth->copy()->subMonth();
+    $periodStart = $previousMonth->copy()->subMonths($unit->months_count - 1);
+
+    $unit->letter_date = $firstOfMonth->translatedFormat('j F Y');
+    $unit->cutoff_date = $firstOfMonth->copy()->subDay()->translatedFormat('j F Y');
+    $unit->period_label = $periodStart->format('Y-m') === $previousMonth->format('Y-m')
+      ? $previousMonth->translatedFormat('F Y')
+      : $periodStart->translatedFormat('F Y') . ' s/d ' . $previousMonth->translatedFormat('F Y');
+
+    $qrcodeContent = base64_encode(json_encode([(int) $today->year, (int) $today->month, $unit->id]));
+    $qrcodeRaw = QrCode::size(110)->margin(3)->backgroundColor(255, 255, 255)->generate($qrcodeContent);
+    $qrcode = str_replace('Cww', 'C4w', base64_encode($qrcodeRaw));
+
+    $pdf = DomPDF::loadView('pdf.unit', compact('unit', 'qrcode'));
+
+    return $pdf->stream('Surat Tunggakan ' . $unit->name . '.pdf');
   }
 
   public function sync()

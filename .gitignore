@@ -32,3 +32,4 @@ public/development
 /scripts
 .vscode/launch.json
 .idea
+.DS_Store
