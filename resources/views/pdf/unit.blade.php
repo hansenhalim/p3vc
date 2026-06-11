@@ -167,7 +167,7 @@
   <p>Dengan hormat,</p>
 
   <p>Dengan ini diberitahukan bahwa sampai dengan tanggal {{ $unit->cutoff_date }}, Bapak/Ibu/Saudara belum memenuhi
-    kewajiban atas pembayaran Iuran {{ $unit->is_kios ? 'Maintenance Taman Kuliner Villa Citra' : 'Keamanan dan Kebersihan (IKK)' }} sebagai berikut :</p>
+    kewajiban atas pembayaran Iuran {{ $unit->is_kios ? 'Maintenance Taman Kuliner Villa Citra' : 'Keamanan dan Kebersihan (IKK)' }} sebagai berikut&nbsp;:</p>
 
   <table class="amount">
     <tr>
