@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Surat Tunggakan IKK - {{ $unit->name }}</title>
+  <title>Surat Tunggakan {{ $unit->is_kios ? 'Maintenance' : 'IKK' }} - {{ $unit->name }}</title>
   <style>
     @page {
       margin: 1.6cm 1.8cm;
@@ -156,18 +156,18 @@
       <td>{{ $unit->customer_name }}</td>
     </tr>
     <tr>
-      <td class="label">Blok</td>
+      <td class="label">{{ $unit->is_kios ? 'Kios' : 'Blok' }}</td>
       <td class="sep">:</td>
       <td>{{ $unit->name }}</td>
     </tr>
   </table>
 
-  <p>Perihal : <u>Tunggakan Iuran Keamanan dan Kebersihan (IKK)</u></p>
+  <p>Perihal : <u>Tunggakan Iuran {{ $unit->is_kios ? 'Maintenance Taman Kuliner Villa Citra' : 'Keamanan dan Kebersihan (IKK)' }}</u></p>
 
   <p>Dengan hormat,</p>
 
   <p>Dengan ini diberitahukan bahwa sampai dengan tanggal {{ $unit->cutoff_date }}, Bapak/Ibu/Saudara belum memenuhi
-    kewajiban atas pembayaran Iuran Keamanan dan Kebersihan (IKK) sebagai berikut :</p>
+    kewajiban atas pembayaran Iuran {{ $unit->is_kios ? 'Maintenance Taman Kuliner Villa Citra' : 'Keamanan dan Kebersihan (IKK)' }} sebagai berikut :</p>
 
   <table class="amount">
     <tr>
@@ -184,21 +184,32 @@
     </tr>
   </table>
 
-  <p>Untuk itu kami harap Bapak/Ibu/Saudara agar segera melakukan pembayaran seluruh tunggakan IKK Bapak/Ibu/Saudara
+  <p>Untuk itu kami harap Bapak/Ibu/Saudara agar segera melakukan pembayaran seluruh tunggakan
+    {{ $unit->is_kios ? 'Maintenance' : 'IKK' }} Bapak/Ibu/Saudara
     melalui rekening Perkumpulan Pengelolaan Perumahan Villa Citra (P3VC), pada Bank BCA dengan nomor rekening
     294.5200.888 atas nama Perkumpulan Pengelolaan Perumahan Villa Citra (P3VC).</p>
 
-  <p>Apabila telah melakukan pembayaran, mohon konfirmasi bukti pembayaran transfer ke nomor WA 082181088088 dengan
-    menyertakan nomor Blok.</p>
+  <p>Apabila telah melakukan pembayaran, mohon konfirmasi bukti pembayaran transfer ke nomor WA 08117998088 dengan
+    menyertakan nomor {{ $unit->is_kios ? 'Kios' : 'Blok' }}.</p>
 
+  @unless ($unit->is_kios)
+    @if ($unit->months_count <= 3)
+  <p>Bilamana sampai tanggal {{ $unit->deadline_date }} tunggakan diatas tidak diselesaikan, maka mohon maaf kami akan
+    memasang banner yang bertuliskan
+    &ldquo;<strong>RUMAH/KAVLING INI MENUNGGAK PEMBAYARAN IKK</strong>&rdquo; di depan/pagar rumah Bapak/Ibu/Saudara,
+    seperti gambar di bawah ini.</p>
+    @else
   <p>Mohon maaf kami telah memasang banner yang bertuliskan
     &ldquo;<strong>RUMAH/KAVLING INI MENUNGGAK PEMBAYARAN IKK</strong>&rdquo; di depan/pagar rumah Bapak/Ibu/Saudara,
     seperti gambar di bawah ini.</p>
 
   <p>Bilamana Bapak/Ibu/Saudara sudah melakukan pembayaran atas tunggakan tersebut, maka banner akan kami lepas/copot
     dari rumah tersebut.</p>
+    @endif
+  @endunless
 
-  <p>Harap abaikan surat ini apabila Bapak/Ibu/Saudara sudah membayar tunggakan IKK.</p>
+  <p>Harap abaikan surat ini apabila Bapak/Ibu/Saudara sudah membayar tunggakan
+    {{ $unit->is_kios ? 'Maintenance Taman Kuliner Villa Citra' : 'IKK' }}.</p>
 
   <p>Atas perhatian dan kerjasamanya kami ucapkan terima kasih.</p>
 
@@ -207,7 +218,7 @@
       <td class="qr">
         <img src="data:image/svg+xml;base64, {{ $qrcode }}">
       </td>
-      @if (file_exists(public_path('img/banner.jpg')))
+      @if (!$unit->is_kios && file_exists(public_path('img/banner.jpg')))
       <td class="banner">
         <img src="data:image/jpeg;base64, {!! base64_encode(file_get_contents(public_path('img/banner.jpg'))) !!}">
       </td>

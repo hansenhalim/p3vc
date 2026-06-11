@@ -12,6 +12,7 @@ use App\Models\Customer;
 use App\Models\Payment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -290,6 +291,8 @@ class UnitController extends Controller
 
     $unit->letter_date = $firstOfMonth->translatedFormat('j F Y');
     $unit->cutoff_date = $firstOfMonth->copy()->subDay()->translatedFormat('j F Y');
+    $unit->deadline_date = $firstOfMonth->copy()->endOfMonth()->translatedFormat('j F Y');
+    $unit->is_kios = Str::startsWith($unit->name, 'KIOS');
     $unit->period_label = $periodStart->format('Y-m') === $previousMonth->format('Y-m')
       ? $previousMonth->translatedFormat('F Y')
       : $periodStart->translatedFormat('F Y') . ' s/d ' . $previousMonth->translatedFormat('F Y');
